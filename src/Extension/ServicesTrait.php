@@ -22,8 +22,7 @@ trait ServicesTrait
 {
     protected EntityManagerInterface $entityManager;
 
-    /** @var ContainerInterface */
-    protected $container;
+    protected ContainerInterface $container;
 
     protected Query $query;
     protected ?Config $boltConfig = null;
