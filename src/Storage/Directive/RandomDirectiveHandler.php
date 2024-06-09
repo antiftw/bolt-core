@@ -12,17 +12,11 @@ use Bolt\Storage\QueryInterface;
  *
  *  eg: {% setcontent pages = 'pages' random %}
  */
-class RandomDirectiveHandler
+readonly class RandomDirectiveHandler
 {
-    public const NAME = 'random';
+    public const string NAME = 'random';
 
-    /** @var Version */
-    private $version;
-
-    public function __construct(Version $version)
-    {
-        $this->version = $version;
-    }
+    public function __construct(private Version $version) {}
 
     public function __invoke(QueryInterface $query, $value, &$directives): void
     {

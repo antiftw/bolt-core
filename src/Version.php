@@ -23,15 +23,15 @@ final class Version
      *   Stable — 3.0.0
      *   Development — 3.1.0 alpha 1
      */
-    public const VERSION = '5.2.0 RC 1';
-    public const CODENAME = '';
+    public const string VERSION = '5.2.0 RC 1';
+    public const string CODENAME = '';
 
     /**
      * Whether this release is a stable one.
      */
     public static function isStable(): bool
     {
-        return (bool) preg_match('/^[0-9\.]+$/', static::VERSION);
+        return (bool) preg_match('/^[0-9.]+$/', Version::VERSION);
     }
 
     /**
@@ -64,9 +64,9 @@ final class Version
      *
      * @return bool whether the comparison succeeded
      */
-    public static function compare($version, $operator): bool
+    public static function compare(string $version, string $operator): bool
     {
-        $currentVersion = str_replace(' ', '', mb_strtolower(static::VERSION));
+        $currentVersion = str_replace(' ', '', mb_strtolower(Version::VERSION));
         $version = str_replace(' ', '', mb_strtolower($version));
 
         return version_compare($version, $currentVersion, $operator);
@@ -77,32 +77,32 @@ final class Version
      */
     public static function forComposer(): string
     {
-        if (mb_strpos(static::VERSION, ' ') === false) {
-            return static::VERSION;
+        if (mb_strpos(Version::VERSION, ' ') === false) {
+            return Version::VERSION;
         }
 
-        $version = explode(' ', static::VERSION, 2);
+        $version = explode(' ', Version::VERSION, 2);
 
         return $version[0];
     }
 
     public static function fullName(): string
     {
-        return static::VERSION;
+        return Version::VERSION;
     }
 
     public static function codeName(): string
     {
-        return static::CODENAME;
+        return Version::CODENAME;
     }
 
     public static function name(): ?string
     {
-        if (mb_strpos(static::VERSION, ' ') === false) {
+        if (mb_strpos(Version::VERSION, ' ') === false) {
             return null;
         }
 
-        return explode(' ', static::VERSION)[1];
+        return explode(' ', Version::VERSION)[1];
     }
 
     /**

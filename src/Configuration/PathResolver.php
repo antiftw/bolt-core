@@ -10,18 +10,15 @@ use Tightenco\Collect\Support\Collection;
 
 /**
  * A class to resolve and manage paths. Paths defined here are allowed to have variables within them.
- * For example: "files" folder is within the web directory so it is defined as "%web%/files". This allows
+ * For example: "files" folder is within the web directory, so it is defined as "%web%/files". This allows
  * the web directory to be changed and the files path does not have to be redefined.
  *
  * @author Carson Full <carsonfull@gmail.com>
  */
 class PathResolver
 {
-    /** @var array */
-    protected $paths = [];
-
-    /** @var array */
-    private $resolving = [];
+    protected array $paths = [];
+    private array $resolving = [];
 
     /**
      * Default paths for Bolt installation.
@@ -75,7 +72,7 @@ class PathResolver
      */
     public function define(string $name, string $path): void
     {
-        if (mb_strpos($path, "%{$name}%") !== false) {
+        if (mb_strpos($path, "%$name%") !== false) {
             throw new ConfigurationException('Paths cannot reference themselves.');
         }
 
@@ -105,11 +102,11 @@ class PathResolver
             $alias = $match[1];
 
             if (! isset($this->paths[$alias])) {
-                throw new ConfigurationException("Failed to resolve path. Alias %{$alias}% is not defined.");
+                throw new ConfigurationException("Failed to resolve path. Alias %$alias% is not defined.");
             }
 
             // absolute if alias is at start of path
-            $absolute = mb_strpos($path, "%{$alias}%") === 0;
+            $absolute = mb_strpos($path, "%$alias%") === 0;
 
             if (isset($this->resolving[$alias])) {
                 throw new ConfigurationException('Failed to resolve path. Infinite recursion detected.');
@@ -132,7 +129,7 @@ class PathResolver
             $path .= \DIRECTORY_SEPARATOR . implode(\DIRECTORY_SEPARATOR, (array) $additional);
         }
 
-        // Make sure we don't have lingering unneeded dir-seperators
+        // Make sure we don't have lingering unneeded dir-separators
         return Path::canonicalize($path);
     }
 

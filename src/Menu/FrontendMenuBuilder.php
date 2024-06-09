@@ -15,41 +15,16 @@ use Bolt\Utils\Html;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Twig\Environment;
 
-final class FrontendMenuBuilder implements FrontendMenuBuilderInterface
+final readonly class FrontendMenuBuilder implements FrontendMenuBuilderInterface
 {
-    /** @var Config */
-    private $config;
-
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
-
-    /** @var ContentRepository */
-    private $contentRepository;
-
-    /** @var ContentExtension */
-    private $contentExtension;
-
-    /** @var LocaleExtension */
-    private $localeExtension;
-
-    /** @var string */
-    private $defaultLocale;
-
     public function __construct(
-        Config $config,
-        UrlGeneratorInterface $urlGenerator,
-        ContentRepository $contentRepository,
-        ContentExtension $contentExtension,
-        LocaleExtension $localeExtension,
-        string $defaultLocale
-    ) {
-        $this->config = $config;
-        $this->urlGenerator = $urlGenerator;
-        $this->contentRepository = $contentRepository;
-        $this->contentExtension = $contentExtension;
-        $this->localeExtension = $localeExtension;
-        $this->defaultLocale = $defaultLocale;
-    }
+        private Config $config,
+        private UrlGeneratorInterface $urlGenerator,
+        private ContentRepository $contentRepository,
+        private ContentExtension $contentExtension,
+        private LocaleExtension $localeExtension,
+        private string $defaultLocale
+    ) {}
 
     public function buildMenu(Environment $twig, ?string $name = null): array
     {
@@ -61,7 +36,7 @@ final class FrontendMenuBuilder implements FrontendMenuBuilderInterface
         } elseif ($name !== '' && isset($menuConfig[$name])) {
             $menu = $menuConfig[$name]->toArray();
         } else {
-            throw new \RuntimeException("Tried to build non-existing menu: {$name}");
+            throw new \RuntimeException("Tried to build non-existing menu: $name");
         }
 
         return array_map(function ($item) use ($twig): array {
@@ -109,7 +84,7 @@ final class FrontendMenuBuilder implements FrontendMenuBuilderInterface
         }
 
         // If it looks like `contenttype/slug`, get the Record.
-        if (preg_match('/^[a-zA-Z\-\_]+\/[0-9a-zA-Z\-\_]+$/', $trimmedLink)) {
+        if (preg_match('/^[a-zA-Z\-_]+\/[0-9a-zA-Z\-_]+$/', $trimmedLink)) {
             $content = $this->getContent($trimmedLink);
             if ($content) {
                 return [$this->contentExtension->getTitle($content), $this->contentExtension->getLink($content)];

@@ -22,8 +22,7 @@ use Tightenco\Collect\Support\Collection;
  */
 class FieldRepository extends ServiceEntityRepository
 {
-    /** @var EntityManagerInterface */
-    private static $em;
+    private static EntityManagerInterface $em;
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -35,7 +34,7 @@ class FieldRepository extends ServiceEntityRepository
         self::$em = $em;
     }
 
-    private function getQueryBuilder(?QueryBuilder $qb = null)
+    private function getQueryBuilder(?QueryBuilder $qb = null): QueryBuilder
     {
         return $qb ?: $this->createQueryBuilder('field');
     }

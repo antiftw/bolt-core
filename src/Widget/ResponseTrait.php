@@ -9,8 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 
 trait ResponseTrait
 {
-    /** @var Response */
-    private $response;
+    private ?Response $response;
 
     public function setResponse(Response $response): WidgetInterface
     {

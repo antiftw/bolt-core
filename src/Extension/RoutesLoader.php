@@ -9,12 +9,8 @@ use Symfony\Component\Routing\RouteCollection;
 
 class RoutesLoader extends Loader
 {
-    /** @var ExtensionRegistry */
-    private $registry;
-
-    public function __construct(ExtensionRegistry $registry)
-    {
-        $this->registry = $registry;
+    public function __construct(private readonly ExtensionRegistry $registry) {
+        parent::__Construct();
     }
 
     public function load($resource, $type = null): RouteCollection

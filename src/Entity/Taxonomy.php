@@ -7,53 +7,39 @@ namespace Bolt\Entity;
 use Bolt\Common\Str;
 use Bolt\Configuration\Content\TaxonomyType;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Tightenco\Collect\Support\Collection as LaravelCollection;
 
-/**
- * @ORM\Entity(repositoryClass="Bolt\Repository\TaxonomyRepository")
- */
+#[ORM\Entity(repositoryClass: 'Bolt\Repository\TaxonomyRepository')]
 class Taxonomy
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Groups("public")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups('public')]
+    private ?int $id = null;
 
-    /** @ORM\ManyToMany(targetEntity="Bolt\Entity\Content", inversedBy="taxonomies") */
-    private $content;
+    #[ORM\ManyToMany(targetEntity: Content::class, inversedBy: 'taxonomies')]
+    private ArrayCollection $content;
 
-    /**
-     * @ORM\Column(type="string", length=191)
-     * @Groups({"get_content", "public"})
-     */
-    private $type;
+    #[ORM\Column(type: 'string', length: 191)]
+    #[Groups(['get_content', 'public'])]
+    private string $type;
 
-    /**
-     * @ORM\Column(type="string", length=191)
-     * @Groups({"get_content", "public"})
-     */
-    private $slug;
+    #[ORM\Column(type: 'string', length: 191)]
+    #[Groups(['get_content', 'public'])]
+    private string $slug;
 
-    /**
-     * @ORM\Column(type="string", length=191)
-     * @Groups({"get_content", "public"})
-     */
-    private $name;
+    #[ORM\Column(type: 'string', length: 191)]
+    #[Groups(['get_content', 'public'])]
+    private string $name;
 
-    /**
-     * @ORM\Column(type="integer")
-     * @Groups("public")
-     */
-    private $sortorder = 0;
+    #[ORM\Column(type: 'integer')]
+    #[Groups('public')]
+    private int $sortorder = 0;
 
-    /** @var TaxonomyType|null */
-    private $taxonomyTypeDefinition = null;
+    private ?TaxonomyType $taxonomyTypeDefinition = null;
 
     public function __construct(?TaxonomyType $taxonomyTypeDefinition = null)
     {
@@ -78,10 +64,7 @@ class Taxonomy
         $this->taxonomyTypeDefinition = TaxonomyType::factory($this->type, $taxonomyTypesConfig);
     }
 
-    /**
-     * @return Collection|Content[]
-     */
-    public function getContent(): Collection
+    public function getContent(): ArrayCollection
     {
         return $this->content;
     }

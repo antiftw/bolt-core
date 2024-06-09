@@ -15,24 +15,14 @@ use Twig\TwigTest;
 
 class JsonExtension extends AbstractExtension
 {
-    private const SERIALIZE_GROUP = 'get_content';
+    private const string SERIALIZE_GROUP = 'get_content';
 
-    private const SERIALIZE_GROUP_DEFINITION = 'get_definition';
+    private const string SERIALIZE_GROUP_DEFINITION = 'get_definition';
 
     /** @var bool */
-    private $includeDefinition = true;
+    private bool $includeDefinition = true;
 
-    /** @var NormalizerInterface */
-    private $normalizer;
-
-    /** @var Stopwatch */
-    private $stopwatch;
-
-    public function __construct(NormalizerInterface $normalizer, Stopwatch $stopwatch)
-    {
-        $this->normalizer = $normalizer;
-        $this->stopwatch = $stopwatch;
-    }
+    public function __construct(private readonly NormalizerInterface $normalizer, private readonly Stopwatch $stopwatch) {}
 
     /**
      * {@inheritdoc}
@@ -69,10 +59,7 @@ class JsonExtension extends AbstractExtension
         return $json;
     }
 
-    /**
-     * @param Content|array|\Traversable $records
-     */
-    public function normalizeRecords($records, string $locale = ''): array
+    public function normalizeRecords(Content|iterable $records, string $locale = ''): array
     {
         if ($records instanceof Content) {
             return $this->contentToArray($records, $locale);

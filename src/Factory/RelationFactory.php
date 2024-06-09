@@ -12,19 +12,10 @@ use Tightenco\Collect\Support\Collection;
 
 class RelationFactory
 {
-    /** @var EntityManagerInterface */
-    private $em;
+    private Collection $relations;
 
-    /** @var RelationRepository */
-    private $repository;
-
-    /** @var Collection */
-    private $relations;
-
-    public function __construct(RelationRepository $repository, EntityManagerInterface $em)
+    public function __construct(private readonly RelationRepository $repository, private readonly EntityManagerInterface $em)
     {
-        $this->em = $em;
-        $this->repository = $repository;
         $this->relations = collect([]);
     }
 
@@ -54,13 +45,13 @@ class RelationFactory
         return $this->relations->filter(function (Relation $relation) use ($from, $to) {
             return ($relation->getFromContent() === $from && $relation->getToContent() === $to)
                 || ($relation->getToContent() === $to && $relation->getToContent() === $from);
-        })->last(null, null);
+        })->last();
     }
 
     /**
      * @param Relation|Relation[] $relation
      */
-    public function save($relation): void
+    public function save(array|Relation $relation): void
     {
         if ($relation instanceof Relation) {
             $this->em->persist($relation);

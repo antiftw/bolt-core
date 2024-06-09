@@ -9,7 +9,7 @@ class FilesIndexCacher extends FilesIndex implements CachingInterface
 {
     use CachingTrait;
 
-    public const CACHE_CONFIG_KEY = 'files_index';
+    public const string CACHE_CONFIG_KEY = 'files_index';
 
     public function get(string $path, string $type, string $baseUrlPath, string $baseFilePath): Collection
     {

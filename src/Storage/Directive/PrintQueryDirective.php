@@ -13,7 +13,7 @@ use Doctrine\ORM\Query\Parameter;
  */
 class PrintQueryDirective
 {
-    public const NAME = 'printquery';
+    public const string NAME = 'printquery';
 
     public function __invoke(QueryInterface $query): void
     {
@@ -29,7 +29,7 @@ class PrintQueryDirective
         /** @var Parameter $parameter */
         foreach ($parameters as $parameter) {
             $dql = str_replace(
-                ':' . $parameter->getName() . '',
+                ':' . $parameter->getName(),
                 '<b title="' . Str::stringifyValue($parameter->getValue()) . '">:' . $parameter->getName() . '</b>',
                 $dql
             );

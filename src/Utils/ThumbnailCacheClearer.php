@@ -9,15 +9,10 @@ use Symfony\Component\Filesystem\Exception\IOException;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
-class ThumbnailCacheClearer
+readonly class ThumbnailCacheClearer
 {
-    /** @var Config */
-    private $config;
 
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
+    public function __construct(private Config $config) {}
 
     public function run(): bool
     {

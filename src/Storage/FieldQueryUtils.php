@@ -9,15 +9,9 @@ use Doctrine\DBAL\Platforms\SqlitePlatform;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr;
 
-class FieldQueryUtils
+readonly class FieldQueryUtils
 {
-    /** @var EntityManagerInterface */
-    private $em;
-
-    public function __construct(EntityManagerInterface $em)
-    {
-        $this->em = $em;
-    }
+    public function __construct(private EntityManagerInterface $em) {}
 
     public function isFieldType(QueryInterface $query, string $fieldname, string $type): bool
     {
@@ -54,7 +48,15 @@ class FieldQueryUtils
 
     public function getNumericCastExpression(string $left): string
     {
-        $expression = (new Expr())->substring($left, 3, (new Expr())->length($left)->__toString() . ' - 4')->__toString();
+        $expression = (new Expr())
+            ->substring(
+                $left,
+                3,
+                (int)((new Expr())
+                    ->length($left)
+                    ->__toString() . ' - 4'
+                )
+            )->__toString();
 
         return 'CAST(' . $expression . ' as decimal)';
     }

@@ -13,7 +13,7 @@ use Bolt\Storage\QueryInterface;
  */
 class LatestDirectiveHandler
 {
-    public const NAME = 'latest';
+    public const string NAME = 'latest';
 
     public function __invoke(QueryInterface $query, $value, &$directives): void
     {

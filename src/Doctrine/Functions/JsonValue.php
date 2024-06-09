@@ -14,7 +14,7 @@ use Scienta\DoctrineJsonFunctions\Query\AST\Functions\AbstractJsonFunctionNode;
  */
 class JsonValue extends AbstractJsonFunctionNode
 {
-    public const FUNCTION_NAME = 'JSON_VALUE';
+    public const string FUNCTION_NAME = 'JSON_VALUE';
 
     /** @var string[] */
     protected $requiredArgumentTypes = [self::STRING_PRIMARY_ARG, self::STRING_PRIMARY_ARG];

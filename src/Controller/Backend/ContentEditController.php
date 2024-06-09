@@ -6,7 +6,6 @@ namespace Bolt\Controller\Backend;
 
 use Bolt\Common\Date;
 use Bolt\Common\Json;
-use Bolt\Configuration\Content\ContentType;
 use Bolt\Controller\CsrfTrait;
 use Bolt\Controller\TwigAwareController;
 use Bolt\Entity\Content;
@@ -31,11 +30,9 @@ use Bolt\Validator\ContentValidatorInterface;
 use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\ORMInvalidArgumentException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Entity;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
@@ -49,68 +46,26 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
 {
     use CsrfTrait;
 
-    /** @var TaxonomyRepository */
-    private $taxonomyRepository;
-
-    /** @var RelationRepository */
-    private $relationRepository;
-
-    /** @var ContentRepository */
-    private $contentRepository;
-
-    /** @var MediaRepository */
-    private $mediaRepository;
-
-    /** @var EntityManagerInterface */
-    private $em;
-
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
-
-    /** @var ContentFillListener */
-    private $contentFillListener;
-
-    /** @var EventDispatcherInterface */
-    private $dispatcher;
-
     /** @var string */
     protected $defaultLocale;
 
-    /** @var TranslatorInterface */
-    private $translator;
-
-    /** @var ContentHelper */
-    private $contentHelper;
-
     public function __construct(
-        TaxonomyRepository $taxonomyRepository,
-        RelationRepository $relationRepository,
-        ContentRepository $contentRepository,
-        MediaRepository $mediaRepository,
-        EntityManagerInterface $em,
-        UrlGeneratorInterface $urlGenerator,
-        ContentFillListener $contentFillListener,
-        EventDispatcherInterface $dispatcher,
+        private readonly TaxonomyRepository $taxonomyRepository,
+        private readonly RelationRepository $relationRepository,
+        private readonly ContentRepository $contentRepository,
+        private readonly MediaRepository $mediaRepository,
+        private readonly EntityManagerInterface $em,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly ContentFillListener $contentFillListener,
+        private readonly EventDispatcherInterface $dispatcher,
         string $defaultLocale,
-        TranslatorInterface $translator,
-        ContentHelper $contentHelper
+        private readonly TranslatorInterface $translator,
+        private readonly ContentHelper $contentHelper
     ) {
-        $this->taxonomyRepository = $taxonomyRepository;
-        $this->relationRepository = $relationRepository;
-        $this->contentRepository = $contentRepository;
-        $this->mediaRepository = $mediaRepository;
-        $this->em = $em;
-        $this->urlGenerator = $urlGenerator;
-        $this->contentFillListener = $contentFillListener;
-        $this->dispatcher = $dispatcher;
         $this->defaultLocale = $defaultLocale;
-        $this->translator = $translator;
-        $this->contentHelper = $contentHelper;
     }
 
-    /**
-     * @Route("/new/{contentType}", name="bolt_content_new", methods={"GET|POST"})
-     */
+    #[Route('/new/{contentType}', name: 'bolt_content_new', methods: ['GET|POST'])]
     public function new(string $contentType, ?ContentValidatorInterface $contentValidator = null): Response
     {
         $content = new Content();
@@ -136,9 +91,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         return $this->edit($content);
     }
 
-    /**
-     * @Route("/edit/{id}", name="bolt_content_edit", methods={"GET"}, requirements={"id": "\d+"})
-     */
+    #[Route('/edit/{id}', name: 'bolt_content_edit', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function edit(Content $content): Response
     {
         $this->denyAccessUnlessGranted(ContentVoter::CONTENT_EDIT, $content);
@@ -149,10 +102,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         return $this->renderEditor($content);
     }
 
-
-    /**
-     * @Route("/edit/{id}", name="bolt_content_edit_post", methods={"POST"}, requirements={"id": "\d+"})
-     */
+    #[Route('/edit/{id}', name: 'bolt_content_edit_post', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function save(?Content $originalContent = null, ?ContentValidatorInterface $contentValidator = null): Response
     {
         $this->validateCsrf('editrecord');
@@ -162,12 +112,12 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
             $this->denyAccessUnlessGranted(ContentVoter::CONTENT_EDIT, $originalContent);
             $originalStatus = $originalContent->getStatus();
             $originalPublishedAt = $originalContent->getPublishedAt();
-            $originalDepublishedAt = $originalContent->getDepublishedAt();
+            $originalDePublishedAt = $originalContent->getDepublishedAt();
             $originalAuthor = $originalContent->getAuthor();
         } else {
             $originalStatus = null;
             $originalPublishedAt = null;
-            $originalDepublishedAt = null;
+            $originalDePublishedAt = null;
             $originalAuthor = null;
         }
 
@@ -185,7 +135,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
 
             // deny if we detect the publication dates field being changed
             if (($originalPublishedAt !== null && Date::datesDiffer($originalPublishedAt, $content->getPublishedAt())) ||
-                ($originalDepublishedAt !== null && Date::datesDiffer($originalDepublishedAt, $content->getDepublishedAt()))
+                ($originalDePublishedAt !== null && Date::datesDiffer($originalDePublishedAt, $content->getDepublishedAt()))
             ) {
                 $this->denyAccessUnlessGranted(ContentVoter::CONTENT_CHANGE_STATUS, $content);
             }
@@ -251,15 +201,13 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
             );
         }
 
-        // Otherwise, treat it as a normal POST-request cycle..
+        // Otherwise, treat it as a normal POST-request cycle.
         $this->addFlash('success', 'content.updated_successfully');
 
         return new RedirectResponse($url);
     }
 
-    /**
-     * @Route("/duplicate/{id}", name="bolt_content_duplicate", methods={"GET"}, requirements={"id": "\d+"})
-     */
+    #[Route('/duplicate/{id}', name: 'bolt_content_duplicate', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function duplicate(Content $content): Response
     {
         $this->denyAccessUnlessGranted(ContentVoter::CONTENT_CREATE, $content);
@@ -287,9 +235,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         return $this->render('@bolt/content/edit.html.twig', $twigvars);
     }
 
-    /**
-     * @Route("/duplicate/{id}", name="bolt_content_duplicate_post", methods={"POST"}, requirements={"id": "\d+"})
-     */
+    #[Route('/duplicate/{id}', name: 'bolt_content_duplicate_post', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function duplicateSave(?Content $content = null): Response
     {
         $this->denyAccessUnlessGranted(ContentVoter::CONTENT_CREATE, $content);
@@ -297,9 +243,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         return $this->new($content->getContentType());
     }
 
-    /**
-     * @Route("/status/{id}", name="bolt_content_status", methods={"GET"}, requirements={"id": "\d+"})
-     */
+    #[Route('/status/{id}', name: 'bolt_content_status', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function status(Content $content): Response
     {
         $this->validateCsrf('status');
@@ -325,9 +269,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         return new RedirectResponse($url);
     }
 
-    /**
-     * @Route("/delete/{id}", name="bolt_content_delete", methods={"GET"}, requirements={"id": "\d+"})
-     */
+    #[Route('/delete/{id}', name: 'bolt_content_delete', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function delete(Content $content): Response
     {
         $this->validateCsrf('delete');
@@ -487,7 +429,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         $definition = empty($fieldDefinition) ? $content->getDefinition()->get('fields')->get($fieldName) : $fieldDefinition;
 
         if (empty($definition)) {
-            throw new \Exception("Content type `{$content->getContentType()}` doesn't have field `{$fieldName}`.");
+            throw new \Exception("Content type `{$content->getContentType()}` doesn't have field `$fieldName`.");
         }
 
         if ($content->hasField($fieldName)) {
@@ -506,7 +448,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
             $field = null;
         }
 
-        // Perhaps create a new Field..
+        // Perhaps create a new Field.
         if (! $field) {
             $field = FieldRepository::factory($definition, $fieldName);
 
@@ -651,8 +593,8 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
                 $currentRelations
                     ->first(
                         static function (Relation $relation) use ($id) {
-                            $fromId = $relation->getFromContent() ? $relation->getFromContent()->getId() : null;
-                            $toId = $relation->getToContent() ? $relation->getToContent()->getId() : null;
+                            $fromId = $relation->getFromContent()?->getId();
+                            $toId = $relation->getToContent()?->getId();
                             return \in_array(
                                 $id,
                                 [$fromId, $toId],

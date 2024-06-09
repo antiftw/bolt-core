@@ -13,23 +13,13 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * Decorated by `Bolt\Cache\RelatedOptionsUtilityCacher`
  */
-class RelatedOptionsUtility
+readonly class RelatedOptionsUtility
 {
-    /** @var Query */
-    private $query;
-
-    /** @var ContentHelper */
-    private $contentHelper;
-
-    /** @var UrlGeneratorInterface */
-    private $router;
-
-    public function __construct(Query $query, ContentHelper $contentHelper, UrlGeneratorInterface $router)
-    {
-        $this->query = $query;
-        $this->contentHelper = $contentHelper;
-        $this->router = $router;
-    }
+    public function __construct(
+        private Query $query,
+        private ContentHelper $contentHelper,
+        private UrlGeneratorInterface $router
+    ) {}
 
     /**
      * Decorated by `Bolt\Cache\RelatedOptionsUtilityCacher`

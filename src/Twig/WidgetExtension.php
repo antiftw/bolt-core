@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bolt\Twig;
 
 use Bolt\Widgets;
+use Tightenco\Collect\Support\Collection;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -13,13 +14,7 @@ use Twig\TwigFunction;
  */
 class WidgetExtension extends AbstractExtension
 {
-    /** @var Widgets */
-    private $widgetRenderer;
-
-    public function __construct(Widgets $widgetRenderer)
-    {
-        $this->widgetRenderer = $widgetRenderer;
-    }
+    public function __construct(private readonly Widgets $widgetRenderer) {}
 
     /**
      * {@inheritdoc}
@@ -54,7 +49,7 @@ class WidgetExtension extends AbstractExtension
         return count($this->listwidgets($target)) > 0;
     }
 
-    public function listwidgets(string $target)
+    public function listwidgets(string $target): Collection
     {
         return $this->widgetRenderer->listWidgetsForTarget($target);
     }

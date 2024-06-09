@@ -14,21 +14,16 @@ use Tightenco\Collect\Support\Collection;
 
 class ContentTypesParser extends BaseParser
 {
-    /** @var Collection */
-    private $generalConfig;
+    private array $localeCodes;
 
-    /** @var array */
-    private $localeCodes = [];
-
-    /** @var string defaultLocale */
-    private $defaultLocale;
-
-    public function __construct(string $projectDir, Collection $generalConfig, string $defaultLocale, ?string $locales = null, string $filename = 'contenttypes.yaml')
-    {
+    public function __construct(
+        private readonly Collection $generalConfig,
+        private readonly string $defaultLocale,
+        string $projectDir,
+        ?string $locales = null,
+        string $filename = 'contenttypes.yaml'
+    ){
         $this->localeCodes = empty($locales) ? [] : explode('|', $locales);
-        $this->generalConfig = $generalConfig;
-        $this->defaultLocale = $defaultLocale;
-
         parent::__construct($projectDir, $filename);
     }
 
@@ -57,11 +52,9 @@ class ContentTypesParser extends BaseParser
     /**
      * Parse a single Content Type configuration array.
      *
-     * @param string $key
-     *
      * @throws ConfigurationException
      */
-    protected function parseContentType($key, array $contentType): ?ContentType
+    protected function parseContentType(string $key, array $contentType): ?ContentType
     {
         // If the key starts with `__`, we ignore it.
         if (mb_substr($key, 0, 2) === '__') {
@@ -126,7 +119,7 @@ class ContentTypesParser extends BaseParser
             $contentType['searchable'] = ! $contentType['viewless'];
         }
 
-        // When Viewless it makes makes no sense to have it searchable
+        // When Viewless it makes no sense to have it searchable
         if ($contentType['viewless']) {
             $contentType['searchable'] = false;
         }
@@ -285,7 +278,7 @@ class ContentTypesParser extends BaseParser
     private function parseField($key, &$field, $acceptFileTypes, &$currentGroup): void
     {
         $key = str_replace('-', '_', mb_strtolower(Str::makeSafe($key, true)));
-        if (! isset($field['type']) || empty($field['type'])) {
+        if (empty($field['type'])) {
             $error = sprintf('Field "%s" has no "type" set.', $key);
 
             throw new ConfigurationException($error);

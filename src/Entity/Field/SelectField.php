@@ -11,17 +11,15 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Tightenco\Collect\Support\Collection;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class SelectField extends Field implements FieldInterface, RawPersistable, \Iterator
 {
     use IterableFieldTrait;
 
-    public const TYPE = 'select';
+    public const string TYPE = 'select';
 
     /** @var ContainerInterface|null */
-    private static $container = null;
+    private static ?ContainerInterface $container = null;
 
     public function setValue($value): Field
     {
@@ -101,12 +99,12 @@ class SelectField extends Field implements FieldInterface, RawPersistable, \Iter
         return $this->getOptions()->intersectByKeys(array_flip(parent::getValue()));
     }
 
-    public function getSelectedIds()
+    public function getSelectedIds(): string
     {
         return implode(' || ', parent::getValue());
     }
 
-    public function getContentType()
+    public function getContentType(): false|string
     {
         $values = $this->getOptions();
 
@@ -128,7 +126,7 @@ class SelectField extends Field implements FieldInterface, RawPersistable, \Iter
         return false;
     }
 
-    public function getDefaultValue()
+    public function getDefaultValue(): array
     {
         return [parent::getDefaultValue()];
     }

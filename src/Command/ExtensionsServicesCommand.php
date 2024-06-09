@@ -15,13 +15,8 @@ class ExtensionsServicesCommand extends Command
     /** @var string */
     protected static $defaultName = 'extensions:services';
 
-    /** @var ContainerInterface */
-    private $container;
-
-    public function __construct(ContainerInterface $container)
+    public function __construct(private readonly ContainerInterface $container)
     {
-        $this->container = $container;
-
         parent::__construct();
     }
 

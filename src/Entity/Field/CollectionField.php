@@ -14,15 +14,13 @@ use Bolt\Entity\ListFieldInterface;
 use Bolt\Repository\FieldRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class CollectionField extends Field implements Excerptable, FieldInterface, FieldParentInterface, ListFieldInterface, RawPersistable, \Iterator
 {
     use FieldParentTrait;
     use IterableFieldTrait;
 
-    public const TYPE = 'collection';
+    public const string TYPE = 'collection';
 
     public function getTemplates(): array
     {
@@ -39,7 +37,7 @@ class CollectionField extends Field implements Excerptable, FieldInterface, Fiel
         return $result;
     }
 
-    public function getApiValue()
+    public function getApiValue(): array
     {
         $fields = $this->getValue();
         $result = [];
@@ -56,18 +54,18 @@ class CollectionField extends Field implements Excerptable, FieldInterface, Fiel
     }
 
     /**
-     * @param FieldInterface[] $fields
+     * @param FieldInterface[] $value
      */
-    public function setValue($fields): Field
+    public function setValue($value): Field
     {
         /** @var Field $field */
-        foreach ($fields as $field) {
+        foreach ($value as $field) {
             // todo: This should be able to handle an array of fields
             // in key-value format, not just Field.php types.
             $field->setParent($this);
         }
 
-        $this->fields = $fields;
+        $this->fields = $value;
 
         return $this;
     }
@@ -77,7 +75,7 @@ class CollectionField extends Field implements Excerptable, FieldInterface, Fiel
         return $this->fields;
     }
 
-    public function getDefaultValue()
+    public function getDefaultValue(): array
     {
         $default = parent::getDefaultValue();
 

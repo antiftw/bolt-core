@@ -19,29 +19,15 @@ use Symfony\Component\HttpKernel\Event\RequestEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Twig\Environment;
 
-class WidgetSubscriber implements EventSubscriberInterface
+readonly class WidgetSubscriber implements EventSubscriberInterface
 {
-    public const PRIORITY = 100;
-
-    /** @var Widgets */
-    private $widgets;
-
-    /** @var Canonical */
-    private $canonical;
-
-    /** @var Config */
-    private $config;
-
-    /** @var Environment */
-    private $twig;
-
-    public function __construct(Widgets $widgets, Canonical $canonical, Config $config, Environment $twig)
-    {
-        $this->widgets = $widgets;
-        $this->canonical = $canonical;
-        $this->config = $config;
-        $this->twig = $twig;
-    }
+    public const int PRIORITY = 100;
+    public function __construct(
+        private Widgets $widgets,
+        private Canonical $canonical,
+        private Config $config,
+        private Environment $twig
+    ) {}
 
     /**
      * Kernel request listener callback.

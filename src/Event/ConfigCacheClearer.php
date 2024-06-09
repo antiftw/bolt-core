@@ -8,15 +8,9 @@ use Bolt\Configuration\Config;
 use Symfony\Component\HttpKernel\CacheClearer\CacheClearerInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 
-class ConfigCacheClearer implements CacheClearerInterface
+readonly class ConfigCacheClearer implements CacheClearerInterface
 {
-    /** @var CacheInterface */
-    private $cache;
-
-    public function __construct(CacheInterface $cache)
-    {
-        $this->cache = $cache;
-    }
+    public function __construct(private CacheInterface $cache) {}
 
     public function clear(string $cacheDir): void
     {

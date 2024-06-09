@@ -5,13 +5,11 @@ declare(strict_types=1);
 namespace Bolt\Extension;
 
 use Bolt\Widget\WidgetInterface;
-use Bolt\Widgets;
 use Cocur\Slugify\Slugify;
 use Composer\Package\CompletePackageInterface;
 use Composer\Package\PackageInterface;
 use ComposerPackages\Packages;
 use Symfony\Component\EventDispatcher\EventDispatcher;
-use Twig\Environment;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
 
@@ -22,9 +20,7 @@ abstract class BaseExtension implements ExtensionInterface
 {
     use ServicesTrait;
     use ConfigTrait;
-
-    /** @var string */
-    private $slug;
+    private ?string $slug = null;
 
     /**
      * Returns the descriptive name of the Extension
@@ -82,9 +78,7 @@ abstract class BaseExtension implements ExtensionInterface
 
         $widgets = $this->getWidgets();
 
-        if ($widgets) {
-            $widgets->registerWidget($widget);
-        }
+        $widgets?->registerWidget($widget);
     }
 
     /**
@@ -127,7 +121,7 @@ abstract class BaseExtension implements ExtensionInterface
             return realpath($folder);
         }
 
-        $folder = dirname(dirname($reflection->getFilename())) . DIRECTORY_SEPARATOR . 'templates';
+        $folder = dirname($reflection->getFilename(), 2) . DIRECTORY_SEPARATOR . 'templates';
         if (realpath($folder)) {
             return realpath($folder);
         }

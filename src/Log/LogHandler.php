@@ -10,14 +10,9 @@ use Monolog\Handler\AbstractProcessingHandler;
 
 class LogHandler extends AbstractProcessingHandler
 {
-    /** @var EntityManagerInterface */
-    protected $em;
-
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly EntityManagerInterface $em)
     {
         parent::__construct();
-
-        $this->em = $em;
     }
 
     /**

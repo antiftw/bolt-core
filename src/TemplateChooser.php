@@ -10,19 +10,10 @@ use Bolt\Entity\Content;
 use Bolt\Twig\ContentExtension;
 use Tightenco\Collect\Support\Collection;
 
-class TemplateChooser
+readonly class TemplateChooser
 {
-    /** @var Config */
-    private $config;
 
-    /** @var ContentExtension */
-    private $contentExtension;
-
-    public function __construct(Config $config, ContentExtension $contentExtension)
-    {
-        $this->config = $config;
-        $this->contentExtension = $contentExtension;
-    }
+    public function __construct(private Config $config, private ContentExtension $contentExtension) {}
 
     public function forHomepage(?Content $content = null): array
     {
@@ -125,7 +116,7 @@ class TemplateChooser
         $templates = new Collection();
 
         // First candidate: defined specifically in the taxonomy
-        $templates->push($taxonomy->get('listing_template', null));
+        $templates->push($taxonomy->get('listing_template'));
 
         // Second candidate: Theme-specific config.yml file.
         $templates->push($this->config->get('theme/listing_template'));

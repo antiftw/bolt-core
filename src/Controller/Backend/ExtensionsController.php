@@ -13,40 +13,29 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Security("is_granted('extensions')")
- */
+#[Security('is_granted("extensions")')]
 class ExtensionsController extends AbstractController implements BackendZoneInterface
 {
-    /** @var ExtensionRegistry */
-    private $extensionRegistry;
+    private Dependencies $dependenciesManager;
 
-    /** @var Dependencies */
-    private $dependenciesManager;
-
-    public function __construct(ExtensionRegistry $extensionRegistry)
+    public function __construct(private readonly ExtensionRegistry $extensionRegistry)
     {
-        $this->extensionRegistry = $extensionRegistry;
         $this->dependenciesManager = new Dependencies();
     }
 
-    /**
-     * @Route("/extensions", name="bolt_extensions")
-     */
+    #[Route('/extensions', name: 'bolt_extensions')]
     public function index(): Response
     {
         $extensions = $this->extensionRegistry->getExtensions();
 
-        $twigvars = [
+        $twigVars = [
             'extensions' => $extensions,
         ];
 
-        return $this->render('@bolt/pages/extensions.html.twig', $twigvars);
+        return $this->render('@bolt/pages/extensions.html.twig', $twigVars);
     }
 
-    /**
-     * @Route("/extensions/{name}", name="bolt_extensions_view", requirements={"name"=".+"})
-     */
+    #[Route('/extensions/{name}', name: 'bolt_extensions_view', requirements: ['name' => '.+'])]
     public function viewExtension($name): Response
     {
         $name = str_replace('/', '\\', $name);
@@ -62,11 +51,11 @@ class ExtensionsController extends AbstractController implements BackendZoneInte
             $dependencies[] = $extDependency;
         }
 
-        $twigvars = [
+        $twigVars = [
             'extension' => $extension,
             'dependencies' => $dependencies,
         ];
 
-        return $this->render('@bolt/pages/extension_details.html.twig', $twigvars);
+        return $this->render('@bolt/pages/extension_details.html.twig', $twigVars);
     }
 }

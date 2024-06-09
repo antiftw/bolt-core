@@ -23,7 +23,7 @@ class Kernel extends BaseKernel
 {
     use MicroKernelTrait;
 
-    private const CONFIG_EXTS = '.{php,xml,yaml,yml}';
+    private const string CONFIG_EXTS = '.{php,xml,yaml,yml}';
 
     public function registerBundles(): iterable
     {
@@ -35,10 +35,6 @@ class Kernel extends BaseKernel
         }
     }
 
-    public function boot(): void
-    {
-        parent::boot();
-    }
 
     public function build(ContainerBuilder $container): void
     {
@@ -95,7 +91,7 @@ class Kernel extends BaseKernel
         $container->setParameter('locales_array', $locales);
 
         $fileLocator = new FileLocator([$confDir . '/bolt']);
-        $fileName = $fileLocator->locate('config.yaml', null, true);
+        $fileName = $fileLocator->locate('config.yaml');
 
         $yaml = Yaml::parseFile($fileName);
         unset($yaml['__nodes']);
@@ -131,7 +127,7 @@ class Kernel extends BaseKernel
     {
         /** @var string $defaultLocale */
         $defaultLocale = $container->getParameter('locale');
-        $ContentTypesParser = new ContentTypesParser($this->getProjectDir(), new Collection(), $defaultLocale);
+        $ContentTypesParser = new ContentTypesParser(new Collection(), $defaultLocale, $this->getProjectDir());
         $contentTypes = $ContentTypesParser->parse();
 
         $pluralslugs = $contentTypes->pluck('slug')->implode('|');

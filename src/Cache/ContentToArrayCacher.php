@@ -9,7 +9,7 @@ class ContentToArrayCacher extends JsonExtension implements CachingInterface
 {
     use CachingTrait;
 
-    public const CACHE_CONFIG_KEY = 'content_array';
+    public const string CACHE_CONFIG_KEY = 'content_array';
 
     protected function contentToArray(Content $content, string $locale = ''): array
     {

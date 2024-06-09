@@ -20,17 +20,13 @@ use Twig\Environment;
 
 trait ServicesTrait
 {
-    /** @var EntityManagerInterface */
-    protected $entityManager;
+    protected EntityManagerInterface $entityManager;
 
     /** @var ContainerInterface */
     protected $container;
 
-    /** @var Query */
-    protected $query;
-
-    /** @var Config */
-    protected $boltConfig;
+    protected Query $query;
+    protected ?Config $boltConfig = null;
 
     /**
      * Injects commonly used objects into the extension, for use by the

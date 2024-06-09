@@ -17,33 +17,23 @@ use Symfony\Component\Security\Core\Security;
 
 class FileListingController implements AsyncZoneInterface
 {
-    /** @var Config */
-    private $config;
+    private Request $request;
+    private string $publicPath;
 
-    /** @var Request */
-    private $request;
+    public function __construct(
+        private readonly FilesIndex $filesIndex,
+        private readonly Config $config,
+        private readonly Security $security,
+        RequestStack $requestStack,
+        string $projectDir,
+        string $publicFolder,
 
-    /** @var Security */
-    private $security;
-
-    /** @var string */
-    private $publicPath;
-
-    /** @var FilesIndex */
-    private $filesIndex;
-
-    public function __construct(Config $config, RequestStack $requestStack, Security $security, string $projectDir, string $publicFolder, FilesIndex $filesIndex)
-    {
-        $this->config = $config;
+    ) {
         $this->request = $requestStack->getCurrentRequest();
-        $this->security = $security;
         $this->publicPath = $projectDir . DIRECTORY_SEPARATOR . $publicFolder;
-        $this->filesIndex = $filesIndex;
     }
 
-    /**
-     * @Route("/list_files", name="bolt_async_filelisting", methods={"GET"})
-     */
+    #[Route('/list_files', name: 'bolt_async_filelisting', methods: ['GET'])]
     public function index(): JsonResponse
     {
         $locationName = $this->request->query->get('location', 'files');
@@ -59,7 +49,7 @@ class FileListingController implements AsyncZoneInterface
         $relativeLocation = Path::makeRelative($this->config->getPath($locationName, false), $this->publicPath);
         $relativeTopLocation = Path::makeRelative($this->config->getPath($locationTopLevel, false), $this->publicPath);
 
-        // Do not allow any path outside of the public directory.
+        // Do not allow any path outside the public directory.
         $path = PathCanonicalize::canonicalize($this->publicPath, $relativeLocation);
         $baseFilePath = PathCanonicalize::canonicalize($this->publicPath, $relativeTopLocation);
         $baseUrlPath = $this->request->getPathInfo();

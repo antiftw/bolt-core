@@ -50,30 +50,16 @@ class AddUserCommand extends Command
      * so it will be instantiated only when the command is actually called.
      */
     protected static $defaultName = 'bolt:add-user';
+    protected static $defaultDescription = 'Creates users and stores them in the database';
+    private SymfonyStyle $io;
 
-    /** @var SymfonyStyle */
-    private $io;
-
-    /** @var EntityManagerInterface */
-    private $entityManager;
-
-    /** @var UserPasswordHasherInterface */
-    private $passwordHasher;
-
-    /** @var ValidatorInterface */
-    private $validator;
-
-    /** @var Config */
-    private $config;
-
-    public function __construct(EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher, ValidatorInterface $validator, Config $config)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly ValidatorInterface $validator,
+        private readonly Config $config
+    ){
         parent::__construct();
-
-        $this->entityManager = $em;
-        $this->passwordHasher = $passwordHasher;
-        $this->validator = $validator;
-        $this->config = $config;
     }
 
     /**
@@ -101,7 +87,7 @@ class AddUserCommand extends Command
      */
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        // SymfonyStyle is an optional feature that Symfony provides so you can
+        // SymfonyStyle is an optional feature that Symfony provides, so you can
         // apply a consistent look to the commands of your application.
         // See https://symfony.com/doc/current/console/style.html
         $this->io = new SymfonyStyle($input, $output);
@@ -269,8 +255,8 @@ class AddUserCommand extends Command
         $user->setPassword($hashedPassword);
         $user->eraseCredentials();
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $this->em->persist($user);
+        $this->em->flush();
 
         $this->io->success(sprintf('User was successfully created: %s (%s) [%s]', $user->getUsername(), $user->getEmail(), implode(',', $user->getRoles())));
 

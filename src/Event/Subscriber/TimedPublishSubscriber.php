@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Bolt\Event\Subscriber;
 
 use Bolt\Doctrine\TablePrefixTrait;
-use Bolt\Entity\Content;
 use Carbon\Carbon;
 use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
@@ -14,14 +13,9 @@ use Symfony\Component\HttpKernel\KernelEvents;
 class TimedPublishSubscriber implements EventSubscriberInterface
 {
     use TablePrefixTrait;
-
-    public const PRIORITY = 30;
-
-    /** @var object */
-    private $defaultConnection;
-
-    /** @var string */
-    private $tablePrefix;
+    public const int PRIORITY = 30;
+    private object $defaultConnection;
+    private string $tablePrefix;
 
     public function __construct($tablePrefix, ManagerRegistry $managerRegistry)
     {
@@ -39,20 +33,20 @@ class TimedPublishSubscriber implements EventSubscriberInterface
         $conn = $this->defaultConnection;
         $now = (new Carbon())->tz('UTC');
 
-        // Publish timed Content records when 'publish_at' has passed and Depublish published Content
+        // Publish timed Content records when 'publish_at' has passed and De-publish published Content
         // records when 'depublish_at' has passed. Note: Placeholders in DBAL don't work for tablenames.
         $queryPublish = sprintf(
             'update %scontent SET status = \'published\', published_at = :now  WHERE status = \'timed\' AND published_at < :now',
             $this->tablePrefix
         );
-        $queryDepublish = sprintf(
+        $queryDePublish = sprintf(
             'update %scontent SET status = \'held\', depublished_at = :now WHERE status = \'published\' AND depublished_at < :now',
             $this->tablePrefix
         );
 
         try {
             $conn->executeUpdate($queryPublish, [':now' => $now]);
-            $conn->executeUpdate($queryDepublish, [':now' => $now]);
+            $conn->executeUpdate($queryDePublish, [':now' => $now]);
         } catch (\Throwable $e) {
             // Fail silently, output user-friendly exception elsewhere.
         }

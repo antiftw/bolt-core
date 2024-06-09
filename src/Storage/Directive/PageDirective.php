@@ -11,7 +11,7 @@ use Bolt\Storage\SelectQuery;
  */
 class PageDirective
 {
-    public const NAME = 'page';
+    public const string NAME = 'page';
 
     public function __invoke(SelectQuery $query, int $page, array $otherDirectives): void
     {

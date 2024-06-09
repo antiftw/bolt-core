@@ -12,68 +12,62 @@ use Symfony\Component\Filesystem\Path;
  */
 class Media
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /** @ORM\Column(type="string", length=191) */
-    private $location;
+    #[ORM\Column(type: 'string', length: 191)]
+    private string $location;
 
-    /** @ORM\Column(type="text", length=1000) */
-    private $path;
+    #[ORM\Column(type: 'text', length: 1000)]
+    private string $path;
 
-    /** @ORM\Column(type="string", length=191) */
-    private $filename;
+    #[ORM\Column(type: 'string', length: 191)]
+    private string $filename;
 
-    /** @ORM\Column(type="string", length=191) */
-    private $type;
+    #[ORM\Column(type: 'string', length: 191)]
+    private string $type;
 
-    /** @ORM\Column(type="integer", nullable=true) */
-    private $width;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $width;
 
-    /** @ORM\Column(type="integer", nullable=true) */
-    private $height;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $height;
 
-    /** @ORM\Column(type="integer", nullable=true) */
-    private $filesize;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $filesize;
 
-    /** @ORM\Column(type="integer", nullable=true) */
-    private $cropX;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $cropX;
 
-    /** @ORM\Column(type="integer", nullable=true) */
-    private $cropY;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private ?int $cropY;
 
-    /** @ORM\Column(type="float", nullable=true) */
-    private $cropZoom;
+    #[ORM\Column(type: 'float', nullable: true)]
+    private ?float $cropZoom;
 
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="Bolt\Entity\User")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $author;
+    #[ORM\ManyToOne(targetEntity: User::class)]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $author;
 
-    /** @ORM\Column(type="datetime") */
-    private $createdAt;
+    #[ORM\Column(type: "datetime")]
+    private \DateTimeInterface $createdAt;
 
-    /** @ORM\Column(type="datetime") */
-    private $modifiedAt;
+    #[ORM\Column(type: "datetime", nullable: true)]
+    private ?\DateTimeInterface $modifiedAt;
 
-    /** @ORM\Column(type="string", length=191, nullable=true) */
-    private $title;
+    #[ORM\Column(type: "string", length: 191, nullable: true)]
+    private ?string $title;
 
-    /** @ORM\Column(type="string", length=1000, nullable=true) */
-    private $description;
+    #[ORM\Column(type: "string", length: 1000, nullable: true)]
+    private ?string $description;
 
-    /** @ORM\Column(type="string", length=1000, nullable=true) */
-    private $originalFilename;
+    #[ORM\Column(type: "string", length: 1000, nullable: true)]
+    private ?string $originalFilename;
 
-    /** @ORM\Column(type="string", length=191, nullable=true) */
-    private $copyright;
+    #[ORM\Column(type: "string", length: 191, nullable: true)]
+    private ?string $copyright;
 
     public function __construct()
     {
@@ -271,7 +265,7 @@ class Media
         return $this;
     }
 
-    public function getCropX()
+    public function getCropX(): ?int
     {
         return $this->cropX;
     }
@@ -283,7 +277,7 @@ class Media
         return $this;
     }
 
-    public function getCropY()
+    public function getCropY(): ?int
     {
         return $this->cropY;
     }
@@ -295,7 +289,7 @@ class Media
         return $this;
     }
 
-    public function getCropZoom()
+    public function getCropZoom(): ?float
     {
         return $this->cropZoom;
     }

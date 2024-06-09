@@ -29,32 +29,15 @@ use Twig\Loader\FilesystemLoader;
 
 class TwigAwareController extends AbstractController
 {
-    /** @var Config */
-    protected $config;
-
-    /** @var Environment */
-    protected $twig;
-
-    /** @var Packages */
-    protected $packages;
-
-    /** @var Canonical */
-    protected $canonical;
-
-    /** @var Sanitiser */
-    protected $sanitiser;
-
-    /** @var Request */
-    protected $request;
-
-    /** @var TemplateChooser */
-    protected $templateChooser;
-
-    /** @var string */
-    protected $defaultLocale;
-
-    /** @var CommonExtension */
-    private $commonExtension;
+    protected Config $config;
+    protected Environment $twig;
+    protected Packages $packages;
+    protected Canonical $canonical;
+    protected Sanitiser $sanitiser;
+    protected Request $request;
+    protected TemplateChooser $templateChooser;
+    protected string $defaultLocale;
+    private CommonExtension $commonExtension;
 
     /**
      * @required
@@ -75,9 +58,9 @@ class TwigAwareController extends AbstractController
     /**
      * Renders a view.
      *
-     * @param string|array $template
+     * @param string|array $view
      */
-    public function render($template, array $parameters = [], ?Response $response = null): Response
+    public function render($view, array $parameters = [], ?Response $response = null): Response
     {
         // Set User in global Twig environment
         $parameters['user'] = $parameters['user'] ?? $this->getUser();
@@ -87,7 +70,7 @@ class TwigAwareController extends AbstractController
             $parameters['theme'] = $this->config->get('theme');
         }
 
-        $content = $this->renderTemplate($template, $parameters);
+        $content = $this->renderTemplate($view, $parameters);
 
         // Make sure we have a Response
         if ($response === null) {

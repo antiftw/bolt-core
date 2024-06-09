@@ -18,18 +18,11 @@ class ExtensionsShowCommand extends Command
 {
     /** @var string */
     protected static $defaultName = 'extensions:show';
+    private Dependencies $dependenciesManager;
 
-    /** @var ExtensionRegistry */
-    private $extensionRegistry;
-
-    /** @var Dependencies */
-    private $dependenciesManager;
-
-    public function __construct(ExtensionRegistry $extensionRegistry)
+    public function __construct(private readonly ExtensionRegistry $extensionRegistry)
     {
-        $this->extensionRegistry = $extensionRegistry;
         $this->dependenciesManager = new Dependencies();
-
         parent::__construct();
     }
 

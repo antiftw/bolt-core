@@ -25,33 +25,17 @@ use Tightenco\Collect\Support\Collection;
 
 class ContentFixtures extends BaseFixture implements DependentFixtureInterface, FixtureGroupInterface
 {
-    /** @var Generator */
-    private $faker;
+    private Generator $faker;
+    private array $presetRecords;
+    private Collection $imagesIndex;
 
-    /** @var array */
-    private $presetRecords = [];
-
-    /** @var Collection */
-    private $imagesIndex;
-
-    /** @var Config */
-    private $config;
-
-    /** @var FileLocations */
-    private $fileLocations;
-
-    /** @var string */
-    private $defaultLocale;
-
-    /** @var TagAwareCacheInterface */
-    private $cache;
-
-    /** @var ContentExtension */
-    private $contentExtension;
-
-    public function __construct(Config $config, FileLocations $fileLocations, TagAwareCacheInterface $cache, string $defaultLocale, ContentExtension $contentExtension)
-    {
-        $this->config = $config;
+    public function __construct(
+        private readonly Config $config,
+        private readonly FileLocations $fileLocations,
+        private readonly TagAwareCacheInterface $cache,
+        private readonly string $defaultLocale,
+        private readonly ContentExtension $contentExtension
+    ) {
         $this->faker = Factory::create();
         $seed = $this->config->get('general/fixtures_seed');
         if (! empty($seed)) {
@@ -59,13 +43,9 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
         }
 
         $this->presetRecords = $this->getPresetRecords();
-        $this->fileLocations = $fileLocations;
-        $this->defaultLocale = $defaultLocale;
-        $this->cache = $cache;
-        $this->contentExtension = $contentExtension;
     }
 
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             UserFixtures::class,
@@ -80,7 +60,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
 
     public function load(ObjectManager $manager): void
     {
-        $path = $this->fileLocations->get('files')->getBasepath();
+        $path = $this->fileLocations->get('files')->getBasePath();
         $this->imagesIndex = $this->getImagesIndex($path);
 
         $this->loadContent($manager);
@@ -231,7 +211,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 $field->setValue($this->getValuesforFieldType($fieldType, $contentType['singleton'], $content));
             }
         }
-        $field->setSortorder($sortorder++ * 5);
+        $field->setSortorder($sortorder * 5);
 
         if ($addToContent) {
             $content->addField($field);
@@ -273,23 +253,16 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
     {
         return [
             preg_replace_callback(
-                        '/{([\w]+)}/i',
+                        '/{(\w+)}/i',
                         function ($match) {
-                            $match = $match[1];
-
-                            try {
-                                return $this->faker->{$match};
-                            } finally {
-                            }
-
-                            return '(unknown)';
+                            return $this->faker->{$match[1]};
                         },
                         $format
                     ),
         ];
     }
 
-    private function getFieldTypeValue(DeepCollection $field, bool $singleton, Content $content)
+    private function getFieldTypeValue(DeepCollection $field, bool $singleton, Content $content): array
     {
         switch ($field['type']) {
             case 'html':
@@ -313,7 +286,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 $randomImage = $this->imagesIndex->random();
                 $data = [
                     'filename' => str_replace('\\', '/', $randomImage->getRelativePathname()),
-                    'alt' => $this->faker->sentence(4, true),
+                    'alt' => $this->faker->sentence(4),
                     'media' => '',
                 ];
 
@@ -322,7 +295,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 $randomImage = $this->imagesIndex->random();
                 $data = [
                     'filename' => str_replace('\\', '/', $randomImage->getRelativePathname()),
-                    'title' => $this->faker->sentence(4, true),
+                    'title' => $this->faker->sentence(4),
                     'media' => '',
                 ];
 
@@ -336,7 +309,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                         return $carry . $value;
                     }, '');
                 } else {
-                    $data = $this->faker->sentence(3, true);
+                    $data = $this->faker->sentence(3);
                 }
 
                 $data = [$data];
@@ -344,7 +317,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 break;
             case 'text':
                 $words = isset($field['slug']) && in_array($field['slug'], ['title', 'heading'], true) ? 3 : 7;
-                $data = [$this->faker->sentence($words, true)];
+                $data = [$this->faker->sentence($words)];
 
                 break;
             case 'email':
@@ -371,7 +344,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
             case 'data':
                 $data = [];
                 for ($i = 1; $i < 5; $i++) {
-                    $data[$this->faker->sentence(1)] = $this->faker->sentence(4, true);
+                    $data[$this->faker->sentence(1)] = $this->faker->sentence(4);
                 }
 
                 break;
@@ -381,7 +354,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                     $randomImage = $this->imagesIndex->random();
                     $data[] = [
                         'filename' => $randomImage->getRelativePathname(),
-                        'alt' => $this->faker->sentence(4, true),
+                        'alt' => $this->faker->sentence(4),
                         'media' => '',
                     ];
                 }
@@ -393,7 +366,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                     $randomImage = $this->imagesIndex->random();
                     $data[] = [
                         'filename' => $randomImage->getRelativePathname(),
-                        'title' => $this->faker->sentence(4, true),
+                        'title' => $this->faker->sentence(4),
                         'media' => '',
                     ];
                 }
@@ -418,13 +391,13 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 break;
             case 'seo':
                 $data = ['keywords' => '', 'shortlink' => '', 'canonical' => '', 'robots' => '', 'og' => ''];
-                $data['title'] = $this->faker->sentence(4, true);
-                $data['description'] = $this->faker->sentence(120, true);
+                $data['title'] = $this->faker->sentence(4);
+                $data['description'] = $this->faker->sentence(120);
                 $data = [json_encode($data)];
 
                 break;
             default:
-                $data = [$this->faker->sentence(6, true)];
+                $data = [$this->faker->sentence()];
         }
 
         return $data;
@@ -498,7 +471,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
             'text_sanitised' => 'Text field with <strong>markup</strong>, including <script>console.log(\'hoi\')</script>. The end.',
             'attachment' => [
                 'filename' => 'joey.jpg',
-                'title' => $this->faker->sentence(4, true),
+                'title' => $this->faker->sentence(4),
                 'media' => '',
             ],
         ];
@@ -509,7 +482,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
 
         // Only add this fixture if the file exists: It does in the "Git Clone", but not in the
         // "Composer create-project".
-        $file = dirname(dirname(__DIR__)) . '/public/theme/skeleton/custom/setcontent_1.twig';
+        $file = dirname(__DIR__, 2) . '/public/theme/skeleton/custom/setcontent_1.twig';
         if (file_exists($file)) {
             $records['pages'][] = [
                 'heading' => 'Setcontent test page',
@@ -520,7 +493,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
 
         // Only add this fixture if the file exists: It does in the "Git Clone", but not in the
         // "Composer create-project".
-        $file = dirname(dirname(__DIR__)) . '/public/theme/skeleton/custom/setwherecheckbox_1.twig';
+        $file = dirname(__DIR__, 2) . '/public/theme/skeleton/custom/setwherecheckbox_1.twig';
         if (file_exists($file)) {
             $records['pages'][] = [
                 'heading' => 'SetContent Where Checkbox test page',

@@ -9,20 +9,11 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 trait CachingTrait
 {
-    /** @var TagAwareCacheInterface */
-    private $cache;
-
-    /** @var Stopwatch */
-    private $stopwatch;
-
-    /** @var string */
-    private $cacheKey = '';
-
-    /** @var array */
-    private $cacheTags = [];
-
-    /** @var Config */
-    private $config;
+    private TagAwareCacheInterface $cache;
+    private Stopwatch $stopwatch;
+    private string $cacheKey = '';
+    private array $cacheTags = [];
+    private Config $config;
 
     /**
      * @required
@@ -106,10 +97,8 @@ trait CachingTrait
     {
         $tags = explode(',', $contentTypeSlug);
 
-        $tags = array_map(function($t) {
+        return array_map(function($t) {
             return preg_replace('/[^\pL\d,]+/u', '', $t);
         }, $tags);
-
-        return $tags;
     }
 }

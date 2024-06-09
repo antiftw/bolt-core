@@ -13,20 +13,11 @@ use Faker\Generator;
 
 class ImagesFixtures extends BaseFixture implements FixtureGroupInterface
 {
-    /** @var Generator */
-    private $faker;
+    private Generator$faker;
 
-    /** @var MediaFactory */
-    private $mediaFactory;
-
-    /** @var FileLocations */
-    private $fileLocations;
-
-    public function __construct(FileLocations $fileLocations, MediaFactory $mediaFactory)
+    public function __construct(private readonly FileLocations $fileLocations, private readonly MediaFactory $mediaFactory)
     {
         $this->faker = Factory::create();
-        $this->mediaFactory = $mediaFactory;
-        $this->fileLocations = $fileLocations;
     }
 
     public static function getGroups(): array
@@ -44,12 +35,12 @@ class ImagesFixtures extends BaseFixture implements FixtureGroupInterface
 
     private function loadImages(ObjectManager $manager): void
     {
-        $path = $this->fileLocations->get('files')->getBasepath();
+        $path = $this->fileLocations->get('files')->getBasePath();
 
         $index = $this->getImagesIndex($path);
 
         foreach ($index as $file) {
-            $media = $this->mediaFactory->createOrUpdateMedia($file, 'files', $this->faker->sentence(6, true));
+            $media = $this->mediaFactory->createOrUpdateMedia($file, 'files', $this->faker->sentence());
             $media->setAuthor($this->getRandomReference('user'))
                 ->setDescription($this->faker->paragraphs(3, true))
                 ->setCopyright('© Unsplash');

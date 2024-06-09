@@ -15,24 +15,22 @@ use Bolt\Repository\FieldRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Tightenco\Collect\Support\Collection;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class SetField extends Field implements Excerptable, FieldInterface, FieldParentInterface, ListFieldInterface, RawPersistable, \Iterator
 {
     use FieldParentTrait;
     use IterableFieldTrait;
 
-    public const TYPE = 'set';
+    public const string TYPE = 'set';
 
     public function getValue(): ?array
     {
         return $this->fields;
     }
 
-    public function setValue($fields): Field
+    public function setValue($value): Field
     {
-        if (! is_iterable($fields)) {
+        if (! is_iterable($value)) {
             return $this;
         }
 
@@ -41,7 +39,7 @@ class SetField extends Field implements Excerptable, FieldInterface, FieldParent
         $value = [];
 
         /** @var Field $field */
-        foreach ($fields as $field) {
+        foreach ($value as $field) {
             // todo: This should be able to handle an array of fields
             // in key-value format, not just Field.php types.
             $field->setParent($this);
@@ -70,7 +68,7 @@ class SetField extends Field implements Excerptable, FieldInterface, FieldParent
         return parent::setContent($content);
     }
 
-    public function getApiValue()
+    public function getApiValue(): array
     {
         $result = [];
 

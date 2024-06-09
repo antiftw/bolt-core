@@ -12,17 +12,11 @@ use Twig\TwigFunction;
 
 class FrontendMenuExtension extends AbstractExtension
 {
-    /** @var FrontendMenuBuilderInterface */
-    private $menuBuilder;
 
-    /** @var RequestStack */
-    private $requestStack;
-
-    public function __construct(FrontendMenuBuilderInterface $menuBuilder, RequestStack $requestStack)
-    {
-        $this->menuBuilder = $menuBuilder;
-        $this->requestStack = $requestStack;
-    }
+    public function __construct(
+        private readonly FrontendMenuBuilderInterface $menuBuilder,
+        private readonly RequestStack $requestStack
+    ) {}
 
     /**
      * {@inheritdoc}

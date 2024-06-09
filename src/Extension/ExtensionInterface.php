@@ -8,7 +8,7 @@ use Composer\Package\CompletePackageInterface;
 
 interface ExtensionInterface
 {
-    public const CONTAINER_TAG = 'bolt.extension';
+    public const string CONTAINER_TAG = 'bolt.extension';
 
     public function getName(): string;
 

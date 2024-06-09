@@ -15,41 +15,23 @@ use Twig\Environment;
 
 class LocaleHelper
 {
-    /** @var Collection */
-    private $localeCodes;
+    private Collection $localeCodes;
+    private Collection $flagCodes;
+    private Collection $codetoCountry;
+    private Collection $currentLocale;
 
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
-
-    /** @var Collection */
-    private $flagCodes;
-
-    /** @var Config */
-    private $config;
-
-    /** @var Collection */
-    private $codetoCountry;
-
-    /** @var ContentRepository */
-    private $contentRepository;
-
-    /** @var string */
-    private $defaultLocale;
-
-    /** @var Collection */
-    private $currentLocale;
-
-    public function __construct(string $locales, ContentRepository $contentRepository, UrlGeneratorInterface $urlGenerator, Config $config, string $defaultLocale)
-    {
+    public function __construct(
+        string $locales,
+        private readonly ContentRepository $contentRepository,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly Config $config,
+        private readonly string $defaultLocale
+    ) {
         $this->localeCodes = new Collection(explode('|', $locales));
-        $this->urlGenerator = $urlGenerator;
-        $this->defaultLocale = $defaultLocale;
+
 
         $this->flagCodes = $this->getFlagCodes();
         $this->codetoCountry = $this->getCodetoCountry();
-        $this->config = $config;
-
-        $this->contentRepository = $contentRepository;
     }
 
     public function getCurrentLocale(Environment $twig): ?Collection
@@ -83,7 +65,7 @@ class LocaleHelper
         /** @var Request $request */
         $request = $globals['app']->getRequest();
 
-        // In case we're on the CLI, the request is undefined so we create one on the fly
+        // In case we're on the CLI, the request is undefined so, we create one on the fly
         if (! $request instanceof Request) {
             $request = Request::createFromGlobals();
         }
@@ -159,10 +141,7 @@ class LocaleHelper
         return $this->urlGenerator->generate($route, $routeParams);
     }
 
-    /**
-     * @param string|Collection $localeCode
-     */
-    public function localeInfo($localeCode): Collection
+    public function localeInfo(Collection|string $localeCode): Collection
     {
         if ($localeCode instanceof Collection) {
             $localeCode = $localeCode->get('code');

@@ -14,36 +14,15 @@ use Bolt\Storage\Query;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Security\Core\Security;
 
-class ContentFactory
+readonly class ContentFactory
 {
-    /** @var ContentFillListener */
-    private $contentFillListener;
-
-    /** @var Security */
-    private $security;
-
-    /** @var Query */
-    private $query;
-
-    /** @var Config */
-    private $config;
-
-    /** @var EntityManagerInterface */
-    private $em;
-
     public function __construct(
-        ContentFillListener $contentFillListener,
-        Security $security,
-        Query $query,
-        Config $config,
-        EntityManagerInterface $em)
-    {
-        $this->contentFillListener = $contentFillListener;
-        $this->security = $security;
-        $this->query = $query;
-        $this->config = $config;
-        $this->em = $em;
-    }
+        private ContentFillListener $contentFillListener,
+        private Security $security,
+        private Query $query,
+        private Config $config,
+        private EntityManagerInterface $em
+    ) {}
 
     public static function createStatic(ContentType $contentType): Content
     {
@@ -94,7 +73,7 @@ class ContentFactory
     /**
      * @param Content|Content[] $content
      */
-    public function save($content): void
+    public function save(Content|array $content): void
     {
         if ($content instanceof Content) {
             $this->em->persist($content);

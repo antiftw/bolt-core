@@ -15,24 +15,18 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
-/**
- * @Security("is_granted('fetch_embed_data')")
- */
+#[Security('is_granted("fetch_embed_data")')]
 class EmbedController implements AsyncZoneInterface
 {
     use CsrfTrait;
-
-    /** @var Request */
-    private $request;
+    private Request $request;
 
     public function __construct(RequestStack $requestStack)
     {
         $this->request = $requestStack->getCurrentRequest();
     }
 
-    /**
-     * @Route("/embed", name="bolt_async_embed", methods={"POST"})
-     */
+    #[Route('/embed', name: 'bolt_async_embed', methods: ['POST'])]
     public function fetchEmbed(): JsonResponse
     {
         try {
@@ -55,7 +49,7 @@ class EmbedController implements AsyncZoneInterface
             if ($oembed->getProviderName() === 'YouTube') {
                 $html = $oembed->getCode();
 
-                if (! preg_match('/title=([^\s]+)/', $html)) {
+                if (! preg_match('/title=(\S+)/', $html)) {
                     $response['html'] = preg_replace('/>/', sprintf(' title="%s">', $oembed->getTitle()), $html, 1);
                 }
             }

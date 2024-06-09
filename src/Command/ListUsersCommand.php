@@ -34,22 +34,12 @@ class ListUsersCommand extends Command
     /** @var string */
     protected static $defaultName = 'bolt:list-users';
 
-    /** @var MailerInterface */
-    private $mailer;
-
-    /** @var string */
-    private $emailSender;
-
-    /** @var UserRepository */
-    private $users;
-
-    public function __construct(MailerInterface $mailer, $emailSender, UserRepository $users)
-    {
+    public function __construct(
+        private readonly MailerInterface $mailer,
+        private readonly string $emailSender,
+        private readonly UserRepository $users
+    ){
         parent::__construct();
-
-        $this->mailer = $mailer;
-        $this->emailSender = $emailSender;
-        $this->users = $users;
     }
 
     /**
@@ -93,7 +83,7 @@ HELP
         // Use ->findBy() instead of ->findAll() to allow result sorting and limiting
         $allUsers = $this->users->findBy([], ['username' => 'ASC'], $maxResults);
 
-        // Doctrine query returns an array of objects and we need an array of plain arrays
+        // Doctrine query returns an array of objects, and we need an array of plain arrays
         $usersAsPlainArrays = array_map(function (User $user) {
             return [
                 $user->getId(),

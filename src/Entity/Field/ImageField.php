@@ -15,16 +15,14 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Asset\PathPackage;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class ImageField extends Field implements FieldInterface, MediaAwareInterface, Countable, RawPersistable
 {
     use FileExtrasTrait;
 
-    public const TYPE = 'image';
+    public const string TYPE = 'image';
 
-    private function getFieldBase()
+    private function getFieldBase(): array
     {
         return [
             'filename' => '',

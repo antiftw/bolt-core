@@ -12,33 +12,23 @@ use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Routing\Annotation\Route;
 
 class ImageController
 {
-    /** @var Config */
-    private $config;
+    private Server $server;
+    private array $parameters = [];
+    private Request $request;
 
-    /** @var Server */
-    private $server;
-
-    /** @var array */
-    private $parameters = [];
-
-    /** @var Request */
-    private $request;
-
-    public function __construct(Config $config, RequestStack $requestStack)
+    public function __construct(private readonly Config $config, RequestStack $requestStack)
     {
-        $this->config = $config;
         $this->request = $requestStack->getCurrentRequest();
     }
 
-    /**
-     * @Route("/thumbs/{paramString}/{filename}", methods={"GET"}, name="thumbnail", requirements={"filename"=".+"})
-     */
-    public function thumbnail(string $paramString, string $filename)
+    #[Route('/thumbs/{paramString}/{filename}',
+        name: 'thumbnail', requirements: ['filename' => '.+'], methods: ['GET']
+    )]
+    public function thumbnail(string $paramString, string $filename): Response
     {
         if (! $this->isImage($filename)) {
             return $this->sendErrorImage();
@@ -97,7 +87,7 @@ class ImageController
 
     private function buildImage(string $filename): string
     {
-        // In case we're trying to "thumbnail" an svg, just return the whole thing.
+        // In case we're trying to "thumbnail" a svg, just return the whole thing.
         if ($this->isSvg($filename)) {
             $filepath = sprintf('%s%s%s', $this->getPath(), DIRECTORY_SEPARATOR, $filename);
 
@@ -123,7 +113,7 @@ class ImageController
             return $this->sendErrorImage();
         }
 
-        // In case we're trying to "thumbnail" an svg, just return the whole thing.
+        // In case we're trying to "thumbnail" a svg, just return the whole thing.
         if ($this->isSvg($filename)) {
             $response = new Response(file_get_contents($filepath));
             $response->headers->set('Content-Type', 'image/svg+xml');
@@ -145,7 +135,7 @@ class ImageController
         $this->parameters = [
             'w' => (isset($raw[0]) && is_numeric($raw[0])) ? (int) $raw[0] : 400,
             'h' => (isset($raw[1]) && is_numeric($raw[1])) ? (int) $raw[1] : 300,
-            'fit' => isset($raw[2]) ? $raw[2] : $this->config->get('general/thumbnails/default_cropping', 'default'),
+            'fit' => $raw[2] ?? $this->config->get('general/thumbnails/default_cropping', 'default'),
             'location' => 'files',
             'q' => (!empty($raw[2]) && 0 <= $raw[2] && $raw[2] <= 100) ? (int) $raw[2] : 80
         ];
@@ -154,10 +144,10 @@ class ImageController
             $this->parameters['fit'] = $this->parseFit($raw[3]);
             $this->parameters['location'] = $raw[4];
         } elseif (isset($raw[3])) {
-            $posible_fit = $this->parseFit($raw[3]);
+            $possibleFit = $this->parseFit($raw[3]);
 
-            if ($this->testFit($posible_fit)) {
-                $this->parameters['fit'] = $posible_fit;
+            if ($this->testFit($possibleFit)) {
+                $this->parameters['fit'] = $possibleFit;
             } else {
                 $this->parameters['location'] = $raw[3];
             }
@@ -188,31 +178,19 @@ class ImageController
 
     public function parseFit(string $fit): string
     {
-        switch ($fit) {
-            case 'n':
-            case 'contain':
-            case 'default':
-                return 'contain';
-            case 'm':
-            case 'max':
-                return 'max';
-            case 'f':
-            case 'fill':
-                return 'fill';
-            case 's':
-            case 'stretch':
-                return 'stretch';
-            case 'c':
-            case 'crop':
-                return 'crop';
-            default:
-                return $fit;
-        }
+        return match ($fit) {
+            'n', 'contain', 'default' => 'contain',
+            'm', 'max' => 'max',
+            'f', 'fill' => 'fill',
+            's', 'stretch' => 'stretch',
+            'c', 'crop' => 'crop',
+            default => $fit,
+        };
     }
 
     public function sendErrorImage(): Response
     {
-        $image404Path = dirname(dirname(__DIR__)) . '/assets/static/images/404-image.png';
+        $image404Path = dirname(__DIR__, 2) . '/assets/static/images/404-image.png';
         $response = new Response(file_get_contents($image404Path));
         $response->headers->set('Content-Type', 'image/png');
 

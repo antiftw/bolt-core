@@ -9,10 +9,10 @@ use Bolt\Widget\Injector\Target;
 
 class MaintenanceModeWidget extends BaseWidget implements TwigAwareInterface
 {
-    protected $name = 'Maintenance Mode';
-    protected $target = Target::START_OF_BODY;
-    protected $zone = RequestZone::FRONTEND;
-    protected $priority = 300;
+    protected ?string $name = 'Maintenance Mode';
+    protected string $target = Target::START_OF_BODY;
+    protected ?string $zone = RequestZone::FRONTEND;
+    protected ?int $priority = 300;
 
     protected function run(array $params = []): ?string
     {

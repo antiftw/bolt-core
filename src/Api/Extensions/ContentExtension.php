@@ -17,16 +17,10 @@ use Tightenco\Collect\Support\Collection;
 
 final class ContentExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
-    /** @var Config */
-    private $config;
+    private Collection $viewlessContentTypes;
 
-    /** @var Collection */
-    private $viewlessContentTypes;
-
-    public function __construct(Config $config)
+    public function __construct(private readonly Config $config)
     {
-        $this->config = $config;
-
         $this->viewlessContentTypes = $this->config->get('contenttypes')->filter(function (Collection $ct) {
             return $ct->get('viewless', false);
         })->map(function (Collection $ct) {

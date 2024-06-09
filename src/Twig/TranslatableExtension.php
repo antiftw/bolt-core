@@ -31,7 +31,7 @@ class TranslatableExtension extends AbstractExtension
         $translations = $entity->getTranslations()->toArray();
 
         if ($locale) {
-            return $translations[$locale] ?? null;
+            return $translations[$locale] ?? [];
         }
 
         return $translations;

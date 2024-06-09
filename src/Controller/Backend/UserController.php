@@ -6,7 +6,6 @@ namespace Bolt\Controller\Backend;
 
 use Bolt\Controller\TwigAwareController;
 use Bolt\Repository\UserRepository;
-use Bolt\Storage\Query;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -15,25 +14,16 @@ use Symfony\Component\Routing\Annotation\Route;
 
 /**
  * Display the list of users, along with buttons to change them.
- *
- * @Security("is_granted('user:list')")
  */
+#[Security('is_granted("user:list")')]
 class UserController extends TwigAwareController implements BackendZoneInterface
 {
-    /** @var UserRepository */
-    private $users;
+    private const int PAGE_SIZE = 20;
 
-    private const PAGESIZE = 20;
+    public function __construct(private readonly UserRepository $users){}
 
-    public function __construct(UserRepository $users)
-    {
-        $this->users = $users;
-    }
-
-    /**
-     * @Route("/users", name="bolt_users")
-     */
-    public function users(Query $query): Response
+    #[Route('/users', name: 'bolt_users')]
+    public function users(): Response
     {
         $order = 'username';
         if ($this->request->get('sortBy')) {
@@ -48,7 +38,7 @@ class UserController extends TwigAwareController implements BackendZoneInterface
         $users = new ArrayAdapter($this->users->findUsers($like, $order));
         $currentPage = (int) $this->getFromRequest('page', '1');
         $users = new Pagerfanta($users);
-        $users->setMaxPerPage(self::PAGESIZE)
+        $users->setMaxPerPage(self::PAGE_SIZE)
             ->setCurrentPage($currentPage);
 
         $twigVars = [

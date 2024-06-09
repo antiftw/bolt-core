@@ -9,13 +9,11 @@ use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 use Twig\Markup;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class EmbedField extends Field implements FieldInterface
 {
-    public const TYPE = 'embed';
-    private $encoding = 'UTF-8';
+    public const string TYPE = 'embed';
+    private string $encoding = 'UTF-8';
 
     public function getValue(): ?array
     {

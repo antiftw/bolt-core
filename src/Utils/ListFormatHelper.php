@@ -2,7 +2,6 @@
 
 namespace Bolt\Utils;
 
-use Bolt\Configuration\Config;
 use Bolt\Configuration\Content\ContentType;
 use Bolt\Repository\ContentRepository;
 use Doctrine\DBAL\Connection;
@@ -11,32 +10,17 @@ use Tightenco\Collect\Support\Collection;
 
 class ListFormatHelper
 {
-    /** @var Connection */
-    private $connection;
-
-    /** @var string */
-    private $prefix;
-
-    /** @var ContentRepository */
-    private $contentRepository;
-
-    /** @var EntityManagerInterface */
-    private $em;
-
-    /** @var string */
-    private $backendUrl = '/bolt';
+    private string $prefix;
+    private string $backendUrl;
 
     public function __construct(
-        Connection $connection,
-        ContentRepository $contentRepository,
-        EntityManagerInterface $em,
+        private readonly Connection $connection,
+        private readonly ContentRepository $contentRepository,
+        private readonly EntityManagerInterface $em,
         string $tablePrefix = 'bolt_',
         string $backendUrl = 'bolt')
     {
-        $this->connection = $connection;
         $this->prefix = $tablePrefix;
-        $this->contentRepository = $contentRepository;
-        $this->em = $em;
         $this->backendUrl = preg_replace('/[^\pL\d,]+/u', '', $backendUrl);
     }
 
@@ -159,7 +143,7 @@ class ListFormatHelper
         return $options;
     }
 
-    public function fixOrder(string $order)
+    public function fixOrder(string $order): string
     {
         if (mb_strpos($order, '-') === 0) {
             $direction = 'DESC';
@@ -197,8 +181,6 @@ class ListFormatHelper
     private function split($contenttypes): string
     {
         $parts = explode(',', preg_replace('/^\((.*)\)$/', '$1', $contenttypes));
-        $result = sprintf('"%s"', implode('", "', $parts));
-
-        return $result;
+        return sprintf('"%s"', implode('", "', $parts));
     }
 }

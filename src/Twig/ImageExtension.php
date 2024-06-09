@@ -16,38 +16,17 @@ use Twig\TwigFunction;
 
 class ImageExtension extends AbstractExtension
 {
-    /** @var MediaRepository */
-    private $mediaRepository;
-
-    /** @var Notifications */
-    private $notifications;
-
-    /** @var ThumbnailHelper */
-    private $thumbnailHelper;
-
-    /** @var ContentExtension */
-    private $contentExtension;
-
-    /** @var Packages */
-    private $assets;
-
-    /** @var string */
-    private $publicFolder;
+    private string $publicFolder;
 
     public function __construct(
-        MediaRepository $mediaRepository,
-        Notifications $notifications,
-        ThumbnailHelper $thumbnailHelper,
-        ContentExtension $contentExtension,
-        Packages $assets,
+        private readonly MediaRepository $mediaRepository,
+        private readonly Notifications $notifications,
+        private readonly ThumbnailHelper $thumbnailHelper,
+        private readonly ContentExtension $contentExtension,
+        private readonly Packages $assets,
         string $publicFolder,
         string $projectDir)
     {
-        $this->mediaRepository = $mediaRepository;
-        $this->notifications = $notifications;
-        $this->thumbnailHelper = $thumbnailHelper;
-        $this->contentExtension = $contentExtension;
-        $this->assets = $assets;
         $this->publicFolder = $projectDir . DIRECTORY_SEPARATOR . $publicFolder;
     }
 
@@ -97,10 +76,7 @@ class ImageExtension extends AbstractExtension
         return sprintf('<a href="%s" class="bolt-popup"><img src="%s" alt="%s"%s></a>', $link, $thumbnail, $alt, $class);
     }
 
-    /**
-     * @param ImageField|array|string $image
-     */
-    public function showImage($image, ?int $width = null, ?int $height = null, ?bool $lazy = null): string
+    public function showImage(ImageField|array|string $image, ?int $width = null, ?int $height = null, ?bool $lazy = null): string
     {
         $filename = $this->getFilename($image, true);
         $alt = $this->getAlt($image);
@@ -117,23 +93,17 @@ class ImageExtension extends AbstractExtension
             $lazy = 'loading="lazy"';
         }
 
-        return sprintf('<img src="%s" alt="%s" %s %s %s>', $path, $alt, (string) $width, (string) $height, $lazy);
+        return sprintf('<img src="%s" alt="%s" %s %s %s>', $path, $alt, $width, $height, $lazy);
     }
 
-    /**
-     * @param ImageField|array|string $image
-     */
-    public function thumbnail($image, ?int $width = null, ?int $height = null, ?string $location = null, ?string $path = null, ?string $fit = null, ?int $quality = null)
+    public function thumbnail(ImageField|array|string $image, ?int $width = null, ?int $height = null, ?string $location = null, ?string $path = null, ?string $fit = null, ?int $quality = null): string
     {
         $filename = $this->getFilename($image, true);
 
         return $this->thumbnailHelper->path($filename, $width, $height, $location, $path, $fit, $quality);
     }
 
-    /**
-     * @param ImageField|array $image
-     */
-    public function getMedia($image): ?Media
+    public function getMedia(ImageField|array $image): ?Media
     {
         if (is_array($image) && array_key_exists('media', $image)) {
             return $this->mediaRepository->findOneBy(['id' => $image['media']]);
@@ -149,10 +119,7 @@ class ImageExtension extends AbstractExtension
         );
     }
 
-    /**
-     * @param ImageField|Content|array|string $image
-     */
-    public function getSvg($image): ?string
+    public function getSvg(Content|ImageField|array|string $image): ?string
     {
         $image = $this->publicFolder . $this->assets->getUrl($this->getFilename($image, true), 'files');
         $extension = pathinfo($image, PATHINFO_EXTENSION);
@@ -168,10 +135,7 @@ class ImageExtension extends AbstractExtension
         return file_get_contents($image);
     }
 
-    /**
-     * @param ImageField|Content|array|string $image
-     */
-    private function getFilename($image, bool $relative = false): ?string
+    private function getFilename(Content|ImageField|array|string $image, bool $relative = false): ?string
     {
         $filename = null;
 
@@ -190,10 +154,7 @@ class ImageExtension extends AbstractExtension
         return $filename;
     }
 
-    /**
-     * @param ImageField|Content|array|string $image
-     */
-    private function getAlt($image): string
+    private function getAlt(Content|ImageField|array|string $image): string
     {
         $alt = '';
 

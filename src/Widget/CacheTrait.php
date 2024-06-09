@@ -10,11 +10,8 @@ use Symfony\Contracts\Cache\ItemInterface;
 
 trait CacheTrait
 {
-    /** @var CacheInterface */
-    private $cache;
-
-    /** @var string */
-    private $key;
+    private ?CacheInterface $cache;
+    private string $key;
 
     public function setCache(CacheInterface $cache): void
     {
@@ -46,7 +43,7 @@ trait CacheTrait
         return $result;
     }
 
-    private function createKey()
+    private function createKey(): string
     {
         return sprintf('%s-%s-%s', $this->getSlug(), $this->getZone(), $this->getCacheDuration());
     }

@@ -12,20 +12,11 @@ use Knp\DoctrineBehaviors\Contract\Entity\TranslationInterface;
 
 class TranslationsManager
 {
-    /** @var Collection */
-    private $collections;
+    private array $translations;
 
-    /** @var array */
-    private $translations = [];
-
-    /** @var array */
-    private $keys = [];
-
-    public function __construct(Collection $collections, array $keys)
+    public function __construct(private readonly Collection $collections, private readonly array $keys)
     {
-        $this->collections = $collections;
         $this->translations = $this->populateTranslations();
-        $this->keys = $keys;
     }
 
     public function applyTranslations(Field $field, string $collectionName, $orderId): void
@@ -69,7 +60,7 @@ class TranslationsManager
     private function getTranslations(Field $field, string $collectionName, $orderId): Collection
     {
         if (! $this->hasTranslations($field, $collectionName, $orderId)) {
-            throw new \InvalidArgumentException(sprintf("'%s'does not have translations", $field->getName()));
+            throw new \InvalidArgumentException(sprintf("'%s' does not have translations", $field->getName()));
         }
 
         if ($field->hasParent() && $field->getParent()->getName() !== $collectionName) {
@@ -80,7 +71,7 @@ class TranslationsManager
 
         $translations = $this->translations[$key];
 
-        //do not return the translation for the current locale, so as to not override the newly submitted value
+        //do not return the translation for the current locale, to not override the newly submitted value
         return $translations->filter(function (TranslationInterface $translation) use ($field) {
             return $translation->getLocale() !== $field->getLocale();
         });

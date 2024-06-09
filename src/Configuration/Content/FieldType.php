@@ -8,10 +8,7 @@ use Tightenco\Collect\Support\Collection;
 
 class FieldType extends Collection
 {
-    /**
-     * @param array|Collection $items
-     */
-    public function __construct($items, ?string $slug = null)
+    public function __construct(array|Collection $items, ?string $slug = null)
     {
         if ($slug) {
             $items['slug'] = $slug;

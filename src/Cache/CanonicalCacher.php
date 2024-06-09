@@ -8,7 +8,7 @@ class CanonicalCacher extends Canonical implements CachingInterface
 {
     use CachingTrait;
 
-    public const CACHE_CONFIG_KEY = 'canonical';
+    public const string CACHE_CONFIG_KEY = 'canonical';
 
     public function generateLink(?string $route, ?array $params, $canonical = false): ?string
     {

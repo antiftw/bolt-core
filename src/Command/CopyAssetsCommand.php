@@ -14,25 +14,18 @@ use Symfony\Component\Finder\Finder;
 
 class CopyAssetsCommand extends Command
 {
-    /** @var string */
     protected static $defaultName = 'bolt:copy-assets';
+    private string $publicDirectory;
 
-    /** @var Filesystem */
-    private $filesystem;
+    public function __construct(
+        private readonly Config $config,
+        private readonly Filesystem $filesystem,
+        string $publicFolder,
+        string $projectDir,
 
-    /** @var string */
-    private $publicDirectory;
-
-    /** @var Config */
-    private $config;
-
-    public function __construct(Filesystem $filesystem, string $publicFolder, string $projectDir, Config $config)
-    {
+    ){
         parent::__construct();
-
-        $this->filesystem = $filesystem;
         $this->publicDirectory = $projectDir . '/' . $publicFolder;
-        $this->config = $config;
     }
 
     protected function configure(): void
@@ -49,14 +42,14 @@ class CopyAssetsCommand extends Command
         $publicDir = $this->getPublicDirectory();
 
         // Determine if we can use ../assets or not.
-        if (file_exists(dirname(dirname(dirname(__DIR__))) . '/assets')) {
-            $baseDir = dirname(dirname(dirname(__DIR__))) . '/assets';
+        if (file_exists(dirname(__DIR__, 3) . '/assets')) {
+            $baseDir = dirname(__DIR__, 3) . '/assets';
             $dirs = [
                 $baseDir . '/assets' => $publicDir . '/assets/',
                 // $baseDir . '/translations' => $projectDir . '/translations/',
             ];
         } else {
-            $baseDir = dirname(dirname(__DIR__));
+            $baseDir = dirname(__DIR__, 2);
             $dirs = [
                 $baseDir . '/public/assets' => $publicDir . '/assets/',
                 // $baseDir . '/translations' => $projectDir . '/translations/',

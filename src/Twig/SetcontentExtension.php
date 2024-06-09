@@ -15,13 +15,7 @@ use Twig\Extension\AbstractExtension;
  */
 class SetcontentExtension extends AbstractExtension
 {
-    /** @var Query */
-    private $queryEngine;
-
-    public function __construct(Query $queryEngine)
-    {
-        $this->queryEngine = $queryEngine;
-    }
+    public function __construct(private readonly Query $queryEngine) {}
 
     /**
      * {@inheritdoc}

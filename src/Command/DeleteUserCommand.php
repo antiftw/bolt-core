@@ -37,26 +37,14 @@ class DeleteUserCommand extends Command
 {
     /** @var string */
     protected static $defaultName = 'bolt:delete-user';
+    private SymfonyStyle $io;
 
-    /** @var SymfonyStyle */
-    private $io;
-
-    /** @var EntityManagerInterface */
-    private $entityManager;
-
-    /** @var ValidatorInterface */
-    private $validator;
-
-    /** @var UserRepository */
-    private $users;
-
-    public function __construct(EntityManagerInterface $em, ValidatorInterface $validator, UserRepository $users)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly ValidatorInterface $validator,
+        private readonly UserRepository $users
+    ) {
         parent::__construct();
-
-        $this->entityManager = $em;
-        $this->validator = $validator;
-        $this->users = $users;
     }
 
     /**
@@ -83,7 +71,7 @@ HELP
 
     protected function initialize(InputInterface $input, OutputInterface $output): void
     {
-        // SymfonyStyle is an optional feature that Symfony provides so you can
+        // SymfonyStyle is an optional feature that Symfony provides, so you can
         // apply a consistent look to the commands of your application.
         // See https://symfony.com/doc/current/console/style.html
         $this->io = new SymfonyStyle($input, $output);
@@ -132,8 +120,8 @@ HELP
         // See http://docs.doctrine-project.org/en/latest/reference/working-with-objects.html#removing-entities
         $userId = $user->getId();
 
-        $this->entityManager->remove($user);
-        $this->entityManager->flush();
+        $this->em->remove($user);
+        $this->em->flush();
 
         $this->io->success(sprintf('User "%s" (ID: %d, email: %s) was successfully deleted.', $user->getUsername(), $userId, $user->getEmail()));
 

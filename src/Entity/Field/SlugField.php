@@ -9,12 +9,10 @@ use Bolt\Entity\Field;
 use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class SlugField extends Field implements FieldInterface, ScalarCastable
 {
-    public const TYPE = 'slug';
+    public const string TYPE = 'slug';
 
     public function setValue($value): parent
     {

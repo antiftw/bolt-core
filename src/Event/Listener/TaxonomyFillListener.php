@@ -6,21 +6,15 @@ namespace Bolt\Event\Listener;
 
 use Bolt\Configuration\Config;
 use Bolt\Entity\Taxonomy;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\ORM\Event\PostLoadEventArgs;
 
-class TaxonomyFillListener
+readonly class TaxonomyFillListener
 {
-    /** @var Config */
-    private $config;
+    public function __construct(private Config $config) {}
 
-    public function __construct(Config $config)
+    public function postLoad(PostLoadEventArgs $args): void
     {
-        $this->config = $config;
-    }
-
-    public function postLoad(LifecycleEventArgs $args): void
-    {
-        $entity = $args->getEntity();
+        $entity = $args->getObject();
 
         if ($entity instanceof Taxonomy) {
             $this->fillTaxonomy($entity);

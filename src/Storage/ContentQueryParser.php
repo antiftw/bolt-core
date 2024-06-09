@@ -23,68 +23,31 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class ContentQueryParser
 {
-    /** @var ContentRepository */
-    protected $repo;
+    protected string$query;
+    protected array $params = [];
+    protected array $contentTypes = [];
+    protected string $operation;
+    protected string $identifier;
+    protected array $operations = ['search'];
+    protected array $directives = [];
+    protected array $handlers = [];
+    protected array $services = [];
+    protected ?QueryScopeInterface $scope;
 
-    /** @var string */
-    protected $query;
-
-    /** @var array */
-    protected $params = [];
-
-    /** @var array */
-    protected $contentTypes = [];
-
-    /** @var string */
-    protected $operation;
-
-    /** @var string */
-    protected $identifier;
-
-    /** @var array */
-    protected $operations = ['search'];
-
-    /** @var array */
-    protected $directives = [];
-
-    /** @var callable[] */
-    protected $handlers = [];
-
-    /** @var QueryInterface[] */
-    protected $services = [];
-
-    /** @var QueryScopeInterface */
-    protected $scope;
-
-    /** @var RequestStack */
-    private $requestStack;
-
-    /** @var Config */
-    private $config;
-
-    /** @var DirectiveHandler */
-    private $directiveHandler;
-
-    /**
-     * Constructor.
-     */
     public function __construct(
-        RequestStack $requestStack,
-        ContentRepository $repo,
-        Config $config,
-        DirectiveHandler $directiveHandler,
-        ?QueryInterface $queryHandler = null)
-    {
-        $this->repo = $repo;
-        $this->requestStack = $requestStack;
+        private readonly RequestStack $requestStack,
+        private readonly ContentRepository $repo,
+        private readonly Config $config,
+        private readonly DirectiveHandler $directiveHandler,
+        ?QueryInterface $queryHandler = null
+    ) {
 
         if ($queryHandler !== null) {
             $this->addService('select', $queryHandler);
         }
 
         $this->setupDefaults();
-        $this->config = $config;
-        $this->directiveHandler = $directiveHandler;
+
     }
 
     /**
@@ -98,10 +61,8 @@ class ContentQueryParser
 
     /**
      * Sets the input query.
-     *
-     * @param string $query
      */
-    public function setQuery($query): void
+    public function setQuery(string $query): void
     {
         $this->query = $query;
     }
@@ -116,10 +77,8 @@ class ContentQueryParser
 
     /**
      * Sets a single input parameter.
-     *
-     * @param string $param
      */
-    public function setParameter($param, $value): void
+    public function setParameter(string $param, string $value): void
     {
         $this->params[$param] = $value;
     }
@@ -179,10 +138,8 @@ class ContentQueryParser
             if (count($queryParts) && is_numeric($queryParts[0])) {
                 $this->params['limit'] = array_shift($queryParts);
             }
-            $this->identifier = implode(',', $queryParts);
-        } else {
-            $this->identifier = implode(',', $queryParts);
         }
+        $this->identifier = implode(',', $queryParts);
 
         if (! empty($this->identifier)) {
             $operation = 'namedselect';
@@ -192,7 +149,7 @@ class ContentQueryParser
     }
 
     /**
-     * Directives are all of the other parameters supported by Bolt that do not
+     * Directives are all the other parameters supported by Bolt that do not
      * relate to an actual filter query. Some examples include 'printquery', 'limit',
      * 'order' or 'returnsingle'.
      *
@@ -247,9 +204,7 @@ class ContentQueryParser
 
     public function runScopes(QueryInterface $query): void
     {
-        if ($this->scope !== null) {
-            $this->scope->onQueryExecute($query);
-        }
+        $this->scope?->onQueryExecute($query);
     }
 
     /**
@@ -304,10 +259,8 @@ class ContentQueryParser
 
     /**
      * Returns a directive from the parsed list.
-     *
-     * @param string|int|bool|null $key
      */
-    public function getDirective($key)
+    public function getDirective(bool|int|string|null $key)
     {
         if (array_key_exists($key, $this->directives)) {
             return $this->directives[$key];
@@ -318,10 +271,8 @@ class ContentQueryParser
 
     /**
      * Sets a directive for the named key.
-     *
-     * @param string|int|bool $value
      */
-    public function setDirective(string $key, $value): void
+    public function setDirective(string $key, string|int|bool $value): void
     {
         $this->directives[$key] = $value;
     }
@@ -388,7 +339,7 @@ class ContentQueryParser
      *
      * @return Pagerfanta|Content|null
      */
-    public function fetch()
+    public function fetch(): Pagerfanta|Content|null
     {
         $this->parse();
 

@@ -6,24 +6,18 @@ namespace Bolt\Doctrine;
 
 use Bolt\Common\Str;
 use Doctrine\DBAL\Connection;
-use Doctrine\DBAL\Driver\PDOConnection;
 use Doctrine\DBAL\Platforms\MariaDb1027Platform;
 use Doctrine\DBAL\Platforms\MySQL57Platform;
 use Doctrine\DBAL\Platforms\MySqlPlatform;
-use Doctrine\DBAL\Platforms\PostgreSQL92Platform;
+use Doctrine\DBAL\Platforms\PostgreSQL94Platform;
 use Doctrine\DBAL\Platforms\SqlitePlatform;
 
 class Version
 {
-    /** @var Connection */
-    private $connection;
+    private string $tablePrefix;
 
-    /** @var string */
-    private $tablePrefix;
-
-    public function __construct(Connection $connection, $tablePrefix = 'bolt')
+    public function __construct(private readonly Connection $connection, $tablePrefix = 'bolt')
     {
-        $this->connection = $connection;
         $tablePrefix = is_array($tablePrefix) ? $tablePrefix['default'] : $tablePrefix;
         $this->tablePrefix = Str::ensureEndsWith($tablePrefix, '_');
     }
@@ -124,7 +118,8 @@ class Version
         }
 
         // PostgreSQL supports JSON from v9.2 and above, later versions are implicitly included
-        if ($platform instanceof PostgreSQL92Platform) {
+        // 2024/05/31 - 9.2 is deprecated, 9.4 is the minimum supported version
+        if ($platform instanceof PostgreSQL94Platform) {
             return true;
         }
 

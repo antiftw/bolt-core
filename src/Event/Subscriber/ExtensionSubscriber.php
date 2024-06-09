@@ -8,26 +8,21 @@ use Bolt\Extension\ExtensionRegistry;
 use Bolt\Storage\Query;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Console\ConsoleEvents;
-use Symfony\Component\Console\Event\ConsoleCommandEvent;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpKernel\Event\ControllerEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
 class ExtensionSubscriber implements EventSubscriberInterface
 {
-    public const PRIORITY = 0;
+    public const int PRIORITY = 0;
+    private array $objects;
 
-    /** @var ExtensionRegistry */
-    private $extensionRegistry;
-
-    /** @var array */
-    private $objects = [];
-
-    public function __construct(ContainerInterface $container, ExtensionRegistry $extensionRegistry, EntityManagerInterface $objectManager, Query $query)
-    {
-        $this->extensionRegistry = $extensionRegistry;
-
+    public function __construct(
+        private readonly ExtensionRegistry $extensionRegistry,
+        ContainerInterface $container,
+        EntityManagerInterface $objectManager,
+        Query $query
+    ) {
         $this->objects = [
             'manager' => $objectManager,
             'container' => $container,
@@ -38,7 +33,7 @@ class ExtensionSubscriber implements EventSubscriberInterface
     /**
      * Kernel response listener callback.
      */
-    public function onKernelResponse(ControllerEvent $event): void
+    public function onKernelResponse(): void
     {
         $this->extensionRegistry->initializeAll($this->objects);
     }
@@ -46,7 +41,7 @@ class ExtensionSubscriber implements EventSubscriberInterface
     /**
      * Command response listener callback.
      */
-    public function onConsoleResponse(ConsoleCommandEvent $event): void
+    public function onConsoleResponse(): void
     {
         $this->extensionRegistry->initializeAll($this->objects, true);
     }

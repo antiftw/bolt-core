@@ -13,17 +13,11 @@ use Doctrine\Persistence\ObjectManager;
 
 class RelationsFixtures extends BaseFixture implements DependentFixtureInterface, FixtureGroupInterface
 {
-    /** @var Config */
-    private $config;
+    public const int AMOUNT = 15;
 
-    public const AMOUNT = 15;
+    public function __construct(private readonly Config $config) {}
 
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
-
-    public function getDependencies()
+    public function getDependencies(): array
     {
         return [
             UserFixtures::class,

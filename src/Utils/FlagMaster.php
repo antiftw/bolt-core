@@ -11,7 +11,7 @@ class FlagMaster
     /**
      * Converts string of (one) country code to emoji flag (string).
      * Makes correction for codes that have no corresponding flag.
-     * Most flags have 2-letter code, but some have more (eg England=gbeng,
+     * Most flags have 2-letter code, but some have more (e.g. England=gbeng,
      * Scotland=gbsct, Wales=gbwls, etc.).
      *
      * @param string $code (one or more 2-letter codes)
@@ -41,9 +41,9 @@ class FlagMaster
      *
      * @param string $code (2 or more letter code)
      *
-     * @throws \Exception
+     * @throws Exception
      */
-    private static function code2unicode($code): string
+    private static function code2unicode(string $code): string
     {
         $arr = mb_str_split($code);
         $str = '';
@@ -61,7 +61,7 @@ class FlagMaster
      *
      * @throws \Exception
      */
-    private static function enclosedUnicode($char): string
+    private static function enclosedUnicode(string $char): string
     {
         $arr = [
             'a' => '1F1E6',

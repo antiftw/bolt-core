@@ -29,35 +29,26 @@ class ContentVoter extends Voter
 #                     permission can indirectly enable users more permissions
 #                     in ways that may not be immediately obvious.
      */
-    public const CONTENT_EDIT = 'edit';
-    public const CONTENT_CREATE = 'create';
-    public const CONTENT_CHANGE_STATUS = 'change-status';
-    public const CONTENT_DELETE = 'delete';
-    public const CONTENT_CHANGE_OWNERSHIP = 'change-ownership';
-    public const CONTENT_VIEW = 'view';
+    public const string CONTENT_EDIT = 'edit';
+    public const string CONTENT_CREATE = 'create';
+    public const string CONTENT_CHANGE_STATUS = 'change-status';
+    public const string CONTENT_DELETE = 'delete';
+    public const string CONTENT_CHANGE_OWNERSHIP = 'change-ownership';
+    public const string CONTENT_VIEW = 'view';
     // used to determine of user can view an entry or see the listing/menu for it
     // this permission is not to be specified in the config, it is only used internally
-    public const CONTENT_MENU_LISTING = 'menu_listing';
+    public const string CONTENT_MENU_LISTING = 'menu_listing';
 
-    /** @var Security */
-    private $security;
+    private ?Collection $contenttypeBasePermissions;
+    private ?Collection $contenttypeDefaultPermissions;
+    private ?Collection $contenttypePermissions;
 
-    /** @var Collection|null */
-    private $contenttypeBasePermissions;
-
-    /** @var Collection|null */
-    private $contenttypeDefaultPermissions;
-
-    /** @var Collection|null */
-    private $contenttypePermissions;
-
-    public function __construct(Security $security, Config $config)
+    public function __construct(private readonly Security $security, Config $config)
     {
-        $this->security = $security;
 
         $this->contenttypeBasePermissions = $config->get('permissions/contenttype-base', collect([]));
         $this->contenttypeDefaultPermissions = $config->get('permissions/contenttype-default', collect([]));
-        $this->contenttypePermissions = $config->get('permissions/contenttypes', null);
+        $this->contenttypePermissions = $config->get('permissions/contenttypes');
 
         if (! ($this->contenttypeBasePermissions instanceof Collection)) {
             throw new \DomainException('No suitable contenttype-base permissions config found');
@@ -111,7 +102,7 @@ class ContentVoter extends Voter
 
         // first check if the user has a 'base' permission set for this content(type)
         $allRoles = $this->contenttypeBasePermissions->get($attribute);
-        if ($allRoles && $allRoles instanceof Collection) {
+        if ($allRoles instanceof Collection) {
             // check if user is granted any of the specified attributes/roles
             foreach ($allRoles as $role) {
                 if ($this->security->isGranted($role, $subject)) {
@@ -122,11 +113,9 @@ class ContentVoter extends Voter
 
         $contentTypeName = null;
         if ($subject instanceof Content) {
-            /** @var Content $content */
             $content = $subject;
             $contentTypeName = $content->getContentType();
         } elseif ($subject instanceof ContentType) {
-            /** @var ContentType $contentType */
             $contentType = $subject;
             $contentTypeName = $contentType->getSlug();
         } else {

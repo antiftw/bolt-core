@@ -6,6 +6,7 @@ namespace Bolt\Entity;
 
 use Bolt\Common\Json;
 use Bolt\Enum\UserStatus;
+use Bolt\Repository\UserRepository;
 use Cocur\Slugify\Slugify;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,119 +16,82 @@ use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Validator\Constraints as Assert;
 
-/**
- * @ORM\Entity(repositoryClass="Bolt\Repository\UserRepository")
- * @UniqueEntity("email", message="user.duplicate_email", groups={"add_user", "edit_user", "edit_user_without_pw"})
- * @UniqueEntity("username", message="user.duplicate_username", groups={"add_user", "edit_user", "edit_user_without_pw"})
- */
+#[ORM\Entity(repositoryClass: UserRepository::class)]
+#[UniqueEntity('email', message: 'user.duplicate_email', groups: ['add_user', 'edit_user', 'edit_user_without_pw'])]
+#[UniqueEntity('username', message: 'user.duplicate_username', groups: ['add_user', 'edit_user', 'edit_user_without_pw'])]
 class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInterface
 {
-    /**
-     * @var int
-     *
-     * @ORM\Id
-     * @ORM\GeneratedValue
-     * @ORM\Column(type="integer")
-     * @Groups("get_user")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups('get_user')]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string")
-     * @Assert\NotBlank(normalizer="trim", message="user.not_valid_display_name", groups={"add_user", "edit_user", "edit_user_without_pw"})
-     * @Assert\Length(min=2, max=50, minMessage="user.not_valid_display_name", groups={"add_user", "edit_user", "edit_user_without_pw"})
-     * @Groups({"get_content", "get_user"})
-     */
-    private $displayName;
+    #[ORM\Column(type: 'string')]
+    #[Assert\NotBlank(message: 'user.not_valid_display_name', normalizer: 'trim', groups: ['add_user', 'edit_user', 'edit_user_without_pw'])]
+    #[Assert\Length(min: 2, max: 50, minMessage: 'user.not_valid_display_name', groups: ['add_user', 'edit_user', 'edit_user_without_pw'])]
+    #[Groups(['get_content', 'get_user'])]
+    private string $displayName;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", unique=true, length=191)
-     * @Assert\NotBlank(normalizer="trim", groups={"add_user"})
-     * @Assert\Length(min=2, max=50, groups={"add_user"})
-     * @Assert\Regex(pattern="/^[a-z0-9_]+$/", message="user.username_invalid_characters", groups={"add_user"})
-     * @Groups("get_user")
-     */
-    private $username;
+    #[ORM\Column(type: 'string', length: 191, unique: true)]
+    #[Assert\NotBlank(normalizer: 'trim', groups: ['add_user'])]
+    #[Assert\Length(min: 2, max: 50, groups: ['add_user'])]
+    #[Assert\Regex(pattern: '/^[a-z0-9_]+$/', message: 'user.username_invalid_characters', groups: ['add_user'])]
+    #[Groups('get_user')]
+    private string $username;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", unique=true, length=191)
-     * @Assert\NotBlank(normalizer="trim")
-     * @Assert\Email(message="user.not_valid_email", groups={"add_user", "edit_user", "edit_user_without_pw"})
-     * @Groups("get_user")
-     */
-    private $email;
+    #[ORM\Column(type: 'string', length: 191, unique: true)]
+    #[Assert\NotBlank(normalizer: 'trim')]
+    #[Assert\Email(message: 'user.not_valid_email', groups: ['add_user', 'edit_user', 'edit_user_without_pw'])]
+    #[Groups('get_user')]
+    private string $email;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=191)
-     */
-    private $password;
+    #[ORM\Column(type: 'string', length: 191)]
+    private string $password;
 
-    /**
-     * @var string|null
-     * @Assert\Length(min="6", minMessage="user.not_valid_password", groups={"add_user", "edit_user"})
-     */
-    private $plainPassword;
+    #[Assert\Length(min: 6, minMessage: 'user.not_valid_password', groups: ['add_user', 'edit_user'])]
+    private ?string $plainPassword;
 
-    /**
-     * @var array
-     *
-     * @ORM\Column(type="json")
-     * @Groups("get_user")
-     */
-    private $roles = [];
+    #[ORM\Column(type: 'json')]
+    #[Groups('get_user')]
+    private array $roles = [];
 
-    /**
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Groups("get_user")
-     */
-    private $lastseenAt;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Groups('get_user')]
+    private \DateTimeInterface $lastseenAt;
 
-    /** @ORM\Column(type="string", length=100, nullable=true) */
-    private $lastIp;
+    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    private string $lastIp;
 
-    /**
-     * @ORM\Column(type="string", length=191, nullable=true)
-     * @Groups("get_user")
-     */
-    private $locale;
+    #[ORM\Column(type: 'string', length: 191, nullable: true)]
+    #[Groups('get_user')]
+    private string $locale;
 
-    /** @ORM\Column(type="string", length=191, nullable=true) */
-    private $backendTheme;
+    #[ORM\Column(type: 'string', length: 191, nullable: true)]
+    private string $backendTheme;
 
-    /** @ORM\Column(type="string", length=30, options={"default":"enabled"}) */
-    private $status = UserStatus::ENABLED;
+    #[ORM\Column(type: 'string', length: 30, options: ['default' => 'enabled'])]
+    private string $status = UserStatus::ENABLED;
 
-    /** @ORM\OneToMany(
-     *     targetEntity="Bolt\Entity\UserAuthToken",
-     *     mappedBy="user",
-     *     indexBy="id",
-     *     fetch="EAGER",
-     *     orphanRemoval=true,
-     *     cascade={"persist", "remove"}
-     * )
-     * @var Collection|UserAuthToken[]
-     */
-    private $userAuthTokens;
+    #[ORM\OneToMany(
+        mappedBy: 'user',
+        targetEntity: UserAuthToken::class,
+        cascade: ['persist', 'remove'],
+        fetch: 'EAGER',
+        orphanRemoval: true,
+        indexBy: 'id'
+    )]
+    private Collection $userAuthTokens;
 
-    /** @ORM\Column(type="string", length=250, nullable=true) */
-    private $avatar;
+    #[ORM\Column(type: 'string', length: 250, nullable: true)]
+    private string $avatar;
 
-    /** @ORM\Column(type="string", length=1024, nullable=true) */
-    private $about;
+    #[ORM\Column(type: 'string', length: 1024, nullable: true)]
+    private string $about;
 
-    public function __construct()
-    {
-    }
-    
-    public function setId($id)
+    public function __construct() {}
+
+    public function setId($id): void
     {
         $this->id = $id;
     }
@@ -235,7 +199,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     {
         // See "Do you need to use a Salt?" at https://symfony.com/doc/current/cookbook/security/entity_provider.html
         // we're using bcrypt in security.yml to encode the password, so
-        // the salt value is built-in and you don't have to generate one
+        // the salt value is built-in, and you don't have to generate one
 
         return null;
     }
@@ -257,7 +221,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     {
         return serialize($this->__serialize());
     }
-    
+
     public function __serialize(): array
     {
         return [$this->id, $this->username, $this->password];
@@ -270,7 +234,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     {
         $this->__unserialize(unserialize($serialized, ['allowed_classes' => false]));
     }
-    
+
     public function __unserialize(array $data): void
     {
         // add $this->salt too if you don't use Bcrypt or Argon2i

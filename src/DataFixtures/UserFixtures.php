@@ -14,27 +14,15 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 
 class UserFixtures extends BaseFixture implements FixtureGroupInterface
 {
-    /** @var UserPasswordHasherInterface */
-    private $passwordHasher;
+    private bool $append = false;
+    private array $allUsers = [];
 
-    /** @var UserRepository */
-    private $users;
-
-    /** @var bool */
-    private $append = false;
-
-    /** @var array */
-    private $allUsers = [];
-
-    public function __construct(UserPasswordHasherInterface $passwordHasher, UserRepository $users)
+    public function __construct(private readonly UserPasswordHasherInterface $passwordHasher, private readonly UserRepository $users)
     {
-        $this->passwordHasher = $passwordHasher;
-
         // If ran with `--append` we append users, and use random passwords for them
         if ($this->getOption('--append')) {
             $this->append = true;
         }
-        $this->users = $users;
     }
 
     public function load(ObjectManager $manager): void
@@ -92,7 +80,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
             [
                 'displayname' => 'Admin',
                 'username' => 'admin',
-                'password' => $this->append ? Str::generatePassword(12) : 'admin%1',
+                'password' => $this->append ? Str::generatePassword() : 'admin%1',
                 'email' => 'admin@example.org',
                 'roles' => ['ROLE_DEVELOPER', 'ROLE_WEBSERVICE'],
                 'status' => UserStatus::ENABLED,
@@ -100,7 +88,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
             [
                 'displayname' => 'Crazy Steve',
                 'username' => 'steve',
-                'password' => Str::generatePassword(12),
+                'password' => Str::generatePassword(),
                 'email' => 'henkie@example.org',
                 'roles' => ['ROLE_EDITOR', 'ROLE_EXTRA_1', 'ROLE_EXTRA_2', 'ROLE_USER_FRONTEND_GROUP1'],
                 'status' => UserStatus::DISABLED,
@@ -108,7 +96,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
             [
                 'displayname' => 'Jane Doe',
                 'username' => 'jane_chief',
-                'password' => Str::generatePassword(12),
+                'password' => Str::generatePassword(),
                 'email' => 'jane_admin@example.org',
                 'roles' => ['ROLE_CHIEF_EDITOR'],
                 'status' => UserStatus::DISABLED,
@@ -116,7 +104,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
             [
                 'displayname' => 'Tom Doe',
                 'username' => 'tom_admin',
-                'password' => Str::generatePassword(12),
+                'password' => Str::generatePassword(),
                 'email' => 'tom_admin@example.org',
                 'roles' => ['ROLE_ADMIN'],
                 'status' => UserStatus::DISABLED,
@@ -124,7 +112,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
             [
                 'displayname' => 'John Doe',
                 'username' => 'john_editor',
-                'password' => Str::generatePassword(12),
+                'password' => Str::generatePassword(),
                 'email' => 'john_user@example.org',
                 'roles' => ['ROLE_EDITOR'],
                 'status' => UserStatus::DISABLED,
@@ -132,7 +120,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
             [
                 'displayname' => 'Eddie Enduser',
                 'username' => 'eddie',
-                'password' => Str::generatePassword(12),
+                'password' => Str::generatePassword(),
                 'email' => 'eddie@example.org',
                 'roles' => ['ROLE_USER'],
                 'status' => UserStatus::DISABLED,

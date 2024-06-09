@@ -274,7 +274,7 @@ class HtmlInjector
             return static::nowhere($injection, $rawHtml);
         }
 
-        return Str::replaceFirst($rawHtml, $match, $injection . $match, true);
+        return Str::replaceFirst($rawHtml, $match, $injection . $match);
     }
 
     public static function injectAfterTagStart(string $rawHtml, string $htmlTag, string $injection): string
@@ -284,7 +284,7 @@ class HtmlInjector
             return static::nowhere($injection, $rawHtml);
         }
 
-        return Str::replaceFirst($rawHtml, $match, $match . $injection, true);
+        return Str::replaceFirst($rawHtml, $match, $match . $injection);
     }
 
     public static function injectBeforeTagEnd(string $rawHtml, string $htmlTag, string $injection): string
@@ -294,7 +294,7 @@ class HtmlInjector
             return static::nowhere($injection, $rawHtml);
         }
 
-        return Str::replaceLast($rawHtml, $match, $injection . $match, true);
+        return Str::replaceLast($rawHtml, $match, $injection . $match);
     }
 
     public static function injectAfterTagEnd(string $rawHtml, string $htmlTag, string $injection): string
@@ -304,6 +304,6 @@ class HtmlInjector
             return static::nowhere($injection, $rawHtml);
         }
 
-        return Str::replaceLast($rawHtml, $match, $match . $injection, true);
+        return Str::replaceLast($rawHtml, $match, $match . $injection);
     }
 }

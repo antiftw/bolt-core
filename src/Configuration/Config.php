@@ -16,60 +16,31 @@ use Bolt\Configuration\Parser\ThemeParser;
 use Bolt\Controller\Backend\ClearCacheController;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
-use Symfony\Component\Yaml\Yaml;
 use Symfony\Contracts\Cache\CacheInterface;
-use Symfony\Contracts\Cache\ItemInterface;
 use Tightenco\Collect\Support\Collection;
-use Webimpress\SafeWriter\FileWriter;
 
 class Config
 {
-    public const CACHE_KEY = 'config_cache';
-    public const OPTIONS_CACHE_KEY = 'options_preparse';
+    public const string CACHE_KEY = 'config_cache';
+    public const string OPTIONS_CACHE_KEY = 'options_preparse';
 
     /** @var Collection */
-    protected $data;
+    protected Collection $data;
 
     /** @var PathResolver */
-    private $pathResolver;
+    private PathResolver $pathResolver;
 
-    /** @var Stopwatch */
-    private $stopwatch;
-
-    /** @var string */
-    private $publicFolder;
-
-    /** @var CacheInterface */
-    private $cache;
-
-    /** @var string */
-    private $projectDir;
-
-    /** @var string */
-    private $locales;
-
-    /** @var string */
-    private $defaultLocale;
-
-    /** @var ClearCacheController */
-    private $clearCacheController;
-
-    /** @var KernelInterface */
-    private $kernel;
-
-    public function __construct(string $locales, string $defaultLocale, Stopwatch $stopwatch, string $projectDir, CacheInterface $cache, string $publicFolder, ClearCacheController $clearCacheController, KernelInterface $kernel)
-    {
-        $this->locales = $locales;
-        $this->stopwatch = $stopwatch;
-        $this->cache = $cache;
-        $this->projectDir = $projectDir;
-        $this->publicFolder = $publicFolder;
-        $this->defaultLocale = $defaultLocale;
-        $this->clearCacheController = $clearCacheController;
-        $this->kernel = $kernel;
-
+    public function __construct(
+        private readonly string $locales,
+        private readonly string $defaultLocale,
+        private readonly Stopwatch $stopwatch,
+        private readonly string $projectDir,
+        private readonly CacheInterface $cache,
+        private readonly string $publicFolder,
+        private readonly ClearCacheController $clearCacheController,
+        private readonly KernelInterface $kernel
+    ) {
         $this->data = $this->getConfig();
-
         // @todo PathResolver shouldn't be part of Config. Refactor to separate class
         $this->pathResolver = new PathResolver($projectDir, $this->get('general/theme'), $this->publicFolder);
     }
@@ -117,7 +88,7 @@ class Config
         $taxonomy = new TaxonomyParser($this->projectDir);
         $config['taxonomies'] = $taxonomy->parse();
 
-        $contentTypes = new ContentTypesParser($this->projectDir, $config->get('general'), $this->defaultLocale, $this->locales);
+        $contentTypes = new ContentTypesParser($config->get('general'), $this->defaultLocale,$this->projectDir, $this->locales);
         $config['contenttypes'] = $contentTypes->parse();
 
         $menu = new MenuParser($this->projectDir);
@@ -189,7 +160,7 @@ class Config
      *
      * @param string|array|bool|int|Collection $default
      */
-    public function get(string $path, $default = null)
+    public function get(string $path, mixed $default = null)
     {
         $value = Arr::get($this->data, $path, $default);
 

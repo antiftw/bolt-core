@@ -17,8 +17,7 @@ use Doctrine\Persistence\ManagerRegistry;
  */
 class TaxonomyRepository extends ServiceEntityRepository
 {
-    /** @var Config */
-    private $config;
+    private Config$config;
 
     public function __construct(ManagerRegistry $registry, Config $config)
     {

@@ -18,23 +18,12 @@ use Tightenco\Collect\Support\Collection;
  */
 class SelectOptionsController extends AbstractController implements AsyncZoneInterface
 {
-    /** @var Config */
-    private $config;
+    public function __construct(
+        private readonly Config $config,
+        private readonly FieldExtension $fieldExtension
+    ){}
 
-    /** @var FieldExtension */
-    private $fieldExtension;
-
-    public function __construct(Config $config, FieldExtension $fieldExtension)
-    {
-        $this->config = $config;
-        $this->fieldExtension = $fieldExtension;
-    }
-
-    /**
-     * Based on Bolt\Twig\FieldExtension.
-     *
-     * @Route("/select-options", name="bolt_async_select_options", methods={"GET"})
-     */
+    #[Route('/select-options', name: 'bolt_async_select_options', methods: ['GET'])]
     public function handleSelectOptions(Request $request): JsonResponse
     {
         [ $contentTypeSlug, $format ] = explode('/', $request->get('values'));

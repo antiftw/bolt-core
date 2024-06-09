@@ -10,8 +10,7 @@ use Doctrine\ORM\Query\Lexer;
 
 class Rand extends FunctionNode
 {
-    /** @var SimpleArithmeticExpression */
-    private $expression = null;
+    private ?SimpleArithmeticExpression $expression = null;
 
     public function getSql(\Doctrine\ORM\Query\SqlWalker $sqlWalker): string
     {

@@ -22,35 +22,22 @@ class MediaFactory
 {
     use UserTrait;
 
-    /** @var MediaRepository */
-    private $mediaRepository;
+    private Reader $exif;
+    private Collection $allowedFileTypes;
 
-    /** @var Config */
-    private $config;
-
-    /** @var Reader */
-    private $exif;
-
-    /** @var Collection */
-    private $allowedFileTypes;
-
-    /** @var FileLocations */
-    private $fileLocations;
-
-    public function __construct(Config $config, FileLocations $fileLocations, MediaRepository $mediaRepository, TokenStorageInterface $tokenStorage)
-    {
-        $this->config = $config;
-        $this->mediaRepository = $mediaRepository;
-        $this->tokenStorage = $tokenStorage;
-
+    public function __construct(
+        private readonly Config $config,
+        private readonly FileLocations $fileLocations,
+        private readonly MediaRepository $mediaRepository,
+        protected TokenStorageInterface $tokenStorage
+    ) {
         $this->exif = Reader::factory(Reader::TYPE_NATIVE);
         $this->allowedFileTypes = $config->getMediaTypes()->merge($config->getFileTypes());
-        $this->fileLocations = $fileLocations;
     }
 
     public function createOrUpdateMedia(SplFileInfo $file, string $fileLocation, ?string $title = null): Media
     {
-        $path = Path::makeRelative($file->getPath() . '/', $this->fileLocations->get($fileLocation)->getBasepath());
+        $path = Path::makeRelative($file->getPath() . '/', $this->fileLocations->get($fileLocation)->getBasePath());
 
         $media = $this->mediaRepository->findOneBy([
             'location' => $fileLocation,
@@ -99,8 +86,6 @@ class MediaFactory
         if ($size !== false) {
             $media->setWidth($size[0])
                 ->setHeight($size[1]);
-
-            return;
         }
     }
 

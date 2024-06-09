@@ -17,32 +17,21 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
-use Symfony\Component\Security\Http\Authenticator\Passport\PassportInterface;
 
 class LoginFormAuthenticator extends AbstractAuthenticator implements AuthenticatorInterface
 {
-    /** @var UserRepository */
-    private $userRepository;
-
-    /** @var Security */
-    private $security;
-
-    /** @var RouterInterface */
-    private $router;
-
-    public function __construct(Security $security, UserRepository $userRepository, RouterInterface $router)
-    {
-        $this->userRepository = $userRepository;
-        $this->security = $security;
-        $this->router = $router;
-    }
+    public function __construct(
+        private readonly Security $security,
+        private readonly UserRepository $userRepository,
+        private readonly RouterInterface $router
+    ) {}
 
     public function supports(Request $request): ?bool
     {
         return $request->attributes->get('_route') === 'bolt_login' && $request->isMethod('POST');
     }
 
-    public function authenticate(Request $request): PassportInterface
+    public function authenticate(Request $request): Passport
     {
         /** @var array $login_form */
         $login_form = $request->request->get('login');

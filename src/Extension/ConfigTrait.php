@@ -11,8 +11,7 @@ use Tightenco\Collect\Support\Collection;
 
 trait ConfigTrait
 {
-    /** @var Collection */
-    private $config;
+    private ?Collection $config = null;
 
     /**
      * Returns the classname of the Extension
@@ -85,7 +84,7 @@ trait ConfigTrait
 
         return sprintf(
             '%s%s%s%s%s',
-            dirname(dirname($reflection->getFilename())),
+            dirname($reflection->getFilename(), 2),
             DIRECTORY_SEPARATOR,
             'config',
             DIRECTORY_SEPARATOR,

@@ -27,25 +27,16 @@ class FileEditController extends TwigAwareController implements BackendZoneInter
 {
     use CsrfTrait;
 
-    /** @var MediaRepository */
-    private $mediaRepository;
+    private Filesystem $filesystem;
 
-    /** @var EntityManagerInterface */
-    private $em;
-
-    /** @var Filesystem */
-    private $filesystem;
-
-    public function __construct(MediaRepository $mediaRepository, EntityManagerInterface $em)
-    {
-        $this->mediaRepository = $mediaRepository;
-        $this->em = $em;
+    public function __construct(
+        private readonly MediaRepository $mediaRepository,
+        private readonly EntityManagerInterface $em
+    ) {
         $this->filesystem = new Filesystem();
     }
 
-    /**
-     * @Route("/file-edit/{location}", name="bolt_file_edit", methods={"GET"})
-     */
+    #[Route('/file-edit/{location}', name: 'bolt_file_edit', methods: ['GET'])]
     public function edit(string $location): Response
     {
         $this->denyAccessUnlessGranted('managefiles:' . $location);
@@ -67,9 +58,7 @@ class FileEditController extends TwigAwareController implements BackendZoneInter
         return $this->render('@bolt/finder/editfile.html.twig', $context);
     }
 
-    /**
-     * @Route("/file-edit/{location}", name="bolt_file-edit_post", methods={"POST"}, requirements={"file"=".+"})
-     */
+    #[Route('/file-edit/{location}', name: 'bolt_file-edit_post', requirements: ['file' => '.+'], methods: ['POST'])]
     public function save(UrlGeneratorInterface $urlGenerator): Response
     {
         $this->validateCsrf('editfile');
@@ -209,6 +198,7 @@ class FileEditController extends TwigAwareController implements BackendZoneInter
 
     /**
      * @return string Returns the copy file path. E.g. 'files/foal.jpg' -> 'files/foal (1).jpg'
+     * @throws \Exception
      */
     private function getCopyFilepath(string $path): string
     {

@@ -13,8 +13,7 @@ use Tightenco\Collect\Support\Collection;
  */
 class DirectiveHandler
 {
-    /** @var Collection */
-    private $directives;
+    private Collection $directives;
 
     public function __construct(
         GetQueryDirective $getQueryDirective,

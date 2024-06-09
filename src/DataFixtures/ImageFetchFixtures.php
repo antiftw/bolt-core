@@ -15,21 +15,13 @@ use Symfony\Component\HttpClient\HttpClient;
 
 class ImageFetchFixtures extends BaseFixture implements FixtureGroupInterface
 {
-    private const URL = 'https://placeholder.boltcms.io/getfiles';
+    private const string URL = 'https://placeholder.boltcms.io/getfiles';
+    private const int MAX_AMOUNT = 50;
+    private array $curlOptions;
 
-    /** @var FileLocations */
-    private $fileLocations;
-
-    private const MAX_AMOUNT = 50;
-
-    /** @var array */
-    private $curlOptions;
-
-    public function __construct(FileLocations $fileLocations, Config $config)
+    public function __construct(private readonly FileLocations $fileLocations, Config $config)
     {
         $this->curlOptions = $config->get('general/curl_options')->all();
-
-        $this->fileLocations = $fileLocations;
     }
 
     public static function getGroups(): array
@@ -39,7 +31,7 @@ class ImageFetchFixtures extends BaseFixture implements FixtureGroupInterface
 
     public function load(ObjectManager $manager): void
     {
-        $path = $this->fileLocations->get('files')->getBasepath();
+        $path = $this->fileLocations->get('files')->getBasePath();
 
         // We only fetch more images, if we're currently under the MAX_AMOUNT
         if ($this->getImagesIndex($path)->count() <= self::MAX_AMOUNT) {
@@ -78,7 +70,7 @@ class ImageFetchFixtures extends BaseFixture implements FixtureGroupInterface
 
     private function getOutputPath(): string
     {
-        $outputPath = $this->fileLocations->get('files')->getBasepath() . '/stock/';
+        $outputPath = $this->fileLocations->get('files')->getBasePath() . '/stock/';
 
         if (! is_dir($outputPath)) {
             mkdir($outputPath);

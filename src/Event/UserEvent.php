@@ -9,21 +9,15 @@ use Tightenco\Collect\Support\Collection;
 
 class UserEvent
 {
-    public const ON_ADD = 'bolt.users_pre_add';
-    public const ON_EDIT = 'bolt.users_pre_edit';
-    public const ON_PRE_SAVE = 'bolt.users_post_save';
-    public const ON_POST_SAVE = 'bolt.users_post_save';
+    public const string ON_ADD = 'bolt.users_pre_add';
+    public const string ON_EDIT = 'bolt.users_pre_edit';
+    public const string ON_PRE_SAVE = 'bolt.users_post_save';
+    public const string ON_POST_SAVE = 'bolt.users_post_save';
 
-    /** @var User */
-    private $user;
+    private Collection $rolesOptions;
 
-    /** @var Collection */
-    private $rolesOptions;
-
-    public function __construct(User $user, ?Collection $roleOptions = null)
+    public function __construct(private readonly User $user, ?Collection $roleOptions = null)
     {
-        $this->user = $user;
-
         if (! $roleOptions) {
             $this->rolesOptions = collect([]);
         } else {

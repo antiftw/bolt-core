@@ -4,28 +4,25 @@ declare(strict_types=1);
 
 namespace Bolt\Entity;
 
+use Bolt\Repository\UserAuthTokenRepository;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity(repositoryClass="Bolt\Repository\UserAuthTokenRepository")
- */
+#[ORM\Entity(repositoryClass: UserAuthTokenRepository::class)]
 class UserAuthToken
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private int $id;
 
-    /** @ORM\ManyToOne(targetEntity="Bolt\Entity\User", inversedBy="userAuthTokens", cascade={"persist"}) */
-    private $user;
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'userAuthTokens')]
+    private User $user;
 
-    /** @ORM\Column(type="string", length=255) */
-    private $useragent;
+    #[ORM\Column(type: 'string', length: 255)]
+    private string $useragent;
 
-    /** @ORM\Column(type="datetime") */
-    private $validity;
+    #[ORM\Column(type: 'datetime')]
+    private \DateTimeInterface $validity;
 
     public function getId(): ?int
     {

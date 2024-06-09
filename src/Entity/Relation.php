@@ -7,62 +7,48 @@ namespace Bolt\Entity;
 use ApiPlatform\Core\Annotation\ApiFilter;
 use ApiPlatform\Core\Annotation\ApiResource;
 use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use Bolt\Repository\RelationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-
-/**
- * @ApiResource(
- *     normalizationContext={"groups"={"get_relation"}},
- *     collectionOperations={
- *          "get"={"security"="is_granted('api:get')"},
- *          "post"={"security"="is_granted('api:post')"}
- *     },
- *     itemOperations={
- *          "get"={"security"="is_granted('api:get')"},
- *          "put"={"security"="is_granted('api:post')"},
- *          "delete"={"security"="is_granted('api:delete')"}
- *     },
- *     graphql={
- *          "item_query"={"security"="is_granted('api:get')"},
- *          "collection_query"={"security"="is_granted('api:get')"},
- *          "create"={"security"="is_granted('api:post')"},
- *          "delete"={"security"="is_granted('api:delete')"}
- *     }
- * )
- * @ORM\Entity(repositoryClass="Bolt\Repository\RelationRepository")
- * @ORM\Table(indexes={
- * })
- * @ApiFilter(SearchFilter::class, strategy="partial")
- */
+#[ApiResource(
+    collectionOperations: [
+        "get" => ["security" => "is_granted('api:get')"],
+        "post" => ["security" => "is_granted('api:post')"]
+    ],
+    graphql: [
+        "item_query" => ["security" => "is_granted('api:get')"],
+        "collection_query" => ["security" => "is_granted('api:get')"],
+        "create" => ["security" => "is_granted('api:post')"],
+        "delete" => ["security" => "is_granted('api:delete')"]
+    ],
+    itemOperations: [
+        "get" => ["security" => "is_granted('api:get')"],
+        "put" => ["security" => "is_granted('api:post')"],
+        "delete" => ["security" => "is_granted('api:delete')"]
+    ],
+    normalizationContext: ["groups" => ["get_relation"]]
+)]
+#[ORM\Entity(repositoryClass: RelationRepository::class)]
+#[ApiFilter(SearchFilter::class, strategy: 'partial')]
 class Relation
 {
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Content", inversedBy="relationsFromThisContent", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-     *
-     * @var Content
-     * @Groups("get_relation")
-     */
-    private $fromContent;
+    #[ORM\ManyToOne(targetEntity: Content::class, fetch: "EAGER", inversedBy: "relationsFromThisContent")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[Groups("get_relation")]
+    private Content $fromContent;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Content", inversedBy="relationsToThisContent", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false, onDelete="CASCADE")
-     *
-     * @var Content
-     * @Groups("get_relation")
-     */
-    private $toContent;
+    #[ORM\ManyToOne(targetEntity: Content::class, fetch: "EAGER", inversedBy: "relationsToThisContent")]
+    #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
+    #[Groups("get_relation")]
+    private Content $toContent;
 
-    /** @ORM\Column(type="integer") */
-    private $position = 0;
+    #[ORM\Column(type: 'integer')]
+    private int $position = 0;
 
     /**
      * Definition contains properties like:
@@ -73,10 +59,8 @@ class Relation
      * - sortable
      * - min
      * - max
-     *
-     * @var array
      */
-    private $definition = [];
+    private array $definition = [];
 
     public function __construct(Content $fromContent, Content $toContent)
     {

@@ -12,11 +12,8 @@ use Doctrine\ORM\Query\SqlWalker;
 
 class Cast extends FunctionNode
 {
-    /** @var Node|string */
-    protected $first;
-
-    /** @var string */
-    protected $second;
+    protected Node|string $first;
+    protected string $second;
 
     public function getSql(SqlWalker $sqlWalker): string
     {

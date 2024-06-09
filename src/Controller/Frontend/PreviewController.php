@@ -20,28 +20,13 @@ class PreviewController extends TwigAwareController implements FrontendZoneInter
 {
     use CsrfTrait;
 
-    /** @var ContentEditController */
-    private $contentEditController;
-
-    /** @var EventDispatcherInterface */
-    private $dispatcher;
-
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
-
     public function __construct(
-        ContentEditController $contentEditController,
-        EventDispatcherInterface $dispatcher,
-        UrlGeneratorInterface $urlGenerator)
-    {
-        $this->contentEditController = $contentEditController;
-        $this->dispatcher = $dispatcher;
-        $this->urlGenerator = $urlGenerator;
-    }
+        private readonly ContentEditController $contentEditController,
+        private readonly EventDispatcherInterface $dispatcher,
+        private readonly UrlGeneratorInterface $urlGenerator)
+    {}
 
-    /**
-     * @Route("/preview/{id}", name="bolt_content_edit_preview", methods={"POST"}, requirements={"id": "\d+"})
-     */
+    #[Route('/preview/{id}', name: 'bolt_content_edit_preview', requirements: ['id' => '\d+'], methods: ['POST'])]
     public function preview(?Content $content = null): Response
     {
         $this->validateCsrf('editrecord');
@@ -55,9 +40,7 @@ class PreviewController extends TwigAwareController implements FrontendZoneInter
         return $this->renderSingle($content, false);
     }
 
-    /**
-     * @Route("/preview/{id}", name="bolt_content_edit_get", methods={"GET"}, requirements={"id": "\d+"})
-     */
+    #[Route('/preview/{id}', name: 'bolt_content_edit_get', requirements: ['id' => '\d+'], methods: ['GET'])]
     public function previewThroughGet(int $id): RedirectResponse
     {
         $url = $this->urlGenerator->generate('bolt_content_edit', ['id' => $id]);

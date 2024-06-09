@@ -17,17 +17,8 @@ class AuthSubscriber implements EventSubscriberInterface
 {
     use LoggerTrait;
 
-    /** @var RequestStack */
-    private $requestStack;
 
-    /** @var EntityManagerInterface */
-    private $em;
-
-    public function __construct(RequestStack $requestStack, EntityManagerInterface $em)
-    {
-        $this->requestStack = $requestStack;
-        $this->em = $em;
-    }
+    public function __construct(private readonly RequestStack $requestStack, private readonly EntityManagerInterface $em) {}
 
     public function onAuthenticationSuccess(AuthenticationSuccessEvent $event): void
     {
@@ -36,7 +27,7 @@ class AuthSubscriber implements EventSubscriberInterface
         $request = $this->requestStack->getCurrentRequest();
         $user->setLastseenAt(new \DateTime());
         $user->setLastIp($request->getClientIp());
-        /** @var Parser $uaParser */
+
         $uaParser = Parser::create();
         $parsedUserAgent = $uaParser->parse($request->headers->get('User-Agent'))->toString();
         $sessionLifetime = $request->getSession()->getMetadataBag()->getLifetime();
@@ -55,7 +46,7 @@ class AuthSubscriber implements EventSubscriberInterface
         if (is_null($event->getToken())) {
             return;
         }
-        
+
         /** @var User $user */
         $user = $event->getToken()->getUser();
 
@@ -65,7 +56,7 @@ class AuthSubscriber implements EventSubscriberInterface
         $this->logger->notice('User \'{username}\' logged out (manually, auth_token: {token_id}, {ip})', [
             'id' => $user->getId(),
             'username' => $user->getUsername(),
-            'token_id' => $authTokenId = $session->get('user_auth_token_id'),
+            'token_id' => $session->get('user_auth_token_id'),
             'ip' => $request->getClientIp(),
         ]);
 

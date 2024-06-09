@@ -4,31 +4,15 @@ declare(strict_types=1);
 
 namespace Bolt\Configuration;
 
-class FileLocation
+readonly class FileLocation
 {
-    /** @var string */
-    private $key;
-
-    /** @var string */
-    private $name;
-
-    /** @var string */
-    private $basepath;
-
-    /** @var bool */
-    private $showAll = false;
-
-    /** @var string */
-    private $icon;
-
-    public function __construct(string $key, string $name, string $basepath, bool $showAll, string $icon)
-    {
-        $this->key = $key;
-        $this->name = $name;
-        $this->basepath = $basepath;
-        $this->showAll = $showAll;
-        $this->icon = $icon;
-    }
+    public function __construct(
+        private string $key,
+        private string $name,
+        private string $basePath,
+        private bool   $showAll,
+        private string $icon
+    ) {}
 
     public function getKey(): string
     {
@@ -45,9 +29,9 @@ class FileLocation
         return $this->icon;
     }
 
-    public function getBasepath(): string
+    public function getBasePath(): string
     {
-        return $this->basepath;
+        return $this->basePath;
     }
 
     public function isShowAll(): bool

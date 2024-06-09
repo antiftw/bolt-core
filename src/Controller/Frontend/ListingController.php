@@ -8,7 +8,6 @@ use Bolt\Common\Str;
 use Bolt\Configuration\Content\ContentType;
 use Bolt\Controller\TwigAwareController;
 use Bolt\Entity\Content;
-use Bolt\Repository\ContentRepository;
 use Bolt\Storage\Query;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
@@ -19,29 +18,24 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class ListingController extends TwigAwareController implements FrontendZoneInterface
 {
-    /** @var Query */
-    private $query;
 
-    public function __construct(Query $query)
-    {
-        $this->query = $query;
-    }
+    public function __construct(private readonly Query $query) {}
 
-    /**
-     * @Route(
-     *     "/{contentTypeSlug}",
-     *     name="listing",
-     *     requirements={"contentTypeSlug"="%bolt.requirement.contenttypes%"},
-     *     methods={"GET|POST"})
-     * @Route(
-     *     "/{_locale}/{contentTypeSlug}",
-     *     name="listing_locale",
-     *     requirements={"contentTypeSlug"="%bolt.requirement.contenttypes%", "_locale": "%app_locales%"},
-     *     methods={"GET|POST"})
-     */
-    public function listing(ContentRepository $contentRepository, string $contentTypeSlug, ?string $_locale = null): Response
+    #[Route(
+        '/{contentTypeSlug}',
+        name: 'listing',
+        requirements: ['contentTypeSlug' => '%bolt.requirement.contenttypes%'],
+        methods: ['GET|POST']
+    )]
+    #[Route(
+        '/{_locale}/{contentTypeSlug}',
+        name: 'listing_locale',
+        requirements: ['contentTypeSlug' => '%bolt.requirement.contenttypes%', '_locale' => '%app_locales%'],
+        methods: ['GET|POST']
+    )]
+    public function listing(string $contentTypeSlug, ?string $_locale = null): Response
     {
-        if ($_locale === null && ! $this->getFromRequest('_locale', null)) {
+        if ($_locale === null && ! $this->getFromRequest('_locale')) {
             $this->request->setLocale($this->defaultLocale);
         }
 

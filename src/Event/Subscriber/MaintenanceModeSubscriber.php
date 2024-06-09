@@ -12,19 +12,9 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Security\Core\Security;
 
-class MaintenanceModeSubscriber implements EventSubscriberInterface
+readonly class MaintenanceModeSubscriber implements EventSubscriberInterface
 {
-    /** @var Config */
-    private $config;
-
-    /** @var Security */
-    private $security;
-
-    public function __construct(Config $config, Security $security)
-    {
-        $this->config = $config;
-        $this->security = $security;
-    }
+    public function __construct(private Config $config, private Security $security) {}
 
     public function onKernelController(ControllerEvent $event): void
     {

@@ -15,24 +15,15 @@ use Symfony\Component\HttpFoundation\RequestStack;
 
 class ContentHelper
 {
-    /** @var Canonical */
-    private $canonical;
+    private Request$request;
 
-    /** @var Request */
-    private $request;
-
-    /** @var Config */
-    private $config;
-
-    /** @var LocaleExtension */
-    private $localeExtension;
-
-    public function __construct(Canonical $canonical, RequestStack $requestStack, Config $config, LocaleExtension $localeExtension)
-    {
-        $this->canonical = $canonical;
+    public function __construct(
+        RequestStack $requestStack,
+        private readonly Canonical $canonical,
+        private readonly Config $config,
+        private readonly LocaleExtension $localeExtension
+    ){
         $this->request = $requestStack->getCurrentRequest() ?? Request::createFromGlobals();
-        $this->config = $config;
-        $this->localeExtension = $localeExtension;
     }
 
     public function setCanonicalPath($record, ?string $locale = null): void
@@ -134,7 +125,7 @@ class ContentHelper
         $dateFormat = $this->config->get('general/date_format');
 
         return Str::decode(preg_replace_callback(
-            '/{([\w]+)}/i',
+            '/{(\w+)}/i',
             function ($match) use ($record, $locale, $dateFormat) {
                 if ($match[1] === 'id') {
                     return $record->getId();
@@ -197,7 +188,7 @@ class ContentHelper
                 $extras = $record->getExtras();
 
                 if (array_key_exists($match[1], $extras)) {
-                    // If it's the icon, return an html element
+                    // If it's the icon, return a html element
                     if ($match[1] === 'icon') {
                         return sprintf("<i class='fas %s'></i>", $extras[$match[1]]);
                     }
@@ -213,7 +204,7 @@ class ContentHelper
 
     public static function getFieldNames(string $format): array
     {
-        preg_match_all('/{([\w]+)}/i', $format, $matches);
+        preg_match_all('/{(\w+)}/i', $format, $matches);
 
         return $matches[1];
     }

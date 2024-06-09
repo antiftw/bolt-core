@@ -14,6 +14,7 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
+use Twig\Extension\CoreExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
@@ -24,25 +25,12 @@ use Twig\TwigFunction;
  */
 final class ArrayExtension extends AbstractExtension
 {
-    /** @var ContentHelper */
-    private $contentHelper;
-
-    /** @var LocaleExtension */
-    private $localeExtension;
-
-    /** @var string */
-    private $defaultLocale;
-    
-    /** @var RequestStack */
-    private $requestStack;
-
-    public function __construct(ContentHelper $contentHelper, LocaleExtension $localeExtension, string $defaultLocale, RequestStack $requestStack)
-    {
-        $this->contentHelper = $contentHelper;
-        $this->localeExtension = $localeExtension;
-        $this->defaultLocale = $defaultLocale;
-        $this->requestStack = $requestStack;
-    }
+    public function __construct(
+        private readonly ContentHelper $contentHelper,
+        private readonly LocaleExtension $localeExtension,
+        private readonly string $defaultLocale,
+        private readonly RequestStack $requestStack
+    ) {}
 
     /**
      * {@inheritdoc}
@@ -87,9 +75,9 @@ final class ArrayExtension extends AbstractExtension
      * Overrides the default Twig |length filter
      * for accurate results with paginated content
      */
-    public function length(Environment $env, $thing)
+    public function length(Environment $env, $thing): int
     {
-        return twig_length_filter($env, $this->getArray($thing));
+        return $env->getExtension(CoreExtension::class)->length($env->getCharset(), $this->getArray($thing));
     }
 
     /**
@@ -120,14 +108,14 @@ final class ArrayExtension extends AbstractExtension
                 return $this->orderHelper($a, $b, $orderOnSecondary, $orderAscendingSecondary, $locale);
             });
         } catch (\Exception $e) {
-            // If sorting failed, we don't sort..
+            // If sorting failed, we don't sort.
         }
 
         return $array;
     }
 
     /**
-     * Paginate filter results so you wont have random amounts of pages in random pages
+     * Paginate filter results, so you won't have random amounts of pages in random pages
      */
     public function paginate($array, int $pageSize = 10): Pagerfanta
     {

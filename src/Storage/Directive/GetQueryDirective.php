@@ -11,7 +11,7 @@ use Bolt\Storage\QueryInterface;
  */
 class GetQueryDirective
 {
-    public const NAME = 'getquery';
+    public const string NAME = 'getquery';
 
     public function __invoke(QueryInterface $query, callable $callback): void
     {

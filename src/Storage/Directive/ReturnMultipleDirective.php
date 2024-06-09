@@ -11,7 +11,7 @@ use Bolt\Storage\SelectQuery;
  */
 class ReturnMultipleDirective
 {
-    public const NAME = 'returnmultiple';
+    public const string NAME = 'returnmultiple';
 
     public function __invoke(SelectQuery $query): void
     {

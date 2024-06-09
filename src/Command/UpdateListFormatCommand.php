@@ -6,7 +6,6 @@ namespace Bolt\Command;
 
 use Bolt\Utils\ListFormatHelper;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
@@ -16,13 +15,8 @@ class UpdateListFormatCommand extends Command
     /** @var string */
     protected static $defaultName = 'bolt:update-list-format';
 
-    /** @var ListFormatHelper */
-    private $listFormatHelper;
-
-    public function __construct(ListFormatHelper $listFormatHelper)
+    public function __construct(private readonly ListFormatHelper $listFormatHelper)
     {
-        $this->listFormatHelper = $listFormatHelper;
-
         parent::__construct();
     }
 

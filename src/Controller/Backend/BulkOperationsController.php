@@ -9,6 +9,7 @@ use Bolt\Entity\Content;
 use Bolt\Event\ContentEvent;
 use Doctrine\Persistence\ObjectManager;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Bridge\Doctrine\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -17,40 +18,31 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-/**
- * @Security("is_granted('bulk_operations')")
- */
+#[Security("is_granted('bulk_operations')")]
 class BulkOperationsController extends AbstractController implements BackendZoneInterface
 {
     use CsrfTrait;
+    private ?ObjectManager $em = null;
+    private Request $request;
 
-    /** @var ObjectManager */
-    private $em;
-
-    /** @var Request */
-    private $request;
-
-    /** @var EventDispatcherInterface */
-    private $dispatcher;
-
-    public function __construct(RequestStack $requestStack, EventDispatcherInterface $dispatcher)
-    {
+    public function __construct(
+        RequestStack                              $requestStack,
+        private readonly EventDispatcherInterface $dispatcher,
+        private readonly ManagerRegistry          $registry,
+    ){
         $this->request = $requestStack->getCurrentRequest();
-        $this->dispatcher = $dispatcher;
     }
 
     public function em(): ObjectManager
     {
         if ($this->em === null) {
-            $this->em = $this->getDoctrine()->getManager();
+            $this->em = $this->registry->getManager();
         }
 
         return $this->em;
     }
 
-    /**
-     * @Route("/bulk/status/{status}", name="bolt_bulk_status", methods={"POST"})
-     */
+    #[Route('/bulk/status/{status}', name: 'bolt_bulk_status', methods: ['POST'])]
     public function status(string $status): Response
     {
         $this->validateCsrf('batch');
@@ -72,9 +64,7 @@ class BulkOperationsController extends AbstractController implements BackendZone
         return new RedirectResponse($url);
     }
 
-    /**
-     * @Route("/bulk/delete", name="bolt_bulk_delete", methods={"POST"})
-     */
+    #[Route('/bulk/delete', name: 'bolt_bulk_delete', methods: ['POST'])]
     public function delete(): Response
     {
         $this->validateCsrf('batch');

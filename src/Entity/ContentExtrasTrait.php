@@ -12,8 +12,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
  */
 trait ContentExtrasTrait
 {
-    /** @var ContentExtension|null */
-    private $contentExtension;
+    private ?ContentExtension $contentExtension;
 
     public function setContentExtension(ContentExtension $contentExtension): void
     {
@@ -22,12 +21,10 @@ trait ContentExtrasTrait
 
     /**
      * @internal This should not be used outside of API. Use ContentExtension or Twig filters instead.
-     *
-     * @Groups("get_content")
      */
+    #[Groups(['get_content'])]
     public function getExtras(): array
     {
-        /** @var Content $content */
         $content = $this;
 
         return array_filter([

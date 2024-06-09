@@ -18,14 +18,14 @@ use Twig\Node\Node;
  */
 class SetcontentNode extends Node
 {
-    /**
-     * Constructor.
-     *
-     * @param string $name
-     * @param int $lineNo
-     */
-    public function __construct($name, Node $contentType, ArrayExpression $arguments, array $whereArguments, $lineNo, $tag = null)
-    {
+    public function __construct(
+        $name,
+        Node $contentType,
+        ArrayExpression $arguments,
+        array $whereArguments,
+        int $lineNo,
+        $tag = null
+    ) {
         parent::__construct(
             $whereArguments,
             [

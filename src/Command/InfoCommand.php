@@ -18,24 +18,14 @@ class InfoCommand extends Command
 
     /** @var string */
     protected static $defaultName = 'bolt:info';
+    private object $composer;
+    private SymfonyStyle $io;
 
-    /** @var \Bolt\Doctrine\Version */
-    private $doctrineVersion;
-
-    /** @var object */
-    private $composer;
-
-    /** @var SymfonyStyle */
-    private $io;
-
-    private $projectDir;
-
-    public function __construct(\Bolt\Doctrine\Version $doctrineVersion, string $projectDir)
-    {
-        $this->doctrineVersion = $doctrineVersion;
-        $this->projectDir = $projectDir;
-
-        parent::__construct();
+    public function __construct(
+       private readonly \Bolt\Doctrine\Version $doctrineVersion,
+       private readonly string $projectDir
+    ){
+       parent::__construct();
     }
 
     /**
@@ -74,7 +64,7 @@ HELP
 
         try {
             $platform = $this->doctrineVersion->getPlatform();
-            $tableExists = $this->doctrineVersion->tableContentExists() ? '' : sprintf(' - <error>Tables not initialised</error>');
+            $tableExists = $this->doctrineVersion->tableContentExists() ? '' : ' - <error>Tables not initialised</error>';
             $withJson = $this->doctrineVersion->hasJson() ? 'with JSON' : 'without JSON';
         } catch (\Throwable $e) {
             $platform = [

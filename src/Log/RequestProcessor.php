@@ -12,19 +12,13 @@ use Symfony\Component\Security\Core\Security;
 
 class RequestProcessor
 {
-    /** @var RequestStack */
-    protected $request;
+    private string $projectDir;
 
-    /** @var Security */
-    private $security;
-
-    /** @var string */
-    private $projectDir;
-
-    public function __construct(RequestStack $request, Security $security, KernelInterface $kernel)
-    {
-        $this->request = $request;
-        $this->security = $security;
+    public function __construct(
+        private readonly RequestStack $request,
+        private readonly Security $security,
+        KernelInterface $kernel
+    ) {
         $this->projectDir = $kernel->getProjectDir();
     }
 

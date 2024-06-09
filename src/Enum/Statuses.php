@@ -8,10 +8,10 @@ use Tightenco\Collect\Support\Collection;
 
 class Statuses
 {
-    public const PUBLISHED = 'published';
-    public const HELD = 'held';
-    public const TIMED = 'timed';
-    public const DRAFT = 'draft';
+    public const string PUBLISHED = 'published';
+    public const string HELD = 'held';
+    public const string TIMED = 'timed';
+    public const string DRAFT = 'draft';
 
     /**
      * @return string[]

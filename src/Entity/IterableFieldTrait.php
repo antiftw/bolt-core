@@ -6,10 +6,8 @@ namespace Bolt\Entity;
 
 trait IterableFieldTrait
 {
-    private $iteratorCursor = 0;
-
-    /** @var array Field */
-    private $fields = [];
+    private int $iteratorCursor = 0;
+    private array $fields = [];
 
     /**
      * Makes ListFieldInterface fields |length filter
@@ -29,11 +27,8 @@ trait IterableFieldTrait
         return $this->count();
     }
 
-    /**
-     * @return Field|string
-     */
     #[\ReturnTypeWillChange]
-    public function current()
+    public function current(): Field|string
     {
         return $this->fields[$this->iteratorCursor];
     }

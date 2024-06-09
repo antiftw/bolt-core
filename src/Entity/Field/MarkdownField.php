@@ -9,12 +9,10 @@ use Bolt\Entity\FieldInterface;
 use Bolt\Utils\Markdown;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class MarkdownField extends Field implements Excerptable, FieldInterface, RawPersistable
 {
-    public const TYPE = 'markdown';
+    public const string TYPE = 'markdown';
 
     public function __toString(): string
     {

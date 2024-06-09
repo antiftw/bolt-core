@@ -8,12 +8,13 @@ use Bolt\Common\Str;
 use Bolt\Configuration\Content\ContentType;
 use Bolt\Doctrine\JsonHelper;
 use Bolt\Entity\Content;
+use Bolt\Entity\Field\SlugField;
 use Bolt\Enum\Statuses;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\Query;
 use Doctrine\ORM\QueryBuilder;
 use Doctrine\Persistence\ManagerRegistry;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
+use Pagerfanta\Doctrine\ORM\QueryAdapter;
 use Pagerfanta\Pagerfanta;
 use Tightenco\Collect\Support\Collection;
 
@@ -25,8 +26,7 @@ use Tightenco\Collect\Support\Collection;
  */
 class ContentRepository extends ServiceEntityRepository
 {
-    /** @var string[] */
-    private $contentColumns = ['id', 'author', 'contentType', 'status', 'createdAt', 'modifiedAt', 'publishedAt', 'depublishedAt'];
+    private array $contentColumns = ['id', 'author', 'contentType', 'status', 'createdAt', 'modifiedAt', 'publishedAt', 'depublishedAt'];
 
     public function __construct(ManagerRegistry $registry)
     {
@@ -166,7 +166,7 @@ class ContentRepository extends ServiceEntityRepository
         $query = $qb
             ->innerJoin('content.fields', 'field')
             ->innerJoin(
-                \Bolt\Entity\Field\SlugField::class,
+                SlugField::class,
                 'slug',
                 'WITH',
                 'field.id = slug.id'
@@ -212,7 +212,7 @@ class ContentRepository extends ServiceEntityRepository
 
     protected function createPaginator(Query $query, int $page, int $amountPerPage): Pagerfanta
     {
-        $paginator = new Pagerfanta(new DoctrineORMAdapter($query, true, true));
+        $paginator = new Pagerfanta(new QueryAdapter($query, true, true));
         $paginator->setMaxPerPage($amountPerPage);
         $paginator->setCurrentPage($page);
 
@@ -248,7 +248,7 @@ class ContentRepository extends ServiceEntityRepository
     }
 
     /**
-     * Cobble together the sorting order, and whether or not it's a column in `content` or `fields`.
+     * Cobble together the sorting order, and whether it's a column in `content` or `fields`.
      */
     private function createSortBy(Collection $contentType): array
     {

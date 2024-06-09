@@ -11,14 +11,12 @@ use Bolt\Entity\IterableFieldTrait;
 use Bolt\Entity\ListFieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class ImagelistField extends Field implements FieldInterface, ListFieldInterface, RawPersistable, \Iterator
 {
     use IterableFieldTrait;
 
-    public const TYPE = 'imagelist';
+    public const string TYPE = 'imagelist';
 
     /**
      * Returns the value, as is in the database. Useful for processing, like
@@ -49,7 +47,7 @@ class ImagelistField extends Field implements FieldInterface, ListFieldInterface
         return $this->fields;
     }
 
-    public function getApiValue()
+    public function getApiValue(): array
     {
         $result = [];
 
@@ -101,10 +99,10 @@ class ImagelistField extends Field implements FieldInterface, ListFieldInterface
     }
 
     /**
-     * Returns the value, where the contained Image fields are seperately
-     * casted to arrays, including the "extras"
+     * Returns the value, where the contained Image fields are separately
+     * cast to arrays, including the "extras"
      */
-    public function getJsonValue()
+    public function getJsonValue(): false|string
     {
         if ($this->isNew()) {
             $values = $this->getDefaultValue();

@@ -6,15 +6,10 @@ namespace Bolt\Configuration;
 
 class FileLocations
 {
-    /** @var array */
-    private $locations = [];
+    private array $locations = [];
 
-    /** @var Config */
-    private $config;
-
-    public function __construct(Config $config)
+    public function __construct(private readonly Config $config)
     {
-        $this->config = $config;
         $this->initLocations();
     }
 

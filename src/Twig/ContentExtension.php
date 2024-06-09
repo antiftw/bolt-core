@@ -11,7 +11,6 @@ use Bolt\Entity\Content;
 use Bolt\Entity\Field;
 use Bolt\Entity\Field\Excerptable;
 use Bolt\Entity\Field\ImageField;
-use Bolt\Entity\Field\ImagelistField;
 use Bolt\Entity\ListFieldInterface;
 use Bolt\Entity\Taxonomy;
 use Bolt\Enum\Statuses;
@@ -42,74 +41,21 @@ class ContentExtension extends AbstractExtension
 {
     use LoggerTrait;
 
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
-
-    /** @var ContentRepository */
-    private $contentRepository;
-
-    /** @var CsrfTokenManagerInterface */
-    private $csrfTokenManager;
-
-    /** @var Security */
-    private $security;
-
-    /** @var Config */
-    private $config;
-
-    /** @var Query */
-    private $query;
-
-    /** @var TaxonomyRepository */
-    private $taxonomyRepository;
-
-    /** @var TranslatorInterface */
-    private $translator;
-
-    /** @var Canonical */
-    private $canonical;
-
-    /** @var ContentHelper */
-    private $contentHelper;
-
-    /** @var Notifications */
-    private $notifications;
-
-    /** @var Sanitiser */
-    private $sanitiser;
-
-    /** @var RequestStack */
-    private $requestStack;
-
     public function __construct(
-        UrlGeneratorInterface $urlGenerator,
-        ContentRepository $contentRepository,
-        CsrfTokenManagerInterface $csrfTokenManager,
-        Security $security,
-        RequestStack $requestStack,
-        Config $config,
-        Query $query,
-        TaxonomyRepository $taxonomyRepository,
-        TranslatorInterface $translator,
-        Canonical $canonical,
-        ContentHelper $contentHelper,
-        Notifications $notifications,
-        Sanitiser $sanitiser
-    ) {
-        $this->urlGenerator = $urlGenerator;
-        $this->contentRepository = $contentRepository;
-        $this->csrfTokenManager = $csrfTokenManager;
-        $this->security = $security;
-        $this->config = $config;
-        $this->query = $query;
-        $this->taxonomyRepository = $taxonomyRepository;
-        $this->translator = $translator;
-        $this->canonical = $canonical;
-        $this->contentHelper = $contentHelper;
-        $this->notifications = $notifications;
-        $this->sanitiser = $sanitiser;
-        $this->requestStack = $requestStack;
-    }
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly ContentRepository $contentRepository,
+        private readonly CsrfTokenManagerInterface $csrfTokenManager,
+        private readonly Security $security,
+        private readonly RequestStack $requestStack,
+        private readonly Config $config,
+        private readonly Query $query,
+        private readonly TaxonomyRepository $taxonomyRepository,
+        private readonly TranslatorInterface $translator,
+        private readonly Canonical $canonical,
+        private readonly ContentHelper $contentHelper,
+        private readonly Notifications $notifications,
+        private readonly Sanitiser $sanitiser
+    ) {}
 
     /**
      * {@inheritdoc}
@@ -184,10 +130,7 @@ class ContentExtension extends AbstractExtension
         return '(untitled)';
     }
 
-    /**
-     * @param Content|string|null $content
-     */
-    public function getTitle($content, string $locale = '', int $length = 120): string
+    public function getTitle(Content|string|null $content, string $locale = '', int $length = 120): string
     {
         if (! $content instanceof Content) {
             return $content ?? '<mark>No content given</mark>';
@@ -215,10 +158,7 @@ class ContentExtension extends AbstractExtension
         return ContentHelper::guessTitleFields($content);
     }
 
-    /**
-     * @return ImageField|array|null
-     */
-    public function getImage(?Content $content, bool $onlyValues = false)
+    public function getImage(?Content $content, bool $onlyValues = false): ImageField|array|null
     {
         if (! $content) {
             return null;
@@ -235,7 +175,7 @@ class ContentExtension extends AbstractExtension
         return null;
     }
 
-    private function findOneImage(Field $field)
+    private function findOneImage(Field $field): ?ImageField
     {
         if ($field instanceof ImageField && $field->get('filename')) {
             return $field;
@@ -254,10 +194,7 @@ class ContentExtension extends AbstractExtension
         return null;
     }
 
-    /**
-     * @param string|Markup|Content|Field $content
-     */
-    public function getExcerpt($content, int $length = 280, bool $includeTitle = false, ?string $focus = null, bool $wrap = false): string
+    public function getExcerpt(Content|Field|string|Markup $content, int $length = 280, bool $includeTitle = false, ?string $focus = null, bool $wrap = false): string
     {
         if (is_string($content) || $content instanceof Markup || $content instanceof Field) {
             return Excerpt::getExcerpt((string) $content, $length, $focus);
@@ -285,12 +222,10 @@ class ContentExtension extends AbstractExtension
         return $pre . Excerpt::getExcerpt($excerpt, $length, $focus) . $post;
     }
 
-    public function getListFormat($content)
+    public function getListFormat($content): string
     {
         $format = $content->getDefinition()->get('list_format', '[{contenttype} Nº {id} - {status}] {title}');
-        $listFormat = $this->contentHelper->get($content, $format);
-
-        return $listFormat;
+        return $this->contentHelper->get($content, $format);
     }
 
 
@@ -317,8 +252,8 @@ class ContentExtension extends AbstractExtension
             }
         }
 
-        $specialChars = ['.', ',', '!', '?', '>'];
-        $excerpt = array_reduce($excerptParts, function (string $excerpt, string $part) use ($specialChars): string {
+        $excerpt = array_reduce($excerptParts, function (string $excerpt, string $part): string {
+            $specialChars = ['.', ',', '!', '?', '>'];
             if (in_array(mb_substr($part, -1), $specialChars, true) === false) {
                 // add period at end of string if it doesn't have sentence end
                 $part .= '.';
@@ -350,24 +285,14 @@ class ContentExtension extends AbstractExtension
 
     private function getAdjacentContent(Content $content, string $direction, string $byColumn = 'id', bool $sameContentType = true): ?Content
     {
-        switch ($byColumn) {
-            case "id":
-                $value = $content->getId();
-                break;
-            case "createdAt":
-                $value = $content->getCreatedAt();
-            case "publishedAt":
-                $value = $content->getPublishedAt();
-                break;
-            case "depublishedAt":
-                $value = $content->getDepublishedAt();
-                break;
-            case "modifiedAt":
-                $value = $content->getModifiedAt();
-                break;
-            default:
-                throw new \RuntimeException('Ordering content by this column is not yet implemented');
-        }
+        $value = match ($byColumn) {
+            "id" => $content->getId(),
+            "createdAt" => $content->getCreatedAt(),
+            "publishedAt" => $content->getPublishedAt(),
+            "depublishedAt" => $content->getDepublishedAt(),
+            "modifiedAt" => $content->getModifiedAt(),
+            default => throw new \RuntimeException('Ordering content by this column is not yet implemented'),
+        };
 
         $contentType = $sameContentType ? $content->getContentType() : null;
 
@@ -401,10 +326,7 @@ class ContentExtension extends AbstractExtension
             $recordParams['contentTypeSlug'] === $routeParams['contentTypeSlug'];
     }
 
-    /**
-     * @param Content|Taxonomy $contentOrTaxonomy
-     */
-    public function getLink($contentOrTaxonomy, bool $canonical = false, ?string $locale = null): ?string
+    public function getLink(Taxonomy|Content $contentOrTaxonomy, bool $canonical = false, ?string $locale = null): ?string
     {
         if ($contentOrTaxonomy instanceof Content) {
             if ($contentOrTaxonomy->getId() === null) {
@@ -525,8 +447,15 @@ class ContentExtension extends AbstractExtension
         return new Collection($taxonomies);
     }
 
-    public function pager(Environment $twig, ?Pagerfanta $records = null, string $template = '@bolt/helpers/_pager_basic.html.twig', string $class = 'pagination', string $previousLinkClass = 'previous', string $nextLinkClass = 'next', int $surround = 3)
-    {
+    public function pager(
+        Environment $twig,
+        ?Pagerfanta $records = null,
+        string $template = '@bolt/helpers/_pager_basic.html.twig',
+        string $class = 'pagination',
+        string $previousLinkClass = 'previous',
+        string $nextLinkClass = 'next',
+        int $surround = 3
+    ) : string {
         $params = array_merge(
             $this->requestStack->getCurrentRequest()->get('_route_params'),
             $this->requestStack->getCurrentRequest()->query->all()
@@ -614,7 +543,7 @@ class ContentExtension extends AbstractExtension
 
         $icon = str_replace('fa-', '', $icon);
 
-        return "<i class='fas mr-2 fa-{$icon}'></i>";
+        return "<i class='fas mr-2 fa-$icon'></i>";
     }
 
     public function hasPath(Content $record, string $path): bool
@@ -639,7 +568,7 @@ class ContentExtension extends AbstractExtension
         return false;
     }
 
-    public function statusOptions(Content $record)
+    public function statusOptions(Content $record): array
     {
         $options = [];
 
@@ -706,12 +635,12 @@ class ContentExtension extends AbstractExtension
         return false;
     }
 
-    public function sanitise(string $html)
+    public function sanitise(string $html): string
     {
         return $this->sanitiser->clean($html);
     }
 
-    public function record(int $id)
+    public function record(int $id): ?Content
     {
         return $this->contentRepository->findOneBy(['id' => $id]);
     }

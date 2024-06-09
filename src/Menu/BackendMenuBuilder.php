@@ -19,63 +19,25 @@ use Knp\Menu\MenuItem;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
-use Tightenco\Collect\Support\Collection;
 
 /**
  * Class BackendMenuBuilder
  */
 final class BackendMenuBuilder implements BackendMenuBuilderInterface
 {
-    public const MAX_LATEST_RECORDS = 5;
-
-    /** @var FactoryInterface */
-    private $menuFactory;
-
-    /** @var Config */
-    private $config;
-
-    /** @var ContentRepository */
-    private $contentRepository;
-
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
-
-    /** @var TranslatorInterface */
-    private $translator;
-
-    /** @var ContentExtension */
-    private $contentExtension;
-
-    /** @var ExtensionBackendMenuInterface[] */
-    private $extensionMenus;
-
-    /** @var AuthorizationCheckerInterface */
-    private $authorizationChecker;
-
-    /** @var ListFormatHelper */
-    private $listFormatHelper;
+    public const int MAX_LATEST_RECORDS = 5;
 
     public function __construct(
-        FactoryInterface $menuFactory,
-        iterable $extensionMenus,
-        Config $config,
-        ContentRepository $contentRepository,
-        UrlGeneratorInterface $urlGenerator,
-        TranslatorInterface $translator,
-        ContentExtension $contentExtension,
-        AuthorizationCheckerInterface $authorizationChecker,
-        ListFormatHelper $listFormatHelper
-    ) {
-        $this->menuFactory = $menuFactory;
-        $this->config = $config;
-        $this->contentRepository = $contentRepository;
-        $this->urlGenerator = $urlGenerator;
-        $this->translator = $translator;
-        $this->contentExtension = $contentExtension;
-        $this->extensionMenus = $extensionMenus;
-        $this->authorizationChecker = $authorizationChecker;
-        $this->listFormatHelper = $listFormatHelper;
-    }
+        private readonly FactoryInterface $menuFactory,
+        private readonly iterable $extensionMenus,
+        private readonly Config $config,
+        private readonly ContentRepository $contentRepository,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly TranslatorInterface $translator,
+        private readonly ContentExtension $contentExtension,
+        private readonly AuthorizationCheckerInterface $authorizationChecker,
+        private readonly ListFormatHelper $listFormatHelper
+    ) {}
 
     private function createAdminMenu(): ItemInterface
     {
@@ -352,7 +314,7 @@ final class BackendMenuBuilder implements BackendMenuBuilderInterface
                     'link_new' => $this->authorizationChecker->isGranted(ContentVoter::CONTENT_CREATE, $contentType) ? $this->urlGenerator->generate('bolt_content_new', ['contentType' => $contentType->getSlug()]) : null,
                     'link_listing' => $contentType->getSlug(),
                     'singleton' => $contentType['singleton'],
-                    'active' => $contentType->getSlug() === 'pages' ? true : false,
+                    'active' => $contentType->getSlug() === 'pages',
                     'submenu' => $this->getLatestRecords($contentType),
                 ],
             ]);

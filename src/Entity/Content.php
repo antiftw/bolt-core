@@ -13,9 +13,9 @@ use Bolt\Entity\Field\Excerptable;
 use Bolt\Entity\Field\ScalarCastable;
 use Bolt\Entity\Field\SetField;
 use Bolt\Enum\Statuses;
+use Bolt\Repository\ContentRepository;
 use Bolt\Repository\FieldRepository;
 use Bolt\Twig\ContentExtension;
-use Bolt\Utils\ContentHelper;
 use Bolt\Utils\Excerpt;
 use DateTimeZone;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -24,155 +24,105 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
 use Tightenco\Collect\Support\Collection as LaravelCollection;
+use Twig\Template;
 
-/**
- * @ApiResource(
- *     normalizationContext={"groups"={"get_content"}},
- *     denormalizationContext={"groups"={"api_write"},"enable_max_depth"=true},
- *     collectionOperations={
- *          "get"={"security"="is_granted('api:get')"},
- *          "post"={"security"="is_granted('api:post')"}
- *     },
- *     itemOperations={
- *          "get"={"security"="is_granted('api:get')"},
- *          "put"={"security"="is_granted('api:post')"},
- *          "delete"={"security"="is_granted('api:delete')"}
- *     },
- *     graphql={
- *          "item_query"={"security"="is_granted('api:get')"},
- *          "collection_query"={"security"="is_granted('api:get')"},
- *          "create"={"security"="is_granted('api:post')"},
- *          "delete"={"security"="is_granted('api:delete')"}
- *     }
- * )
- * @ApiFilter(SearchFilter::class)
- * @ORM\Entity(repositoryClass="Bolt\Repository\ContentRepository")
- * @ORM\Table(indexes={
- * @ORM\Index(name="content_type_idx", columns={"content_type"}),
- * @ORM\Index(name="status_idx", columns={"status"})
- * })
- * @ORM\HasLifecycleCallbacks
- */
+#[ApiResource(
+    collectionOperations: [
+        "get" => ["security" => "is_granted('api:get')"],
+        "post" => ["security" => "is_granted('api:post')"]
+    ],
+    graphql: [
+        "item_query" => ["security" => "is_granted('api:get')"],
+        "collection_query" => ["security" => "is_granted('api:get')"],
+        "create" => ["security" => "is_granted('api:post')"],
+        "delete" => ["security" => "is_granted('api:delete')"]
+    ],
+    itemOperations: [
+        "get" => ["security" => "is_granted('api:get')"],
+        "put" => ["security" => "is_granted('api:post')"],
+        "delete" => ["security" => "is_granted('api:delete')"]
+    ],
+    denormalizationContext: ["groups" => ["api_write"], "enable_max_depth" => true],
+    normalizationContext: ["groups" => ["get_content"]]
+)]
+
+#[ApiFilter(SearchFilter::class)]
+#[ORM\Entity(repositoryClass: ContentRepository::class)]
+#[ORM\Index(columns: ["content_type"], name: "content_type_idx")]
+#[ORM\Index(columns: ["status"], name: "status_idx")]
+#[ORM\HasLifecycleCallbacks]
 class Content
 {
     use ContentLocalizeTrait;
     use ContentExtrasTrait;
 
-    /**
-     * @var int
-     *
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     * @Groups({"get_content", "api_write"})
-     */
-    private $id;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    #[Groups(["get_content", "api_write"])]
+    private ?int $id = null;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=191)
-     * @Groups({"get_content","api_write"})
-     */
-    private $contentType;
+    #[ORM\Column(type: 'string', length: 191)]
+    #[Groups(["get_content", "api_write"])]
+    private string $contentType;
 
-    /**
-     * @var User
-     *
-     * @ORM\ManyToOne(targetEntity="Bolt\Entity\User", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=true)
-     */
-    private $author;
+    #[ORM\ManyToOne(targetEntity: User::class, fetch: "EAGER")]
+    #[ORM\JoinColumn(nullable: true)]
+    private ?User $author;
 
-    /**
-     * @var string
-     *
-     * @ORM\Column(type="string", length=191)
-     * @Groups({"get_content","api_write"})
-     */
-    private $status;
+    #[ORM\Column(type: 'string', length: 191)]
+    #[Groups(["get_content", "api_write"])]
+    private string $status;
 
-    /**
-     * @var \DateTime
-     *
-     * @ORM\Column(type="datetime")
-     * @Groups({"get_content","api_write"})
-     */
-    private $createdAt;
+    #[ORM\Column(type: 'datetime')]
+    #[Groups(["get_content", "api_write"])]
+    private \DateTime $createdAt;
 
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"get_content","api_write"})
-     */
-    private $modifiedAt = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Groups(["get_content", "api_write"])]
+    private ?\DateTime $modifiedAt = null;
 
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"get_content","api_write"})
-     */
-    private $publishedAt = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Groups(["get_content", "api_write"])]
+    private ?\DateTime $publishedAt = null;
 
-    /**
-     * @var \DateTime|null
-     *
-     * @ORM\Column(type="datetime", nullable=true)
-     * @Groups({"get_content","api_write"})
-     */
-    private $depublishedAt = null;
+    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[Groups(["get_content", "api_write"])]
+    private ?\DateTime $depublishedAt = null;
 
-    /** @ORM\Column(type="string", length=191, nullable=true) */
-    private $title;
+    #[ORM\Column(type: 'string', length: 191, nullable: true)]
+    private string $title;
 
-    /** @ORM\Column(type="string", length=191, nullable=true) */
-    private $listFormat;
+    #[ORM\Column(type: 'string', length: 191, nullable: true)]
+    private string$listFormat;
 
-    /**
-     * @var Collection|Field[]
-     *
-     * @ApiSubresource(maxDepth=1)
-     * @MaxDepth(1)
-     *
-     * @ORM\OneToMany(
-     *     targetEntity="Bolt\Entity\Field",
-     *     mappedBy="content",
-     *     indexBy="id",
-     *     fetch="EAGER",
-     *     orphanRemoval=true,
-     *     cascade={"persist"}
-     * )
-     * @ORM\OrderBy({"sortorder": "ASC"})
-     * @Groups("api_write")
-     */
-    private $fields;
+    #[ApiSubresource(maxDepth: 1)]
+    #[MaxDepth(1)]
+    #[ORM\ManyToMany(
+        targetEntity: Field::class,
+        mappedBy: "content",
+        cascade: ["persist"],
+        fetch: "EAGER",
+        orphanRemoval: true,
+        indexBy: "id"
+    )]
+    #[ORM\OrderBy(["sortorder" => "ASC"])]
+    #[Groups(["api_write"])]
+    private ArrayCollection $fields;
 
-    /**
-     * @var Collection|Taxonomy[]
-     * @MaxDepth(1)
-     *
-     * @ORM\ManyToMany(targetEntity="Bolt\Entity\Taxonomy", mappedBy="content", cascade={"persist"})
-     */
-    private $taxonomies;
+    #[MaxDepth(1)]
+    #[ORM\ManyToMany(targetEntity: Taxonomy::class, mappedBy: "content", cascade: ["persist"])]
+    private ArrayCollection $taxonomies;
 
-    /** @var ContentType|null */
-    private $contentTypeDefinition = null;
+    private ?ContentType $contentTypeDefinition = null;
 
-    /**
-     * One content has many relations, to and from, these are relations pointing from this content.
-     *
-     * @ORM\OneToMany(targetEntity="Relation", mappedBy="fromContent")
-     */
-    private $relationsFromThisContent;
+    /** One content has many relations, to and from, these are relations pointing from this content. */
+    #[ORM\OneToMany(mappedBy: "fromContent", targetEntity: Relation::class)]
+    private ArrayCollection $relationsFromThisContent;
 
-    /**
-     * One content has many relations, to and from, these are relations pointing to this content.
-     *
-     * @ORM\OneToMany(targetEntity="Relation", mappedBy="toContent")
-     */
-    private $relationsToThisContent;
+    /** One content has many relations, to and from, these are relations pointing to this content. */
+    #[ORM\OneToMany(mappedBy: "toContent", targetEntity: Relation::class)]
+    private ArrayCollection $relationsToThisContent;
 
     public function __construct(?ContentType $contentTypeDefinition = null)
     {
@@ -466,18 +416,12 @@ class Content
         return $this;
     }
 
-    /**
-     * @return Collection|Field[]
-     */
-    public function getRawFields(): Collection
+    public function getRawFields(): ArrayCollection
     {
         return $this->fields;
     }
 
-    /**
-     * @return Collection|Field[]
-     */
-    public function getFields(): Collection
+    public function getFields(): ArrayCollection
     {
         return $this->standaloneFieldsFilter();
     }
@@ -520,10 +464,7 @@ class Content
         return $taxonomyValues;
     }
 
-    /**
-     * @return array|mixed|null
-     */
-    public function getFieldValue(string $fieldName)
+    public function getFieldValue(string $fieldName) : mixed
     {
         if ($this->hasField($fieldName) === false) {
             return null;
@@ -624,11 +565,7 @@ class Content
      */
     public function getAuthorName(): ?string
     {
-        if ($this->getAuthor() !== null) {
-            return $this->getAuthor()->getDisplayName();
-        }
-
-        return null;
+        return $this->getAuthor()?->getDisplayName();
     }
 
     public function getStatuses(): array
@@ -641,9 +578,6 @@ class Content
         return $this->contentTypeDefinition->get('taxonomy')->contains($taxonomyName);
     }
 
-    /**
-     * @return Collection|Taxonomy[]
-     */
     public function getTaxonomies(?string $type = null): Collection
     {
         if ($type) {
@@ -681,8 +615,8 @@ class Content
      * Generic getter for a record fields. Will return the field with $name.
      *
      * If $name is not found, throw an exception if it's invoked from code, and
-     * return null if invoked from within a template. In templates we need to be
-     * more lenient, in order to do things like `{% if record.foo %}..{% endif %}
+     * return null if invoked from within a template. In templates, we need to be
+     * more lenient, in order to do things like `{% if record.foo %}...{% endif %}
      *
      * Note: We can not rely on `{% if record.foo is defined %}`, because it
      * always returns `true` for object properties.
@@ -700,7 +634,7 @@ class Content
         } catch (\InvalidArgumentException $e) {
             $backtrace = new LaravelCollection($e->getTrace());
 
-            if ($backtrace->contains('class', \Twig\Template::class)) {
+            if ($backtrace->contains('class', Template::class)) {
                 // Invoked from within a Template render, so be lenient.
                 return null;
             }
@@ -757,7 +691,7 @@ class Content
      * Get the current regular fields, with the fields that are not present in
      * the definition anymore filtered out
      */
-    private function standaloneFieldsFilter(): Collection
+    private function standaloneFieldsFilter(): ArrayCollection
     {
         $definition = $this->getDefinition();
 
@@ -804,7 +738,7 @@ class Content
         return $result;
     }
 
-    public function getRelationsFromThisContent()
+    public function getRelationsFromThisContent() : ArrayCollection
     {
         return $this->relationsFromThisContent;
     }
@@ -832,7 +766,7 @@ class Content
         return $this;
     }
 
-    public function getRelationsToThisContent()
+    public function getRelationsToThisContent(): ArrayCollection
     {
         return $this->relationsToThisContent;
     }
@@ -862,7 +796,7 @@ class Content
 
     private function getFieldValuesFromDefinition(): ?array
     {
-        if (! $this->getDefinition() || ! $this->getDefinition()->get('fields', null)) {
+        if (! $this->getDefinition() || ! $this->getDefinition()->get('fields')) {
             // Definition is missing.
             return null;
         }

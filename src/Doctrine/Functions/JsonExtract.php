@@ -14,7 +14,7 @@ use Scienta\DoctrineJsonFunctions\Query\AST\Functions\AbstractJsonFunctionNode;
  */
 class JsonExtract extends AbstractJsonFunctionNode
 {
-    public const FUNCTION_NAME = 'JSON_EXTRACT';
+    public const string FUNCTION_NAME = 'JSON_EXTRACT';
 
     /** @var string[] */
     protected $requiredArgumentTypes = [self::STRING_PRIMARY_ARG, self::STRING_PRIMARY_ARG];

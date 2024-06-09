@@ -13,10 +13,8 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class SearchController extends TwigAwareController implements FrontendZoneInterface
 {
-    /**
-     * @Route("/search", methods={"GET|POST"}, name="search")
-     * @Route("/{_locale}/search", methods={"GET|POST"}, name="search_locale")
-     */
+    #[Route('/search', name: 'search', methods: ['GET|POST'])]
+    #[Route('/{_locale}/search', name: 'search_locale', methods: ['GET|POST'])]
     public function search(ContentRepository $contentRepository): Response
     {
         $page = (int) $this->getFromRequest('page', '1');

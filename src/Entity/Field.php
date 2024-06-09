@@ -21,88 +21,70 @@ use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 use Twig\Markup;
+#[ApiResource(
+    collectionOperations: [
+        'get' => ['security' => "is_granted('api:get')"],
+        'post' => ['security' => "is_granted('api:post')"],
+    ],
+    graphql: [
+        'item_query' => ['security' => "is_granted('api:get')"],
+        'collection_query' => ['security' => "is_granted('api:get')"],
+        'create' => ['security' => "is_granted('api:post')"],
+        'delete' => ['security' => "is_granted('api:delete')"],
+    ],
+    itemOperations: [
+        'get' => ['security' => "is_granted('api:get')"],
+        'put' => ['security' => "is_granted('api:post')"],
+        'delete' => ['security' => "is_granted('api:delete')"],
+    ],
+    subresourceOperations: [
+        'api_contents_fields_get_subresource' => [
+            'method' => 'GET',
+        ],
+    ],
+    denormalizationContext: ['groups' => ['api_write'], 'enable_max_depth' => true],
+    normalizationContext: ['groups' => ['get_field']],
+)]
 
-/**
- * @ApiResource(
- *     denormalizationContext={"groups"={"api_write"},"enable_max_depth"=true},
- *     normalizationContext={"groups"={"get_field"}},
- *
- *     subresourceOperations={
- *         "api_contents_fields_get_subresource"={
- *             "method"="GET"
- *         },
- *     },
- *     collectionOperations={
- *          "get"={"security"="is_granted('api:get')"},
- *          "post"={"security"="is_granted('api:post')"}
- *     },
- *     itemOperations={
- *          "get"={"security"="is_granted('api:get')"},
- *          "put"={"security"="is_granted('api:post')"},
- *          "delete"={"security"="is_granted('api:delete')"}
- *     },
- *     graphql={
- *          "item_query"={"security"="is_granted('api:get')"},
- *          "collection_query"={"security"="is_granted('api:get')"},
- *          "create"={"security"="is_granted('api:post')"},
- *          "delete"={"security"="is_granted('api:delete')"}
- *     }
- * )
- * @ApiFilter(SearchFilter::class)
- * @ORM\Entity(repositoryClass="Bolt\Repository\FieldRepository")
- * @ORM\InheritanceType("SINGLE_TABLE")
- * @ORM\DiscriminatorColumn(name="type", type="string", length=191)
- * @ORM\DiscriminatorMap({"generic" = "Field"})
- */
+#[ApiFilter(SearchFilter::class)]
+#[ORM\Entity(repositoryClass: "Bolt\Repository\FieldRepository")]
+#[ORM\InheritanceType("SINGLE_TABLE")]
+#[ORM\DiscriminatorColumn(name: "type", type: "string", length: 191)]
+#[ORM\DiscriminatorMap(["generic" => "Field"])]
 class Field implements FieldInterface, TranslatableInterface
 {
     use TranslatableTrait;
 
     public const TYPE = 'generic';
 
-    /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
-     */
-    private $id = 0;
+    #[ORM\Id]
+    #[ORM\GeneratedValue]
+    #[ORM\Column(type: 'integer')]
+    private ?int $id = null;
 
-    /**
-     * @ORM\Column(type="string", length=191)
-     * @Groups({"get_field","api_write"})
-     */
-    public $name;
+    #[ORM\Column(type: 'string', length: 191)]
+    #[Groups(['get_field', 'api_write'])]
+    public string $name;
 
-    /** @ORM\Column(type="integer") */
-    private $sortorder = 0;
+    #[ORM\Column(type: 'integer')]
+    private int $sortorder = 0;
 
-    /** @ORM\Column(type="integer", nullable=true) */
-    private $version;
+    #[ORM\Column(type: 'integer', nullable: true)]
+    private int $version;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Bolt\Entity\Content", inversedBy="fields", fetch="EAGER")
-     * @ORM\JoinColumn(nullable=false)
-     * @Groups("api_write")
-     */
-    private $content;
+    #[ORM\ManyToOne(targetEntity: Content::class, fetch: "EAGER", inversedBy: "fields")]
+    #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['api_write'])]
+    private Content $content;
 
-    /**
-     * @ORM\ManyToOne(targetEntity="Bolt\Entity\Field", cascade={"persist"})
-     * @ORM\JoinColumn(onDelete="CASCADE")
-     */
-    private $parent;
+    #[ORM\ManyToOne(targetEntity: Field::class, cascade: ["persist"])]
+    #[ORM\JoinColumn(onDelete: "CASCADE")]
+    private Field $parent;
 
-    /** @var ?FieldType */
-    private $fieldTypeDefinition;
-
-    /** @var bool */
-    private $useDefaultLocale = true;
-
-    /** @var Sanitiser */
-    private static $sanitiser;
-
-    /** @var Environment */
-    private static $twig;
+    private ?FieldType $fieldTypeDefinition;
+    private bool $useDefaultLocale = true;
+    private static Sanitiser $sanitiser;
+    private static Environment $twig;
 
     public function __toString(): string
     {
@@ -232,7 +214,7 @@ class Field implements FieldInterface, TranslatableInterface
      */
     public function getDefaultValue()
     {
-        return $this->getDefinition()->get('default', null);
+        return $this->getDefinition()->get('default');
     }
 
     public function isNew(): bool
@@ -240,12 +222,8 @@ class Field implements FieldInterface, TranslatableInterface
         return $this->getId() === 0;
     }
 
-    /**
-     * like getValue() but returns single value for single value fields
-     *
-     * @return array|mixed|null
-     */
-    public function getParsedValue()
+    /** like getValue() but returns single value for single value fields */
+    public function getParsedValue(): mixed
     {
         $value = $this->getValue();
         if (is_iterable($value)) {
@@ -260,10 +238,7 @@ class Field implements FieldInterface, TranslatableInterface
         return $value;
     }
 
-    /**
-     * @return string|array|Markup|bool
-     */
-    public function getTwigValue()
+    public function getTwigValue(): string|array|Markup|bool
     {
         $value = $this->getParsedValue();
 
@@ -463,8 +438,8 @@ class Field implements FieldInterface, TranslatableInterface
     public static function definitionAllowsEmpty(Collection $definition): bool
     {
         return self::settingsAllowEmpty(
-            $definition->get('allow_empty', null),
-            $definition->get('required', null)
+            $definition->get('allow_empty'),
+            $definition->get('required')
         );
     }
 

@@ -13,21 +13,11 @@ use Twig\TwigFunction;
 
 class CommonExtension extends AbstractExtension
 {
-    /** @var ContentExtension */
-    private $contentExtension;
-
-    /** @var FrontendMenuExtension */
-    private $frontendMenuExtension;
-
-    /** @var LocaleExtension */
-    private $localeExtension;
-
-    public function __construct(ContentExtension $contentExtension, FrontendMenuExtension $frontendMenuExtension, LocaleExtension $localeExtension)
-    {
-        $this->contentExtension = $contentExtension;
-        $this->frontendMenuExtension = $frontendMenuExtension;
-        $this->localeExtension = $localeExtension;
-    }
+    public function __construct(
+        private readonly ContentExtension $contentExtension,
+        private readonly FrontendMenuExtension $frontendMenuExtension,
+        private readonly LocaleExtension $localeExtension
+    ) {}
 
     /**
      * {@inheritdoc}
@@ -72,12 +62,12 @@ class CommonExtension extends AbstractExtension
     private function getLocale($item): ?string
     {
         if (is_string($item)) {
-            $localepattern = '/^[a-z]{2}((-|_)[a-z]{2})?$/m';
+            $localepattern = '/^[a-z]{2}(([-_])[a-z]{2})?$/m';
             preg_match_all($localepattern, $item, $matches);
 
             return ! empty($matches) ? $item : null;
         } elseif ($item instanceof Collection) {
-            return $this->getLocale($item->get('code', null));
+            return $this->getLocale($item->get('code'));
         }
 
         return null;

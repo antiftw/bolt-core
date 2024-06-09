@@ -11,14 +11,10 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 
-/**
- * @Security("is_granted('systemlog')")
- */
+#[Security('is_granted("systemlog")')]
 class LogViewerController extends TwigAwareController implements BackendZoneInterface
 {
-    /**
-     * @Route("/logviewer", name="bolt_logviewer", methods={"GET"})
-     */
+    #[Route('/logviewer', name: 'bolt_logviewer', methods: ['GET'])]
     public function index(LogRepository $log): Response
     {
         $amount = $this->config->get('general/log/amount', 10);

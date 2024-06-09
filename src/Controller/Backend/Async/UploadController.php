@@ -30,54 +30,25 @@ use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Throwable;
 
-/**
- * @Security("is_granted('upload')")
- */
+#[Security('is_granted("upload")')]
 class UploadController extends AbstractController implements AsyncZoneInterface
 {
     use CsrfTrait;
+    private Request $request;
 
-    /** @var MediaFactory */
-    private $mediaFactory;
-
-    /** @var EntityManagerInterface */
-    private $em;
-
-    /** @var Config */
-    private $config;
-
-    /** @var TextExtension */
-    private $textExtension;
-
-    /** @var Request */
-    private $request;
-
-    /** @var Filesystem */
-    private $filesystem;
-
-    /** @var TagAwareCacheInterface */
-    private $cache;
-
-    public function __construct(MediaFactory           $mediaFactory,
-                                EntityManagerInterface $em,
-                                Config                 $config,
-                                TextExtension          $textExtension,
-                                RequestStack           $requestStack,
-                                Filesystem             $filesystem,
-                                TagAwareCacheInterface $cache)
-    {
-        $this->mediaFactory = $mediaFactory;
-        $this->em = $em;
-        $this->config = $config;
-        $this->textExtension = $textExtension;
+    public function __construct(
+        private readonly MediaFactory           $mediaFactory,
+        private readonly EntityManagerInterface $em,
+        private readonly Config                 $config,
+        private readonly TextExtension          $textExtension,
+        private readonly Filesystem             $filesystem,
+        private readonly TagAwareCacheInterface $cache,
+                         RequestStack           $requestStack,
+    ) {
         $this->request = $requestStack->getCurrentRequest();
-        $this->filesystem = $filesystem;
-        $this->cache = $cache;
     }
 
-    /**
-     * @Route("/upload-url", name="bolt_async_upload_url", methods={"POST"})
-     */
+    #[Route('/upload-url', name: 'bolt_async_upload_url', methods: ['POST'])]
     public function handleURLUpload(Request $request): Response
     {
         try {
@@ -95,12 +66,12 @@ class UploadController extends AbstractController implements AsyncZoneInterface
 
         $locationName = $request->get('location', '');
         $path = $request->get('path') . $filename;
-        $folderpath = $this->config->getPath($locationName, true, 'tmp/');
+        $folderPath = $this->config->getPath($locationName, true, 'tmp/');
         $target = $this->config->getPath($locationName, true, 'tmp/' . $path);
 
         try {
             // Make sure temporary folder exists
-            $this->filesystem->mkdir($folderpath);
+            $this->filesystem->mkdir($folderPath);
             // Create temporary file
             $this->filesystem->copy($url, $target);
         } catch (Throwable $e) {
@@ -193,7 +164,7 @@ class UploadController extends AbstractController implements AsyncZoneInterface
         try {
             /** @var UploadedFile|File|ResultInterface|Collection $result */
             $result = $uploadHandler->process($request->files->all());
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             return new JsonResponse([
                 'error' => [
                     'message' => $e->getMessage() . ' Ensure the upload does <em><u>not</u></em> exceed the maximum filesize of <b>' . $this->textExtension->formatBytes($maxSize) . '</b>, and that the destination folder (on the webserver) is writable.',
@@ -203,6 +174,7 @@ class UploadController extends AbstractController implements AsyncZoneInterface
 
         if ($result->isValid()) {
             try {
+                // TODO: CHECK THIS
                 $media = $this->mediaFactory->createFromFilename($locationName, $path, $result->__get('name'));
 
                 if ($this->mediaFactory->isImage($media)) {
@@ -211,7 +183,7 @@ class UploadController extends AbstractController implements AsyncZoneInterface
                 }
 
                 return new JsonResponse($media->getFilenamePath());
-            } catch (\Throwable $e) {
+            } catch (Throwable $e) {
                 // something wrong happened, we don't need the uploaded files anymore
                 $result->clear();
 
@@ -240,7 +212,7 @@ class UploadController extends AbstractController implements AsyncZoneInterface
         return $filename . '.' . $extension;
     }
 
-    public function checkJavascriptInSVG($file)
+    public function checkJavascriptInSVG($file): bool
     {
         if (Path::getExtension($file['name']) != 'svg') {
             return true;
@@ -248,7 +220,7 @@ class UploadController extends AbstractController implements AsyncZoneInterface
 
         $svgFile = file_get_contents($file['tmp_name']);
 
-        if (preg_match('/(?:<[^>]+\s)(on\S+)=["\']?((?:.(?!["\']?\s+(?:\S+)=|[>"\']))+.)["\']?/i', $svgFile)) {
+        if (preg_match('/<[^>]+\s(on\S+)=["\']?((?:.(?!["\']?\s+\S+=|[>"\']))+.)["\']?/i', $svgFile)) {
             return false;
         }
 

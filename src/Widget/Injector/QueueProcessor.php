@@ -15,19 +15,10 @@ use Tightenco\Collect\Support\Collection;
 
 class QueueProcessor
 {
-    /** @var HtmlInjector */
-    protected $injector;
+    private array $matchedComments = [];
+    private int $matchedCommentsCount = 0;
 
-    /** @var array */
-    private $matchedComments = [];
-
-    /** @var int */
-    private $matchedCommentsCount = 0;
-
-    public function __construct(HtmlInjector $injector)
-    {
-        $this->injector = $injector;
-    }
+    public function __construct(private readonly HtmlInjector $injector) {}
 
     public function guardResponse(Response $response, callable $process): Response
     {

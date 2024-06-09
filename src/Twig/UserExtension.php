@@ -11,13 +11,7 @@ use Twig\TwigFunction;
 
 class UserExtension extends AbstractExtension
 {
-    /** @var UserRepository */
-    private $repository;
-
-    public function __construct(UserRepository $repository)
-    {
-        $this->repository = $repository;
-    }
+    public function __construct(private readonly UserRepository $repository) {}
 
     /**
      * {@inheritdoc}

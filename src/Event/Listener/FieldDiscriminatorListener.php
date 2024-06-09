@@ -7,7 +7,7 @@ namespace Bolt\Event\Listener;
 use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
-use Doctrine\ORM\ORMException;
+use Doctrine\ORM\Exception\ORMException;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 
 /**
@@ -17,22 +17,17 @@ use Doctrine\Persistence\Mapping\Driver\MappingDriver;
  */
 class FieldDiscriminatorListener
 {
-    /** @var MappingDriver */
-    private $mappingDriver;
+    private MappingDriver $mappingDriver;
 
     /**
      * The temporary map used for one run, when computing everything
-     *
-     * @var array
      */
-    private $tempMap = [];
+    private array $tempMap = [];
 
     /**
      * The cached map, this holds the results after a computation, also for other classes
-     *
-     * @var array
      */
-    private $map = [];
+    private array $map = [];
 
     /**
      * @throws ORMException

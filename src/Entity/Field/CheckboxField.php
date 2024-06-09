@@ -8,12 +8,10 @@ use Bolt\Entity\Field;
 use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class CheckboxField extends Field implements FieldInterface, ScalarCastable, RawPersistable
 {
-    public const TYPE = 'checkbox';
+    public const string TYPE = 'checkbox';
 
     public function setValue($value): Field
     {
@@ -22,23 +20,17 @@ class CheckboxField extends Field implements FieldInterface, ScalarCastable, Raw
             $value = current($value);
         }
 
-        switch ($value) {
-            // String values come from the ContentEditController.
-            case 'true':
-                $value = true;
-                break;
-            case 'false':
-                $value = false;
-                break;
-            default:
-                $value = $value ? true : false;
-        }
+        $value = match ($value) {
+            'true' => true,
+            'false' => false,
+            default => (bool)$value,
+        };
 
         return parent::setValue($value);
     }
 
-    public function getTwigValue()
+    public function getTwigValue(): bool
     {
-        return current($this->getValue()) ? true : false;
+        return (bool)current($this->getValue());
     }
 }

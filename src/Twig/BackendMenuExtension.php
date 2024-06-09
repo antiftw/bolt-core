@@ -10,13 +10,7 @@ use Twig\TwigFunction;
 
 class BackendMenuExtension extends AbstractExtension
 {
-    /** @var BackendMenuBuilderInterface */
-    private $menuBuilder;
-
-    public function __construct(BackendMenuBuilderInterface $menuBuilder)
-    {
-        $this->menuBuilder = $menuBuilder;
-    }
+    public function __construct(private readonly BackendMenuBuilderInterface $menuBuilder) {}
 
     /**
      * {@inheritdoc}

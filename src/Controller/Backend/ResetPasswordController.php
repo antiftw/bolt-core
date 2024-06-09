@@ -9,6 +9,7 @@ use Bolt\Controller\TwigAwareController;
 use Bolt\Entity\User;
 use Bolt\Form\ChangePasswordFormType;
 use Bolt\Form\ResetPasswordRequestFormType;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bridge\Twig\Mime\TemplatedEmail;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -21,33 +22,27 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use SymfonyCasts\Bundle\ResetPassword\Controller\ResetPasswordControllerTrait;
 use SymfonyCasts\Bundle\ResetPassword\Exception\ResetPasswordExceptionInterface;
+use SymfonyCasts\Bundle\ResetPassword\Model\ResetPasswordToken;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
 
-/**
- * @Route("/reset-password")
- */
+#[Route('/reset-password')]
 class ResetPasswordController extends TwigAwareController
 {
     use ResetPasswordControllerTrait;
 
-    /** @var ResetPasswordHelperInterface */
-    private $resetPasswordHelper;
-
-    /** @var TranslatorInterface */
-    private $translator;
-
-    public function __construct(ResetPasswordHelperInterface $resetPasswordHelper, Config $config, TranslatorInterface $translator)
-    {
-        $this->resetPasswordHelper = $resetPasswordHelper;
+    public function __construct(
+        private readonly ResetPasswordHelperInterface $resetPasswordHelper,
+        private readonly TranslatorInterface $translator,
+        private readonly ManagerRegistry $managerRegistry,
+        Config $config
+    ){
         $this->config = $config;
-        $this->translator = $translator;
     }
 
     /**
      * Display & process form to request a password reset.
-     *
-     * @Route("", name="bolt_forgot_password_request")
      */
+    #[Route('', name: 'bolt_forgot_password_request')]
     public function request(Request $request, MailerInterface $mailer): Response
     {
         $form = $this->createForm(ResetPasswordRequestFormType::class);
@@ -69,13 +64,12 @@ class ResetPasswordController extends TwigAwareController
 
     /**
      * Confirmation page after a user has requested a password reset.
-     *
-     * @Route("/check-email", name="bolt_check_email")
      */
+    #[Route('/check-email', name: 'bolt_check_email')]
     public function checkEmail(): Response
     {
         // We prevent users from directly accessing this page
-        if (! $this->canCheckEmail()) {
+        if (!$this->getTokenObjectFromSession()){
             return $this->redirectToRoute('bolt_forgot_password_request');
         }
 
@@ -88,9 +82,8 @@ class ResetPasswordController extends TwigAwareController
 
     /**
      * Validates and process the reset URL that the user clicked in their email.
-     *
-     * @Route("/reset/{token}", name="bolt_reset_password")
      */
+    #[Route('/reset', name: 'bolt_reset_password')]
     public function reset(Request $request, UserPasswordHasherInterface $passwordHasher, ?string $token = null): Response
     {
         if ($token) {
@@ -107,6 +100,7 @@ class ResetPasswordController extends TwigAwareController
         }
 
         try {
+            /** @var User $user */
             $user = $this->resetPasswordHelper->validateTokenAndFetchUser($token);
         } catch (ResetPasswordExceptionInterface $e) {
             $this->addFlash('reset_password_error', sprintf(
@@ -132,12 +126,12 @@ class ResetPasswordController extends TwigAwareController
             );
 
             $user->setPassword($encodedPassword);
-            $this->getDoctrine()->getManager()->flush();
+            $this->managerRegistry->getManager()->flush();
 
             // The session is cleaned up after the password has been changed.
             $this->cleanSessionAfterReset();
 
-            // Added an additional flash message to show if password reset was successful
+            // Added a flash message to show if password reset was successful
             $this->addFlash('reset_password_success', $this->translator->trans('reset_password.reset_successful'));
 
             return $this->redirectToRoute('bolt_login');
@@ -152,12 +146,15 @@ class ResetPasswordController extends TwigAwareController
 
     protected function processSendingPasswordResetEmail(string $emailFormData, MailerInterface $mailer): RedirectResponse
     {
-        $user = $this->getDoctrine()->getRepository(User::class)->findOneBy([
+        $user = $this->managerRegistry->getRepository(User::class)->findOneBy([
             'email' => $emailFormData,
+        ]);
+        $token = $this->managerRegistry->getRepository(ResetPasswordToken::class)->findOneBy([
+            'user' => $user,
         ]);
 
         // Marks that you are allowed to see the bolt_check_email page.
-        $this->setCanCheckEmailInSession();
+        $this->setTokenObjectInSession($token);
 
         // Do not reveal whether a user account was found or not.
         if (! $user) {

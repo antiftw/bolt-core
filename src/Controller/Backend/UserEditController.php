@@ -29,38 +29,20 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
 {
     use CsrfTrait;
 
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
-
-    /** @var EntityManagerInterface */
-    private $em;
-
-    /** @var UserPasswordHasherInterface */
-    private $passwordHasher;
-
-    /** @var EventDispatcherInterface */
-    private $dispatcher;
-
-    /** @var string */
-    protected $defaultLocale;
-
     /** @var array */
-    private $assignableRoles;
+    private array $assignableRoles;
 
     public function __construct(
-        UrlGeneratorInterface $urlGenerator,
-        EntityManagerInterface $em,
-        UserPasswordHasherInterface $passwordHasher,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly EntityManagerInterface $em,
+        private readonly UserPasswordHasherInterface $passwordHasher,
+
+        private readonly EventDispatcherInterface $dispatcher,
         CsrfTokenManagerInterface $csrfTokenManager,
-        EventDispatcherInterface $dispatcher,
+        string $defaultLocale,
         Config $config,
-        string $defaultLocale
     ) {
-        $this->urlGenerator = $urlGenerator;
-        $this->em = $em;
-        $this->passwordHasher = $passwordHasher;
         $this->csrfTokenManager = $csrfTokenManager;
-        $this->dispatcher = $dispatcher;
         $this->defaultLocale = $defaultLocale;
         $this->assignableRoles = $config->get('permissions/assignable_roles')->all();
     }
@@ -80,7 +62,7 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
         $this->dispatcher->dispatch($event, UserEvent::ON_ADD);
         $roles = $this->getPossibleRolesForForm();
 
-        // These are the variables we have to pass into our FormType so we can build the fields correctly
+        // These are the variables we have to pass into our FormType, so we can build the fields correctly
         $form_data = [
             'suggested_password' => Str::generatePassword(),
             'roles' => $roles,
@@ -173,13 +155,13 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
         $this->validateCsrf('useredit');
 
         $this->em->remove($user);
-        $contentArray = $this->getDoctrine()->getManager()->getRepository(\Bolt\Entity\Content::class)->findBy(['author' => $user]);
+        $contentArray = $this->em->getRepository(Content::class)->findBy(['author' => $user]);
         foreach ($contentArray as $content) {
             $content->setAuthor(null);
             $this->em->persist($content);
         }
 
-        $mediaArray = $this->getDoctrine()->getManager()->getRepository(\Bolt\Entity\Media::class)->findBy(['author' => $user]);
+        $mediaArray = $this->em->getRepository(Media::class)->findBy(['author' => $user]);
         foreach ($mediaArray as $media) {
             $media->setAuthor(null);
             $this->em->persist($media);
@@ -236,10 +218,7 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
         return $result;
     }
 
-    /**
-     * @return RedirectResponse|Response
-     */
-    private function handleEdit(bool $is_profile_edit, User $user, $submitted_data)
+    private function handleEdit(bool $is_profile_edit, User $user, $submitted_data): Response
     {
         $redirectRouteAfterSubmit = $is_profile_edit ? 'bolt_profile_edit' : 'bolt_users';
         $event = new UserEvent($user);
@@ -254,7 +233,7 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
             $require_password = true;
         }
 
-        // These are the variables we have to pass into our FormType so we can build the fields correctly
+        // These are the variables we have to pass into our FormType, so we can build the fields correctly
         $form_data = [
             'suggested_password' => Str::generatePassword(),
             'roles' => $roles,

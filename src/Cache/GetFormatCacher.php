@@ -9,7 +9,7 @@ class GetFormatCacher extends ContentHelper implements CachingInterface
 {
     use CachingTrait;
 
-    public const CACHE_CONFIG_KEY = 'formatter';
+    public const string CACHE_CONFIG_KEY = 'formatter';
 
     public function get(Content $record, string $format = '', ?string $locale = null): string
     {

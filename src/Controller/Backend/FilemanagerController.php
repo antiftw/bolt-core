@@ -20,35 +20,20 @@ use Symfony\Component\Finder\Finder;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 
 class FilemanagerController extends TwigAwareController implements BackendZoneInterface
 {
     use CsrfTrait;
+    private const int PAGE_SIZE = 60;
 
-    /** @var FileLocations */
-    private $fileLocations;
-
-    /** @var MediaRepository */
-    private $mediaRepository;
-
-    /** @var RequestStack */
-    protected $requestStack;
-
-    private const PAGESIZE = 60;
-
-    /** @var Filesystem */
-    private $filesystem;
-
-    public function __construct(FileLocations $fileLocations, MediaRepository $mediaRepository, RequestStack $requestStack, Filesystem $filesystem)
-    {
-        $this->fileLocations = $fileLocations;
-        $this->mediaRepository = $mediaRepository;
-        $this->filesystem = $filesystem;
-        $this->requestStack = $requestStack;
-    }
+    public function __construct(
+        private readonly FileLocations $fileLocations,
+        private readonly MediaRepository $mediaRepository,
+        private readonly RequestStack $requestStack,
+        private readonly Filesystem $filesystem
+    ) {}
 
     /**
      * @Route("/filemanager/{location}", name="bolt_filemanager", methods={"GET"})
@@ -76,8 +61,8 @@ class FilemanagerController extends TwigAwareController implements BackendZoneIn
 
         $location = $this->fileLocations->get($location);
 
-        $finder = $this->findFiles($location->getBasepath(), $path);
-        $folders = $this->findFolders($location->getBasepath(), $path);
+        $finder = $this->findFiles($location->getBasePath(), $path);
+        $folders = $this->findFolders($location->getBasePath(), $path);
 
         $currentPage = (int) $this->getFromRequest('page', '1');
         $pager = $this->createPaginator($finder, $currentPage);
@@ -91,7 +76,7 @@ class FilemanagerController extends TwigAwareController implements BackendZoneIn
             'folders' => $folders,
             'parent' => $parent,
             'media' => $this->mediaRepository->findAll(),
-            'allfiles' => $location->isShowAll() ? $this->buildIndex($location->getBasepath()) : false,
+            'allfiles' => $location->isShowAll() ? $this->buildIndex($location->getBasePath()) : false,
             'view' => $view,
         ]);
     }
@@ -118,7 +103,7 @@ class FilemanagerController extends TwigAwareController implements BackendZoneIn
 
         $location = $this->fileLocations->get($location);
 
-        $folder = Path::canonicalize($location->getBasepath() . '/' . $path);
+        $folder = Path::canonicalize($location->getBasePath() . '/' . $path);
 
         if (! $this->filesystem->exists($folder)) {
             $this->addFlash('warning', 'filemanager.delete_folder_missing');
@@ -159,7 +144,7 @@ class FilemanagerController extends TwigAwareController implements BackendZoneIn
 
         $location = $this->fileLocations->get($location);
 
-        $folder = Path::canonicalize($location->getBasepath() . '/' . $path);
+        $folder = Path::canonicalize($location->getBasePath() . '/' . $path);
 
         if ($this->filesystem->exists($folder)) {
             $this->addFlash('warning', 'filemanager.create_folder_already_exists');
@@ -181,39 +166,39 @@ class FilemanagerController extends TwigAwareController implements BackendZoneIn
 
     private function findFiles(string $base, string $path): Finder
     {
-        $fullpath = PathCanonicalize::canonicalize($base, $path);
+        $fullPath = PathCanonicalize::canonicalize($base, $path);
 
         $finder = new Finder();
-        $finder->in($fullpath)->depth('== 0')->files()->sortByName();
+        $finder->in($fullPath)->depth('== 0')->files()->sortByName();
 
         return $finder;
     }
 
     private function findFolders(string $base, string $path): Finder
     {
-        $fullpath = PathCanonicalize::canonicalize($base, $path);
+        $fullPath = PathCanonicalize::canonicalize($base, $path);
 
         $finder = new Finder();
-        $finder->in($fullpath)->depth('== 0')->directories()->sortByName();
+        $finder->in($fullPath)->depth('== 0')->directories()->sortByName();
 
         return $finder;
     }
 
     private function createPaginator(Finder $finder, int $page): Pagerfanta
     {
-        $paginator = new Pagerfanta(new ArrayAdapter(iterator_to_array($finder, true)));
-        $paginator->setMaxPerPage(self::PAGESIZE);
+        $paginator = new Pagerfanta(new ArrayAdapter(iterator_to_array($finder)));
+        $paginator->setMaxPerPage(self::PAGE_SIZE);
         $paginator->setCurrentPage($page);
 
         return $paginator;
     }
 
-    private function buildIndex(string $base)
+    private function buildIndex(string $base): array
     {
-        $fullpath = Path::canonicalize($base);
+        $fullPath = Path::canonicalize($base);
 
         $finder = new Finder();
-        $finder->in($fullpath)->depth('< 5')->sortByName()->files();
+        $finder->in($fullPath)->depth('< 5')->sortByName()->files();
 
         $index = [];
 
@@ -228,7 +213,7 @@ class FilemanagerController extends TwigAwareController implements BackendZoneIn
         return $index;
     }
 
-    private function getFileSummary($contents)
+    private function getFileSummary($contents): string
     {
         $contents = str_replace(['<?php', '# ', "\n"], ['', '', " \n"], $contents);
 

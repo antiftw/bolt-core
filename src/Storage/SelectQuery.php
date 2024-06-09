@@ -9,13 +9,10 @@ use Bolt\Configuration\Content\ContentType;
 use Bolt\Doctrine\JsonHelper;
 use Bolt\Entity\Field\CheckboxField;
 use Bolt\Entity\Field\NumberField;
-use Bolt\Entity\Field\SelectField;
-use Carbon\Carbon;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Query\Expr\Andx;
 use Doctrine\ORM\Query\Expr\Base;
 use Doctrine\ORM\Query\Expr\Orx;
-use Doctrine\ORM\Query\Expr\Select;
 use Doctrine\ORM\Query\ParameterTypeInferer;
 use Doctrine\ORM\QueryBuilder;
 
@@ -32,32 +29,13 @@ use Doctrine\ORM\QueryBuilder;
  */
 class SelectQuery implements QueryInterface
 {
-    /** @var QueryBuilder */
-    protected $qb;
-
-    /** @var QueryParameterParser */
-    protected $parser;
-
-    /** @var string */
-    protected $contentType;
-
-    /** @var array */
-    protected $params = [];
-
-    /** @var Filter[] */
-    protected $filters = [];
-
-    /** @var array */
-    protected $replacements = [];
-
-    /** @var bool */
-    protected $singleFetchMode = null;
-
-    /** @var int */
-    protected $index = 1;
-
-    /** @var array */
-    protected $coreFields = [
+    protected string $contentType;
+    protected array $params = [];
+    protected array $filters = [];
+    protected array $replacements = [];
+    protected ?bool $singleFetchMode = null;
+    protected int $index = 1;
+    protected array $coreFields = [
         'id',
         'createdAt',
         'modifiedAt',
@@ -65,64 +43,31 @@ class SelectQuery implements QueryInterface
         'depublishedAt',
         'status',
     ];
-
-    /** @var array */
-    protected $coreDateFields = [
+    protected array $coreDateFields = [
         'createdAt',
         'modifiedAt',
         'publishedAt',
         'depublishedAt',
     ];
-
-    /** @var array */
-    protected $taxonomyFields = [];
-
-    /** @var array */
-    protected $referenceFields = [
+    protected array $taxonomyFields = [];
+    protected array $referenceFields = [
         'author',
     ];
+    protected array $regularFields = [];
+    protected string $anything = 'anything';
+    private array $referenceJoins = [];
+    private array $taxonomyJoins = [];
+    private array $fieldJoins = [];
 
-    /** @var array */
-    protected $regularFields = [];
-
-    /** @var string */
-    protected $anything = 'anything';
-
-    /** @var array */
-    private $referenceJoins = [];
-
-    /** @var array */
-    private $taxonomyJoins = [];
-
-    /** @var array */
-    private $fieldJoins = [];
-
-    /** @var Config */
-    private $config;
-
-    /** @var FieldQueryUtils */
-    private $utils;
-
-    /** @var EntityManagerInterface */
-    private $em;
-
-    /**
-     * Constructor.
-     */
     public function __construct(
-        QueryParameterParser $parser,
-        Config $config,
-        EntityManagerInterface $em,
-        FieldQueryUtils $utils,
-        ?QueryBuilder $qb = null
+        private readonly QueryParameterParser $parser,
+        private readonly Config $config,
+        private readonly EntityManagerInterface $em,
+        private readonly FieldQueryUtils $utils,
+        private ?QueryBuilder $qb = null
     ) {
-        $this->qb = $qb;
-        $this->parser = $parser;
-        $this->config = $config;
 
         $this->setTaxonomyFields();
-        $this->utils = $utils;
-        $this->em = $em;
     }
 
     /**
@@ -207,10 +152,10 @@ class SelectQuery implements QueryInterface
     /**
      * Getter to allow access to a set parameter.
      */
-    public function getParameter(string $name)
+    public function getParameter(string $key)
     {
-        if (array_key_exists($name, $this->params)) {
-            return $this->params[$name];
+        if (array_key_exists($key, $this->params)) {
+            return $this->params[$key];
         }
 
         return null;
@@ -219,9 +164,9 @@ class SelectQuery implements QueryInterface
     /**
      * Setter to allow writing to a named parameter.
      */
-    public function setParameter(string $name, $value): void
+    public function setParameter(string $key, $value): void
     {
-        $this->params[$name] = $value;
+        $this->params[$key] = $value;
         $this->processFilters();
     }
 
@@ -250,7 +195,7 @@ class SelectQuery implements QueryInterface
             } elseif (in_array($filter->getKey(), $this->getTaxonomyFields(), true)) {
                 // For when we're using a taxonomy type in the `where`
                 $expr = $expr->add($this->getTaxonomyFieldExpression($filter));
-            } elseif (in_array($filter->getKey(), [$this->anything], true)) {
+            } elseif ($filter->getKey() === $this->anything) {
                 // build all expressions
                 // put them in a wrapper OR expression
                 $anythingExpr = $this->qb->expr()->OrX();
@@ -355,10 +300,8 @@ class SelectQuery implements QueryInterface
 
     /**
      * Allows replacing the default QueryBuilder.
-     *
-     * @param QueryBuilder $qb
      */
-    public function setQueryBuilder($qb): void
+    public function setQueryBuilder(QueryBuilder $qb): void
     {
         $this->qb = $qb;
     }
@@ -557,7 +500,7 @@ class SelectQuery implements QueryInterface
         $this->taxonomyJoins[$filter->getKey()] = $filter;
 
         $originalExpression = $filter->getExpression();
-        $originalLeftExpression = '/content\.([^\s])*/';
+        $originalLeftExpression = '/content\.(\S)*/';
         $newLeftExpression = sprintf('taxonomies_%s.slug', $filter->getKey());
 
         return preg_replace($originalLeftExpression, $newLeftExpression, $originalExpression);
@@ -625,9 +568,7 @@ class SelectQuery implements QueryInterface
 
         if (mb_strpos($newLeftExpression, 'IS NOT NULL') !== false) {
             // Replace key like `:slug`, with `:slug_1`
-            $res = str_replace(':' . $filter->getKey(), ':' . key($filter->getParameters()), $newLeftExpression);
-
-            return $res;
+            return str_replace(':' . $filter->getKey(), ':' . key($filter->getParameters()), $newLeftExpression);
         }
 
         return str_replace($originalLeftExpression, $newLeftExpression, $valueWhere);

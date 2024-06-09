@@ -10,13 +10,12 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 trait CsrfTrait
 {
-    /** @var CsrfTokenManagerInterface */
-    protected $csrfTokenManager;
+    protected CsrfTokenManagerInterface$csrfTokenManager;
 
     /**
      * @required
      */
-    public function setCsrfTokenManager(CsrfTokenManagerInterface $csrfTokenManager)
+    public function setCsrfTokenManager(CsrfTokenManagerInterface $csrfTokenManager): void
     {
         $this->csrfTokenManager = $csrfTokenManager;
     }

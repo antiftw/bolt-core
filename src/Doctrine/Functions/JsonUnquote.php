@@ -14,7 +14,7 @@ use Scienta\DoctrineJsonFunctions\Query\AST\Functions\AbstractJsonFunctionNode;
  */
 class JsonUnquote extends AbstractJsonFunctionNode
 {
-    public const FUNCTION_NAME = 'JSON_UNQUOTE';
+    public const string FUNCTION_NAME = 'JSON_UNQUOTE';
 
     /** @var string[] */
     protected $requiredArgumentTypes = [self::STRING_PRIMARY_ARG];

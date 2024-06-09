@@ -3,19 +3,13 @@
 namespace Bolt\Utils;
 
 use Bolt\Configuration\Config;
-use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Finder\Finder;
 use Tightenco\Collect\Support\Collection;
 
 class FilesIndex
 {
-    /** @var Config */
-    private $config;
-
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-    }
+    public function __construct(private readonly Config $config)
+    {}
 
     public function get(string $path, string $type, string $baseUrlPath, string $baseFilePath): Collection
     {

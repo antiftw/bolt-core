@@ -54,7 +54,7 @@ class TextExtension extends AbstractExtension
 
     public function slug(string $str): string
     {
-        return Str::slug((string) $str);
+        return Str::slug($str);
     }
 
     public function ucwords(string $string, string $delimiters = ''): string
@@ -86,7 +86,7 @@ class TextExtension extends AbstractExtension
         return round($bytes, $precision) . ' ' . $units[$pow];
     }
 
-    public function urlDecode(string $string)
+    public function urlDecode(string $string): array|string
     {
         if (! mb_strpos($string, '=')) {
             return urldecode($string);

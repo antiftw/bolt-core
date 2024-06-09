@@ -8,14 +8,12 @@ use Bolt\Entity\Field;
 use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class DateField extends Field implements FieldInterface, ScalarCastable
 {
-    public const TYPE = 'date';
+    public const string TYPE = 'date';
 
-    public function getDefaultValue()
+    public function getDefaultValue(): float|int|null
     {
         $default = parent::getDefaultValue();
 

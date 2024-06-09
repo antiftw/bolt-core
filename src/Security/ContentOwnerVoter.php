@@ -11,7 +11,7 @@ use Symfony\Component\Security\Core\Authorization\Voter\Voter;
 
 class ContentOwnerVoter extends Voter
 {
-    public const OWNER = 'CONTENT_OWNER';
+    public const string OWNER = 'CONTENT_OWNER';
 
     protected function supports(string $attribute, $subject): bool
     {
@@ -30,7 +30,6 @@ class ContentOwnerVoter extends Voter
             return false;
         }
 
-        /** @var User $boltUser */
         $boltUser = $user;
 
         /** @var Content $content */

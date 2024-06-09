@@ -11,11 +11,8 @@ use Tightenco\Collect\Support\Collection;
 
 abstract class BaseFixture extends Fixture
 {
-    /** @var array */
-    private $referencesIndex = [];
-
-    /** @var array */
-    private $taxonomyIndex = [];
+    private array $referencesIndex = [];
+    private array $taxonomyIndex = [];
 
     /**
      * During unit-tests, the fixtures are ran multiple times. Flush the
@@ -31,7 +28,7 @@ abstract class BaseFixture extends Fixture
         if (isset($this->referencesIndex[$entityName]) === false) {
             $this->referencesIndex[$entityName] = [];
 
-            foreach (array_keys($this->referenceRepository->getReferences()) as $key) {
+            foreach (array_keys($this->referenceRepository->getReferencesByClass()) as $key) {
                 if (mb_strpos($key, $entityName . '_') === 0) {
                     $this->referencesIndex[$entityName][] = $key;
                 }
@@ -40,7 +37,7 @@ abstract class BaseFixture extends Fixture
         if (empty($this->referencesIndex[$entityName])) {
             throw new \Exception(sprintf('Cannot find any references for Entity "%s"', $entityName));
         }
-        $randomReferenceKey = array_rand($this->referencesIndex[$entityName], 1);
+        $randomReferenceKey = array_rand($this->referencesIndex[$entityName]);
 
         return $this->getReference($this->referencesIndex[$entityName][$randomReferenceKey]);
     }
@@ -48,7 +45,7 @@ abstract class BaseFixture extends Fixture
     protected function getRandomTaxonomies(string $type, int $amount): array
     {
         if (empty($this->taxonomyIndex)) {
-            foreach (array_keys($this->referenceRepository->getReferences()) as $key) {
+            foreach (array_keys($this->referenceRepository->getReferencesByClass()) as $key) {
                 if (mb_strpos($key, 'taxonomy_') === 0) {
                     $tuples = explode('_', $key);
                     $this->taxonomyIndex[$tuples[1]][] = $key;
@@ -84,12 +81,12 @@ abstract class BaseFixture extends Fixture
 
     private function findFiles(string $base): Finder
     {
-        $fullpath = Path::canonicalize($base);
+        $fullPath = Path::canonicalize($base);
 
         $glob = '*.{jpg,png,gif,jpeg,webp,avif}';
 
         $finder = new Finder();
-        $finder->in($fullpath)->depth('< 3')->sortByName()->name($glob)->files();
+        $finder->in($fullPath)->depth('< 3')->sortByName()->name($glob)->files();
 
         return $finder;
     }

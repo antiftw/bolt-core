@@ -12,23 +12,14 @@ use Tightenco\Collect\Support\Collection;
 
 abstract class BaseParser
 {
-    /** @var FileLocator */
-    protected $fileLocator;
+    protected FileLocator $fileLocator;
+    protected PathResolver $pathResolver;
+    protected array $parsedFilenames = [];
 
-    /** @var PathResolver */
-    protected $pathResolver;
-
-    /** @var string */
-    protected $initialFilename;
-
-    /** @var string[] */
-    protected $parsedFilenames = [];
-
-    public function __construct(string $projectDir, string $initialFilename)
+    public function __construct(string $projectDir, private readonly string $initialFilename)
     {
         $this->fileLocator = new FileLocator([$projectDir . '/' . $this->getProjectConfigDir()]);
-        $this->pathResolver = new PathResolver(dirname(dirname(dirname(__DIR__))));
-        $this->initialFilename = $initialFilename;
+        $this->pathResolver = new PathResolver(dirname(__DIR__, 3));
     }
 
     /**
@@ -41,8 +32,8 @@ abstract class BaseParser
     protected function parseConfigYaml(string $filename, bool $ignoreMissing = false): Collection
     {
         try {
-            if (! is_readable($filename)) {
-                $filename = $this->fileLocator->locate($filename, null, true);
+            if (!is_readable($filename)) {
+                $filename = $this->fileLocator->locate($filename);
             }
         } catch (FileLocatorFileNotFoundException $e) {
             if ($ignoreMissing) {
@@ -68,7 +59,7 @@ abstract class BaseParser
         return $this->parsedFilenames;
     }
 
-    public function getInitialFilename()
+    public function getInitialFilename(): string
     {
         return $this->initialFilename;
     }
@@ -84,7 +75,7 @@ abstract class BaseParser
         return $projectConfigDir ?? 'config/bolt';
     }
 
-    public function getFilenameLocalOverrides()
+    public function getFilenameLocalOverrides(): array|string|null
     {
         return preg_replace('/([a-z0-9_-]+).(ya?ml)$/i', '$1_local.$2', $this->initialFilename);
     }

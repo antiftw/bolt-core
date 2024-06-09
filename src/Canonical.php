@@ -17,44 +17,18 @@ use Symfony\Component\Routing\RouterInterface;
 
 class Canonical
 {
-    /** @var Config */
-    private $config;
-
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
-
-    /** @var Request */
-    private $request = null;
-
-    /** @var string */
-    private $scheme = null;
-
-    /** @var string */
-    private $host = null;
-
-    /** @var int */
-    private $port = null;
-
-    /** @var string */
-    private $path = null;
-
-    /** @var string */
-    private $defaultLocale;
-
-    /** @var RouterInterface */
-    private $router;
-
-    /** @var RequestStack */
-    private $requestStack;
-
-    public function __construct(Config $config, UrlGeneratorInterface $urlGenerator, RequestStack $requestStack, RouterInterface $router, string $defaultLocale)
-    {
-        $this->config = $config;
-        $this->urlGenerator = $urlGenerator;
-        $this->defaultLocale = $defaultLocale;
-        $this->router = $router;
-        $this->requestStack = $requestStack;
-    }
+    private ?string $scheme = null;
+    private ?string $host = null;
+    private ?int $port = null;
+    private ?string $path = null;
+    private ?Request $request = null;
+    public function __construct(
+        private readonly Config $config,
+        private UrlGeneratorInterface $urlGenerator,
+        private readonly RequestStack $requestStack,
+        private readonly RouterInterface $router,
+        private readonly string $defaultLocale
+    ) {}
 
     public function getRequest(): Request
     {
@@ -176,7 +150,7 @@ class Canonical
             $route = $this->getRequest()->attributes->get('_route');
             $params = $this->getRequest()->attributes->get('_route_params');
 
-            $this->path = $this->generateLink($route, $params, false);
+            $this->path = $this->generateLink($route, $params);
         }
 
         return $this->path;
@@ -195,7 +169,7 @@ class Canonical
             $route = $this->getRequest()->attributes->get('_route');
         }
 
-        return $this->generateLink($route, $params, false);
+        return $this->generateLink($route, $params);
     }
 
     /**

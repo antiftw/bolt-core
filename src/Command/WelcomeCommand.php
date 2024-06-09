@@ -48,7 +48,7 @@ HELP
         $io->text('To ask questions and learn from our community, join our Slack channel: <href=https://slack.bolt.cm/>https://slack.bolt.cm/</>');
         $io->text('Additional resources and tips are available at <href=https://bolt.tips/>https://bolt.tips/</>');
 
-        $io->note('If you wish to continue with SQLite, you can answer \'Y\' to the next question. If you\'d like to use MySQL or PostgreSQL, answer \'n\', configure `.env.local`, and then continue the setup.');
+        $io->note('If you wish to continue with SQLite, you can answer \'Y\' to the next question. If you\'d like to use MySQL or PostgresSQL, answer \'n\', configure `.env.local`, and then continue the setup.');
 
         /** @var QuestionHelper $helper */
         $helper = $this->getHelper('question');

@@ -12,27 +12,17 @@ use Twig\Environment;
 
 class CanonicalLinkWidget extends BaseWidget
 {
-    protected $name = 'Canonical Link';
-    protected $target = Target::END_OF_HEAD;
-    protected $zone = RequestZone::FRONTEND;
-    protected $priority = 200;
+    protected ?string $name = 'Canonical Link';
+    protected string $target = Target::END_OF_HEAD;
+    protected ?string $zone = RequestZone::FRONTEND;
+    protected ?int $priority = 200;
 
-    /** @var Canonical */
-    private $canonical;
+    private string $defaultTemplate = '@bolt/widget/canonical.html.twig';
 
-    /** @var Config */
-    private $config;
-
-    /** @var string */
-    private $defaultTemplate = '@bolt/widget/canonical.html.twig';
-
-    public function __construct(Canonical $canonical, Config $config, Environment $twig)
-    {
-        $this->canonical = $canonical;
-        $this->config = $config;
-
-        $this->setTwig($twig);
-    }
+    public function __construct(
+        private readonly Canonical $canonical,
+        private readonly Config $config,
+    ) {}
 
     protected function run(array $params = []): ?string
     {

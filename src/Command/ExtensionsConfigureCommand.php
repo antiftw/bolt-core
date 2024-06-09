@@ -18,17 +18,10 @@ class ExtensionsConfigureCommand extends Command
     /** @var string */
     protected static $defaultName = 'extensions:configure';
 
-    /** @var ExtensionRegistry */
-    private $extensionRegistry;
-
-    /** @var string */
-    private $projectDir;
-
-    public function __construct(ExtensionRegistry $extensionRegistry, string $projectDir)
-    {
-        $this->extensionRegistry = $extensionRegistry;
-        $this->projectDir = $projectDir;
-
+    public function __construct(
+        private readonly ExtensionRegistry $extensionRegistry,
+        private readonly string $projectDir
+    ) {
         parent::__construct();
     }
 
@@ -184,7 +177,7 @@ class ExtensionsConfigureCommand extends Command
     {
         $reflection = new \ReflectionClass($package);
 
-        return dirname(dirname($reflection->getFilename()));
+        return dirname($reflection->getFilename(), 2);
     }
 
     private function getNamespace(BaseExtension $package): string

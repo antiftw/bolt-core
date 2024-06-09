@@ -14,8 +14,7 @@ use Symfony\Component\Yaml\Yaml;
 
 class ExtensionCompilerPass implements CompilerPassInterface
 {
-    /** string */
-    private $projectDir;
+    private string $projectDir;
 
     public function process(ContainerBuilder $container): void
     {
@@ -43,7 +42,7 @@ class ExtensionCompilerPass implements CompilerPassInterface
                 '_defaults' => [
                     'autowire' => true,
                     'autoconfigure' => true,
-                    'bind' => isset($oldServices['services']['_defaults']['bind']) ? $oldServices['services']['_defaults']['bind'] : [],
+                    'bind' => $oldServices['services']['_defaults']['bind'] ?? [],
                 ],
             ],
         ];

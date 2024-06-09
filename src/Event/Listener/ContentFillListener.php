@@ -15,47 +15,30 @@ use Bolt\Enum\Statuses;
 use Bolt\Repository\FieldRepository;
 use Bolt\Repository\UserRepository;
 use Bolt\Twig\ContentExtension;
-use Doctrine\ORM\Event\LifecycleEventArgs;
+use Doctrine\Persistence\Event\LifecycleEventArgs as BaseLifecycleEventArgs;
 
-class ContentFillListener
+readonly class ContentFillListener
 {
-    /** @var Config */
-    private $config;
+    public function __construct(
+        private Config $config,
+        private ContentExtension $contentExtension,
+        private UserRepository $users,
+        private FieldRepository $fieldRepository,
+        private string $defaultLocale
+    ) {}
 
-    /** @var ContentExtension */
-    private $contentExtension;
-
-    /** @var UserRepository */
-    private $users;
-
-    /** @var FieldRepository */
-    private $fieldRepository;
-
-    /** @var string */
-    private $defaultLocale;
-
-    public function __construct(Config $config, ContentExtension $contentExtension,
-                                UserRepository $users, FieldRepository $fieldRepository, string $defaultLocale)
+    public function preUpdate(BaseLifecycleEventArgs $args): void
     {
-        $this->config = $config;
-        $this->contentExtension = $contentExtension;
-        $this->users = $users;
-        $this->fieldRepository = $fieldRepository;
-        $this->defaultLocale = $defaultLocale;
-    }
-
-    public function preUpdate(LifeCycleEventArgs $args): void
-    {
-        $entity = $args->getEntity();
+        $entity = $args->getObject();
 
         if ($entity instanceof Content) {
             $this->guaranteeUniqueSlug($entity);
         }
     }
 
-    public function prePersist(LifecycleEventArgs $args): void
+    public function prePersist(BaseLifecycleEventArgs $args): void
     {
-        $entity = $args->getEntity();
+        $entity = $args->getObject();
 
         if ($entity instanceof Content) {
             if ($entity->getAuthor() === null) {
@@ -70,9 +53,9 @@ class ContentFillListener
         }
     }
 
-    public function postLoad(LifecycleEventArgs $args): void
+    public function postLoad(BaseLifecycleEventArgs $args): void
     {
-        $entity = $args->getEntity();
+        $entity = $args->getObject();
 
         if ($entity instanceof Content) {
             $this->fillContent($entity);

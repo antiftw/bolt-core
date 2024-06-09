@@ -9,8 +9,7 @@ use Twig\Environment;
 
 trait TwigTrait
 {
-    /** @var Environment */
-    private $twig;
+    private ?Environment $twig;
 
     public function setTwig(Environment $twig): self
     {

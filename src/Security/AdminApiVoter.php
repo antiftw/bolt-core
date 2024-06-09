@@ -10,15 +10,10 @@ use Symfony\Component\Security\Core\Security;
 
 class AdminApiVoter extends Voter
 {
-    public const ADMIN_API_ACCESS = 'ADMIN_API_ACCESS';
+    public const string ADMIN_API_ACCESS = 'ADMIN_API_ACCESS';
 
-    /** @var Security */
-    private $security;
 
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
-    }
+    public function __construct(private readonly Security $security) {}
 
     protected function supports(string $attribute, $subject): bool
     {

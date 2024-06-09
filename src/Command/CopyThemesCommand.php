@@ -19,31 +19,20 @@ class CopyThemesCommand extends Command
 {
     /** @var string */
     protected static $defaultName = 'bolt:copy-themes';
+    private string $publicDirectory;
+    private string $projectDir;
 
-    /** @var Filesystem */
-    private $filesystem;
+    public function __construct(
+        private readonly Filesystem $filesystem,
+        private readonly Config $config,
+        private readonly ExtensionRegistry $extensionRegistry,
+        string $publicFolder,
+        string $projectDir,
 
-    /** @var string */
-    private $publicDirectory;
-
-    /** @var Config */
-    private $config;
-
-    /** @var ExtensionRegistry */
-    private $extensionRegistry;
-
-    /** @var string */
-    private $projectDir;
-
-    public function __construct(Filesystem $filesystem, string $publicFolder, string $projectDir, Config $config, ExtensionRegistry $extensionRegistry)
-    {
+    ){
         parent::__construct();
-
-        $this->filesystem = $filesystem;
         $this->projectDir = $projectDir;
         $this->publicDirectory = $projectDir . '/' . $publicFolder;
-        $this->config = $config;
-        $this->extensionRegistry = $extensionRegistry;
     }
 
     protected function configure(): void
@@ -124,11 +113,11 @@ class CopyThemesCommand extends Command
     private function getBuiltinThemes(): array
     {
         // Determine if we can use ../themes or not.
-        if (! file_exists(dirname(dirname(dirname(__DIR__))) . '/themes')) {
+        if (! file_exists(dirname(__DIR__, 3) . '/themes')) {
             return [];
         }
 
-        $baseDir = dirname(dirname(dirname(__DIR__))) . '/themes';
+        $baseDir = dirname(__DIR__, 3) . '/themes';
         $publicDir = $this->getPublicDirectory();
 
         return [

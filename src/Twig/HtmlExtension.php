@@ -17,17 +17,8 @@ use Twig\TwigFunction;
  */
 class HtmlExtension extends AbstractExtension
 {
-    /** @var Markdown */
-    private $markdown;
 
-    /** @var Canonical */
-    private $canonical;
-
-    public function __construct(Markdown $markdown, Canonical $canonical)
-    {
-        $this->markdown = $markdown;
-        $this->canonical = $canonical;
-    }
+    public function __construct(private readonly Markdown $markdown, private readonly Canonical $canonical) {}
 
     /**
      * {@inheritdoc}
@@ -62,7 +53,7 @@ class HtmlExtension extends AbstractExtension
         ];
     }
 
-    public function canonical(?string $route = null, array $params = [])
+    public function canonical(?string $route = null, array $params = []): ?string
     {
         return $this->canonical->get($route, $params);
     }
@@ -89,7 +80,7 @@ class HtmlExtension extends AbstractExtension
      */
     public function redirect(string $path): void
     {
-        header("Location: {$path}");
+        header("Location: $path");
         exit();
     }
 

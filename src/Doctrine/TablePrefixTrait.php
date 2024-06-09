@@ -15,13 +15,10 @@ use InvalidArgumentException;
 
 trait TablePrefixTrait
 {
-    /** @var string[] */
-    private $tablePrefixes = [];
+    private array $tablePrefixes = [];
+    private ManagerRegistry $registry;
 
-    /** @var ManagerRegistry */
-    private $registry;
-
-    protected function setTablePrefix(ObjectManager $manager, string $prefix)
+    protected function setTablePrefix(ObjectManager $manager, string $prefix): static
     {
         $key = spl_object_hash($manager);
         $this->tablePrefixes[$key] = empty($prefix) ? '' : Str::ensureEndsWith($prefix, '_');
@@ -29,7 +26,7 @@ trait TablePrefixTrait
         return $this;
     }
 
-    protected function setTablePrefixes($tablePrefixes, ManagerRegistry $managerRegistry)
+    protected function setTablePrefixes($tablePrefixes, ManagerRegistry $managerRegistry): static
     {
         $prefixes = (array) $tablePrefixes;
         $this->registry = $managerRegistry;

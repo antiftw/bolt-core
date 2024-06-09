@@ -9,12 +9,10 @@ use Bolt\Entity\Field;
 use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class HiddenField extends Field implements FieldInterface, ScalarCastable, RawPersistable
 {
-    public const TYPE = 'hidden';
+    public const string TYPE = 'hidden';
 
     public function setValue($value): Field
     {
@@ -27,6 +25,6 @@ class HiddenField extends Field implements FieldInterface, ScalarCastable, RawPe
 
     public function getValue(): ?array
     {
-        return [$this->getDefinition()->get('default', null)];
+        return [$this->getDefinition()->get('default')];
     }
 }

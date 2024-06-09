@@ -17,29 +17,13 @@ use Twig\TwigFunction;
 
 class LocaleExtension extends AbstractExtension
 {
-    /** @var TranslatorInterface */
-    private $translator;
-
-    /** @var LocaleHelper */
-    private $localeHelper;
-
-    /** @var Config */
-    private $config;
-
-    /** @var string */
-    private $defaultLocale;
-
-    /** @var Environment */
-    private $twig;
-
-    public function __construct(TranslatorInterface $translator, LocaleHelper $localeHelper, Config $config, Environment $twig, string $defaultLocale)
-    {
-        $this->translator = $translator;
-        $this->localeHelper = $localeHelper;
-        $this->config = $config;
-        $this->defaultLocale = $defaultLocale;
-        $this->twig = $twig;
-    }
+    public function __construct(
+        private readonly TranslatorInterface $translator,
+        private readonly LocaleHelper $localeHelper,
+        private readonly Config $config,
+        private readonly Environment $twig,
+        private readonly string $defaultLocale
+    ){}
 
     /**
      * {@inheritdoc}
@@ -90,10 +74,7 @@ class LocaleExtension extends AbstractExtension
         return $this->translator->trans($id, $parameters, $domain, $locale);
     }
 
-    /**
-     * @param string|Collection $localeCode
-     */
-    public function getLocale($localeCode): Collection
+    public function getLocale(Collection|string $localeCode): Collection
     {
         return $this->localeHelper->localeInfo($localeCode);
     }
@@ -108,10 +89,7 @@ class LocaleExtension extends AbstractExtension
         return $this->localeHelper->getLocales($twig, $localeCodes, $all);
     }
 
-    /**
-     * @param string|Collection $localeCode
-     */
-    public function flag($localeCode): string
+    public function flag(Collection|string $localeCode): string
     {
         $locale = $this->localeHelper->localeInfo($localeCode);
 
@@ -144,7 +122,7 @@ class LocaleExtension extends AbstractExtension
         }
 
         if ($timezone === null) {
-            $timezone = $this->config->get('general/timezone', null);
+            $timezone = $this->config->get('general/timezone');
         }
 
         if ($timezone !== null) {

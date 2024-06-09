@@ -8,8 +8,7 @@ use Symfony\Component\Stopwatch\Stopwatch;
 
 trait StopwatchTrait
 {
-    /** @var Stopwatch */
-    private $stopwatch;
+    private Stopwatch $stopwatch;
 
     public function startStopwatch(Stopwatch $stopwatch): void
     {

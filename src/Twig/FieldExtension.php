@@ -21,50 +21,22 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Tightenco\Collect\Support\Collection;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
+use Twig\Extension\CoreExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
 
 class FieldExtension extends AbstractExtension
 {
-    /** @var Notifications */
-    private $notifications;
-
-    /** @var ContentRepository */
-    private $contentRepository;
-
-    /** @var Config */
-    private $config;
-
-    /** @var ContentHelper */
-    private $contentHelper;
-
-    /** @var Query */
-    private $query;
-
-    /** @var UrlGeneratorInterface */
-    private $router;
-
-    /** @var ListFormatHelper */
-    private $listFormatHelper;
-
-
     public function __construct(
-        Notifications $notifications,
-        ContentRepository $contentRepository,
-        Config $config,
-        ContentHelper $contentHelper,
-        Query $query,
-        UrlGeneratorInterface $router,
-        ListFormatHelper $listFormatHelper
-        ) {
-        $this->notifications = $notifications;
-        $this->contentRepository = $contentRepository;
-        $this->config = $config;
-        $this->contentHelper = $contentHelper;
-        $this->query = $query;
-        $this->router = $router;
-        $this->listFormatHelper = $listFormatHelper;
-    }
+        private readonly Notifications $notifications,
+        private readonly ContentRepository $contentRepository,
+        private readonly Config $config,
+        private readonly ContentHelper $contentHelper,
+        private readonly Query $query,
+        private readonly UrlGeneratorInterface $router,
+        private readonly ListFormatHelper $listFormatHelper,
+        private readonly Environment $env
+    ) {}
 
     /**
      * {@inheritdoc}
@@ -92,14 +64,14 @@ class FieldExtension extends AbstractExtension
     public function getDate(Environment $twig, $date, $format = null, $timezone = null)
     {
         if ($format === null && ! $date instanceof \DateInterval) {
-            $format = $this->config->get('general/date_format', null);
+            $format = $this->config->get('general/date_format');
         }
 
         if ($timezone === null) {
-            $timezone = $this->config->get('general/timezone', null);
+            $timezone = $this->config->get('general/timezone');
         }
 
-        return twig_date_format_filter($twig, $date, $format, $timezone);
+        return $this->env->getExtension(CoreExtension::class)->formatDate($date, $format, $timezone);
     }
 
     public function fieldFactory(string $name, $definition = null): Field
@@ -125,10 +97,7 @@ class FieldExtension extends AbstractExtension
         return $field->getType();
     }
 
-    /**
-     * @return array|Content|null
-     */
-    public function getSelected(Field\SelectField $field, $returnsingle = false, $returnarray = false)
+    public function getSelected(Field\SelectField $field, $returnsingle = false, $returnarray = false): Content|array|null
     {
         $definition = $field->getDefinition();
 
@@ -313,8 +282,7 @@ class FieldExtension extends AbstractExtension
     {
         // If we use `cache/list_format`, delegate it to that Helper
         if ($this->config->get('general/caching/list_format')) {
-            $options = $this->listFormatHelper->getSelect($contentTypeSlug, $params);
-            return $options;
+            return $this->listFormatHelper->getSelect($contentTypeSlug, $params);
         }
 
         /** @var Content[] $records */

@@ -11,8 +11,7 @@ use Tightenco\Collect\Support\Collection;
  */
 trait FieldParentTrait
 {
-    /** @var array Field */
-    private $fields = [];
+    private array $fields = [];
 
     abstract public function getContent(): ?Content;
 

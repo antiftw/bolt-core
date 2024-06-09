@@ -11,18 +11,15 @@ class JsonHelper
 {
     /**
      * Prepare a given $where and $slug to be used in a query, depending on
-     * whether or not the current platform supports JSON functions
+     * whether the current platform supports JSON functions
      *
      * For example, wrapJsonFunction('foo', 'bar') gives:
      *
      * Older SQLite, Mysql 5.6 -> [ 'foo', '["bar"]' ]
      * Newer SQLite, Mysql 5.7 -> [ "JSON_EXTRACT(foo, '$[0]')", 'bar' ]
      *
-     * @param string|bool|null $slug
-     *
-     * @return string|array
      */
-    public static function wrapJsonFunction(?string $where, $slug, Connection $connection)
+    public static function wrapJsonFunction(?string $where, $slug, Connection $connection): bool|array|string|null
     {
         $version = new Version($connection);
 
@@ -55,7 +52,7 @@ class JsonHelper
         return [$resultWhere, $resultSlug];
     }
 
-    public static function wrapJsonSearch(?string $where, $slug, Connection $connection)
+    public static function wrapJsonSearch(?string $where, $slug, Connection $connection): bool|array|string|null
     {
         if ($slug === 'slug') {
             return self::wrapJsonFunction($where, null, $connection);

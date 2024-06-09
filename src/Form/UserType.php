@@ -23,28 +23,19 @@ use Twig\Environment;
 
 class UserType extends AbstractType
 {
-    /** @var LocaleHelper */
-    private $localeHelper;
+    private DeepCollection$avatarConfig;
 
-    /** @var Environment */
-    private $twig;
-
-    /** @var DeepCollection */
-    private $avatarConfig;
-
-    /** @var Security */
-    private $security;
-
-    public function __construct(LocaleHelper $localeHelper, Environment $twig, Config $config, Security $security)
-    {
-        $this->localeHelper = $localeHelper;
-        $this->twig = $twig;
+    public function __construct(
+        private readonly LocaleHelper $localeHelper,
+        private readonly Environment $twig,
+        private readonly Security $security,
+        Config $config,
+    ) {
 
         /** @var DeepCollection $config */
         $config = $config->get('general');
         $this->avatarConfig = $config->get('user_avatar');
 
-        $this->security = $security;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options): void
@@ -85,7 +76,7 @@ class UserType extends AbstractType
             ])
             ->add('displayName', TextType::class)
             ->add('plainPassword', PasswordType::class, [
-                // We need that, otherwise the suggested password won't be auto filled in
+                // We need that, otherwise the suggested password won't be autofilled in
                 'always_empty' => false,
                 'attr' => [
                     'suggested_password' => $options['suggested_password'],
@@ -115,7 +106,7 @@ class UserType extends AbstractType
 
         /*
          * Add Roles and Status if the form is used to add a new user or edit an existing one
-         * AND the current user has add OR edit rights.
+         * AND the current user has adding OR editing rights.
          * (check if either editing or adding is allowed is done in the controller)
          *
          * Note that the profile edit screen never should show these options.

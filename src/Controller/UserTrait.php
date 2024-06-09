@@ -10,8 +10,7 @@ use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 
 trait UserTrait
 {
-    /** @var TokenStorageInterface */
-    protected $tokenStorage;
+    protected TokenStorageInterface $tokenStorage;
 
     protected function getUser(): ?User
     {

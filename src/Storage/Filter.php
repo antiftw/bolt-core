@@ -14,31 +14,22 @@ use Doctrine\ORM\Query\Expr\Composite;
  */
 class Filter
 {
-    /** @var string|array */
-    protected $key;
-
-    /** @var Composite */
-    protected $expression;
-
-    /** @var array */
-    protected $parameters = [];
+    protected string|array $key;
+    protected Composite $expression;
+    protected array $parameters = [];
 
     /**
      * Sets the key that this filter affects.
-     *
-     * @param string|array $key
      */
-    public function setKey($key): void
+    public function setKey(string|array $key): void
     {
         $this->key = $key;
     }
 
     /**
      * Getter for key.
-     *
-     * @return string|array
      */
-    public function getKey()
+    public function getKey() : string|array
     {
         return $this->key;
     }

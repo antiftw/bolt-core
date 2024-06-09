@@ -9,17 +9,11 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\ResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
-class ProcessWidgetsQueueSubscriber implements EventSubscriberInterface
+readonly class ProcessWidgetsQueueSubscriber implements EventSubscriberInterface
 {
-    public const PRIORITY = 0;
+    public const int PRIORITY = 0;
 
-    /** @var Widgets */
-    private $widgets;
-
-    public function __construct(Widgets $widgets)
-    {
-        $this->widgets = $widgets;
-    }
+    public function __construct(private Widgets $widgets) {}
 
     /**
      * Kernel response listener callback.

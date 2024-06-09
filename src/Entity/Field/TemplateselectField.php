@@ -9,12 +9,10 @@ use Bolt\Entity\Field;
 use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class TemplateselectField extends Field implements FieldInterface
 {
-    public const TYPE = 'templateselect';
+    public const string TYPE = 'templateselect';
 
     public function setValue($value): Field
     {

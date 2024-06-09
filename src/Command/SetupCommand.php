@@ -17,17 +17,10 @@ class SetupCommand extends Command
 {
     /** @var string */
     protected static $defaultName = 'bolt:setup';
+    private array $errors = [];
 
-    /** @var Connection */
-    private $connection;
-
-    /** @var array */
-    private $errors = [];
-
-    public function __construct(Connection $connection)
+    public function __construct(private readonly Connection $connection)
     {
-        $this->connection = $connection;
-
         parent::__construct();
     }
 
@@ -82,7 +75,7 @@ class SetupCommand extends Command
 
         // Unless either `--no-fixtures` or `--fixtures` was set, we prompt the user for it.
         if (! $input->getOption('no-fixtures')) {
-            if ($input->getOption('fixtures') || $io->confirm('Add fixtures (dummy content) to the Database?', true)) {
+            if ($input->getOption('fixtures') || $io->confirm('Add fixtures (dummy content) to the Database?')) {
                 $command = $this->getApplication()->find('doctrine:fixtures:load');
                 $commandInput = new ArrayInput(['--append' => true]);
                 $exitCode = $command->run($commandInput, $output);

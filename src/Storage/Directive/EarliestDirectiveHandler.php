@@ -13,7 +13,7 @@ use Bolt\Storage\QueryInterface;
  */
 class EarliestDirectiveHandler
 {
-    public const NAME = 'earliest';
+    public const string NAME = 'earliest';
 
     public function __invoke(QueryInterface $query, $value, &$directives): void
     {

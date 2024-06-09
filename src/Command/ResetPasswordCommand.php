@@ -26,27 +26,13 @@ class ResetPasswordCommand extends Command
     /** @var string */
     protected static $defaultName = 'bolt:reset-password';
 
-    /** @var EntityManagerInterface */
-    private $entityManager;
-
-    /** @var UserPasswordHasherInterface */
-    private $passwordHasher;
-
-    /** @var ValidatorInterface */
-    private $validator;
-
-    /** @var UserRepository */
-    private $userRepository;
-
-    public function __construct(EntityManagerInterface $em, UserPasswordHasherInterface $passwordHasher,
-                                UserRepository $userRepository, ValidatorInterface $validator)
-    {
+    public function __construct(
+        private readonly EntityManagerInterface $em,
+        private readonly UserPasswordHasherInterface $passwordHasher,
+        private readonly UserRepository $userRepository,
+        private readonly ValidatorInterface $validator
+    ){
         parent::__construct();
-
-        $this->entityManager = $em;
-        $this->passwordHasher = $passwordHasher;
-        $this->validator = $validator;
-        $this->userRepository = $userRepository;
     }
 
     protected function configure(): void
@@ -62,7 +48,6 @@ class ResetPasswordCommand extends Command
         $io = new SymfonyStyle($input, $output);
         $username = $input->getArgument('username');
 
-        /** @var User|null */
         $user = $this->userRepository->findOneBy(['username' => $username]);
 
         if ($user === null) {
@@ -93,8 +78,8 @@ class ResetPasswordCommand extends Command
         $user->setPassword($hashedPassword);
         $user->eraseCredentials();
 
-        $this->entityManager->persist($user);
-        $this->entityManager->flush();
+        $this->em->persist($user);
+        $this->em->flush();
 
         $io->success('Updated password.');
 

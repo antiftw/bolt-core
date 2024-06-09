@@ -20,35 +20,33 @@ abstract class BaseWidget implements WidgetInterface
     use RequestTrait;
     use ResponseTrait;
 
-    /** @var string */
-    protected $name;
+    protected ?string $name;
 
     /** @var string from Target enum */
-    protected $target;
+    protected string $target;
 
     /** @var string[] */
-    protected $targets = [];
+    protected ?array $targets = [];
 
-    /** @var string from RequestZone */
-    protected $zone;
+    /** @var ?string from RequestZone */
+    protected ?string $zone;
 
     /** @var ExtensionInterface */
-    protected $extension;
+    protected ExtensionInterface $extension;
 
-    /** @var int */
-    protected $priority = 0;
+    protected ?int $priority = 0;
 
-    /** @var string filename of Twig template */
-    protected $template;
+    /** @var ?string filename of Twig template */
+    protected ?string $template;
 
-    /** @var string path to Twig templates folder */
-    protected $templateFolder;
+    /** @var ?string path to Twig templates folder */
+    protected ?string $templateFolder;
 
     /** @var ?string */
-    protected $slug;
+    protected ?string $slug;
 
     /** @var int duration (in seconds) to cache output */
-    protected $cacheDuration = 600;
+    protected int $cacheDuration = 600;
 
     public function setName(string $name): WidgetInterface
     {
@@ -135,7 +133,7 @@ abstract class BaseWidget implements WidgetInterface
         $this->extension = $extension;
     }
 
-    public function getExtension()
+    public function getExtension(): ExtensionInterface
     {
         return $this->extension;
     }
@@ -215,12 +213,12 @@ abstract class BaseWidget implements WidgetInterface
             return realpath($folder);
         }
 
-        $folder = dirname(dirname($reflection->getFilename())) . DIRECTORY_SEPARATOR . 'templates';
+        $folder = dirname($reflection->getFilename(), 2) . DIRECTORY_SEPARATOR . 'templates';
         if (realpath($folder)) {
             return realpath($folder);
         }
 
-        $folder = dirname(dirname(dirname($reflection->getFilename()))) . DIRECTORY_SEPARATOR . 'templates';
+        $folder = dirname($reflection->getFilename(), 3) . DIRECTORY_SEPARATOR . 'templates';
         if (realpath($folder)) {
             return realpath($folder);
         }

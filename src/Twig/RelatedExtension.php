@@ -19,34 +19,13 @@ use Twig\TwigFunction;
 
 class RelatedExtension extends AbstractExtension
 {
-    /** @var RelationRepository */
-    private $relationRepository;
-
-    /** @var Config */
-    private $config;
-
-    /** @var Notifications */
-    private $notifications;
-
-    /** @var RelatedOptionsUtility */
-    private $optionsUtility;
-
-    /** @var ListFormatHelper */
-    private $listFormatHelper;
-
     public function __construct(
-        RelationRepository $relationRepository,
-        Config $config,
-        Notifications $notifications,
-        RelatedOptionsUtility $optionsUtility,
-        ListFormatHelper $listFormatHelper)
-    {
-        $this->relationRepository = $relationRepository;
-        $this->config = $config;
-        $this->notifications = $notifications;
-        $this->optionsUtility = $optionsUtility;
-        $this->listFormatHelper = $listFormatHelper;
-    }
+        private readonly RelationRepository $relationRepository,
+        private readonly Config $config,
+        private readonly Notifications $notifications,
+        private readonly RelatedOptionsUtility $optionsUtility,
+        private readonly ListFormatHelper $listFormatHelper
+    ) {}
 
     /**
      * {@inheritdoc}
@@ -80,7 +59,7 @@ class RelatedExtension extends AbstractExtension
      * @param bool|string $bidirectional "both"|true, "to"|false, "from"
      * @return array name => Content[]
      */
-    public function getRelatedContentByType(Content $content, $bidirectional = true, ?int $limit = null, bool $publishedOnly = true): array
+    public function getRelatedContentByType(Content $content, bool|string $bidirectional = true, ?int $limit = null, bool $publishedOnly = true): array
     {
         if (! $this->checkforContent($content, 'related_by_type')) {
             return [];

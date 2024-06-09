@@ -9,16 +9,14 @@ use Bolt\Entity\FieldInterface;
 use Countable;
 use Doctrine\ORM\Mapping as ORM;
 
-/**
- * @ORM\Entity
- */
+#[ORM\Entity]
 class FileField extends Field implements FieldInterface, Countable, RawPersistable
 {
     use FileExtrasTrait;
 
-    public const TYPE = 'file';
+    public const string TYPE = 'file';
 
-    private function getFieldBase()
+    private function getFieldBase(): array
     {
         return [
             'filename' => '',

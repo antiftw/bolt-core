@@ -10,17 +10,12 @@ use Symfony\Component\Security\Core\Exception\AuthenticationException;
 use Symfony\Component\Security\Http\EntryPoint\AuthenticationEntryPointInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 
-class AuthenticationEntryPointRedirector implements AuthenticationEntryPointInterface
+readonly class AuthenticationEntryPointRedirector implements AuthenticationEntryPointInterface
 {
-    private $translator;
-
-    private $urlGenerator;
-
-    public function __construct(TranslatorInterface $translator, UrlGeneratorInterface $urlGenerator)
-    {
-        $this->translator = $translator;
-        $this->urlGenerator = $urlGenerator;
-    }
+    public function __construct(
+        private TranslatorInterface   $translator,
+        private UrlGeneratorInterface $urlGenerator
+    ) {}
 
     public function start(Request $request, AuthenticationException $authException = null): RedirectResponse
     {

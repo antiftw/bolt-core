@@ -25,48 +25,22 @@ use Twig\Error\LoaderError;
 
 class ErrorController extends SymfonyErrorController implements ErrorZoneInterface
 {
-    /** @var Config */
-    private $config;
-
-    /** @var TemplateController */
-    private $templateController;
-
-    /** @var DetailControllerInterface */
-    private $detailController;
-
-    /** @var Request */
-    private $request;
-
-    /** @var UrlGeneratorInterface */
-    private $urlGenerator;
-
-    /** @var ParameterBagInterface */
-    private $parameterBag;
-
-    /** @var Security */
-    private $security;
+    private Request $request;
 
     public function __construct(
-        HttpKernelInterface $httpKernel,
-        Config $config,
-        DetailControllerInterface $detailController,
-        TemplateController $templateController,
+
+        private readonly Config $config,
+        private readonly DetailControllerInterface $detailController,
+        private readonly TemplateController $templateController,
+        private readonly ParameterBagInterface $parameterBag,
+        private readonly UrlGeneratorInterface $urlGenerator,
+        private readonly Security $security,
         ErrorRendererInterface $errorRenderer,
-        ParameterBagInterface $parameterBag,
+        HttpKernelInterface $httpKernel,
         RequestStack $requestStack,
-        UrlGeneratorInterface $urlGenerator,
-        Security $security)
-    {
-        $this->config = $config;
-        $this->templateController = $templateController;
-
+    ) {
         parent::__construct($httpKernel, $templateController, $errorRenderer);
-
-        $this->detailController = $detailController;
         $this->request = $requestStack->getParentRequest();
-        $this->urlGenerator = $urlGenerator;
-        $this->parameterBag = $parameterBag;
-        $this->security = $security;
     }
 
     /**

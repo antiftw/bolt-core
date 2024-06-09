@@ -82,9 +82,8 @@ class Excerpt
      *
      * @see: http://www.boyter.org/2013/04/building-a-search-result-extract-generator-in-php/
      *
-     * @param string|array $words
      */
-    protected static function extractRelevant($words, string $fulltext, int $relLength = 300): string
+    protected static function extractRelevant(array|string $words, string $fulltext, int $relLength = 300): string
     {
         $fulltext = strip_tags($fulltext);
 

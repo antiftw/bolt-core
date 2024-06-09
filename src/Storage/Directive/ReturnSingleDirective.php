@@ -11,7 +11,7 @@ use Bolt\Storage\SelectQuery;
  */
 class ReturnSingleDirective
 {
-    public const NAME = 'returnsingle';
+    public const string NAME = 'returnsingle';
 
     public function __invoke(SelectQuery $query): void
     {

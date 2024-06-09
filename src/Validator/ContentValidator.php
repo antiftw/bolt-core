@@ -10,6 +10,7 @@ use Bolt\Configuration\Content\FieldType;
 use Bolt\Entity\Content;
 use Bolt\Entity\Relation;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolationListInterface;
 use Symfony\Component\Validator\Context\ExecutionContextInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
@@ -18,23 +19,14 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  */
 class ContentValidator implements ContentValidatorInterface
 {
-    /** @var ValidatorInterface */
-    private $validator;
+    private ContentTypeConstraintLoader $loader;
 
-    /** @var Config */
-    private $config;
-
-    /** @var ContentTypeConstraintLoader */
-    private $loader;
-
-    public function __construct(ValidatorInterface $validator, Config $config)
+    public function __construct(private readonly ValidatorInterface $validator, private readonly Config $config)
     {
-        $this->validator = $validator;
-        $this->config = $config;
         $this->loader = new ContentTypeConstraintLoader();
     }
 
-    private function getFieldConstraints($contentType)
+    private function getFieldConstraints($contentType): Assert\Collection|array|null
     {
         // exception for single fields in collections, they don't have a 'fields' nesting layer
         if ($contentType->get('fields') === null && $contentType->get('constraints') !== null) {
@@ -120,7 +112,7 @@ class ContentValidator implements ContentValidatorInterface
         return null;
     }
 
-    private function getConstraints($contentTypeName)
+    private function getConstraints($contentTypeName): Assert\Collection
     {
         $contentTypes = $this->config->get('contenttypes');
 
@@ -152,7 +144,7 @@ class ContentValidator implements ContentValidatorInterface
         ]);
     }
 
-    private function relationsToMap($relations)
+    private function relationsToMap($relations): array
     {
         $result = [];
         /** @var Relation $relation */
@@ -171,7 +163,7 @@ class ContentValidator implements ContentValidatorInterface
     /**
      * {@inheritdoc}
      */
-    public function validate(Content $content)
+    public function validate(Content $content): ConstraintViolationListInterface|array
     {
         $constraints = $this->getConstraints($content->getContentType());
 

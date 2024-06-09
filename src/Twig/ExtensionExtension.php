@@ -15,13 +15,7 @@ use Twig\TwigTest;
  */
 class ExtensionExtension extends AbstractExtension
 {
-    /** @var ExtensionRegistry */
-    private $registry;
-
-    public function __construct(ExtensionRegistry $registry)
-    {
-        $this->registry = $registry;
-    }
+    public function __construct(private readonly ExtensionRegistry $registry) {}
 
     public function getTests(): array
     {

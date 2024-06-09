@@ -8,8 +8,7 @@ use Psr\Log\LoggerInterface;
 
 trait LoggerTrait
 {
-    /** @var LoggerInterface */
-    protected $logger;
+    protected LoggerInterface $logger;
 
     /**
      * @required

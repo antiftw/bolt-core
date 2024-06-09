@@ -9,19 +9,13 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
-use Symfony\Component\Filesystem\Path;
 use Symfony\Component\Process\Process;
 
 class ServerCommand extends Command
 {
-    /** @var string */
-    private $projectDir;
-
-    public function __construct(string $projectDir)
+    public function __construct(private readonly string $projectDir)
     {
-        $this->projectDir = $projectDir;
-
-        parent::__construct();
+         parent::__construct();
     }
 
     protected function configure(): void
@@ -101,7 +95,7 @@ class ServerCommand extends Command
         return 'php bin/console server:stop';
     }
 
-    protected function hasSymfonyCommand()
+    protected function hasSymfonyCommand(): bool
     {
         $process = new Process(['symfony', 'version']);
         $process->setTimeout(0);

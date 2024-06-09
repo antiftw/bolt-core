@@ -9,7 +9,7 @@ class SelectOptionsCacher extends FieldExtension implements CachingInterface
 {
     use CachingTrait;
 
-    public const CACHE_CONFIG_KEY = 'selectoptions';
+    public const string CACHE_CONFIG_KEY = 'selectoptions';
 
     public function selectOptionsHelper(string $contentTypeSlug, array $params, Field $field, string $format): array
     {

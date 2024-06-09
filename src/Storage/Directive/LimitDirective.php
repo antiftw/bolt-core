@@ -11,7 +11,7 @@ use Bolt\Storage\QueryInterface;
  */
 class LimitDirective
 {
-    public const NAME = 'limit';
+    public const string NAME = 'limit';
 
     public function __invoke(QueryInterface $query, int $limit): void
     {

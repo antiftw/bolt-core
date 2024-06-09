@@ -10,15 +10,9 @@ use Symfony\Component\Security\Core\Security;
 
 class AdminTranslateVoter extends Voter
 {
-    public const ADMIN_TRANSLATE_ACCESS = 'ADMIN_TRANSLATE_ACCESS';
+    public const string ADMIN_TRANSLATE_ACCESS = 'ADMIN_TRANSLATE_ACCESS';
 
-    /** @var Security */
-    private $security;
-
-    public function __construct(Security $security)
-    {
-        $this->security = $security;
-    }
+    public function __construct(private readonly Security $security) {}
 
     protected function supports(string $attribute, $subject): bool
     {

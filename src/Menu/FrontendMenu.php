@@ -13,31 +13,14 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Twig\Environment;
 
 
-final class FrontendMenu implements FrontendMenuBuilderInterface
-{
-    /** @var TagAwareCacheInterface */
-    private $cache;
-
-    /** @var FrontendMenuBuilder */
-    private $menuBuilder;
-
-    /** @var Stopwatch */
-    private $stopwatch;
-
-    /** @var Config */
-    private $config;
-
-    /** @var RequestStack */
-    private $requestStack;
-
-    public function __construct(FrontendMenuBuilder $menuBuilder, TagAwareCacheInterface $cache, RequestStack $requestStack, Stopwatch $stopwatch, Config $config)
-    {
-        $this->cache = $cache;
-        $this->menuBuilder = $menuBuilder;
-        $this->stopwatch = $stopwatch;
-        $this->config = $config;
-        $this->requestStack = $requestStack;
-    }
+final readonly class FrontendMenu implements FrontendMenuBuilderInterface
+{    public function __construct(
+        private FrontendMenuBuilder    $menuBuilder,
+        private TagAwareCacheInterface $cache,
+        private RequestStack           $requestStack,
+        private Stopwatch              $stopwatch,
+        private Config                 $config
+    ) {}
 
     public function buildMenu(Environment $twig, ?string $name = null): array
     {

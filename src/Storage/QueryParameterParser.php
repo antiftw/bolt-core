@@ -14,27 +14,12 @@ use Doctrine\ORM\Query\Expr;
  */
 class QueryParameterParser
 {
-    /** @var string */
-    public $alias;
-
-    /** @var string */
-    protected $key;
-
-    /** @var Expr */
-    protected $expr;
-
-    /** @var array */
-    protected $valueMatchers = [];
-
-    /** @var Filter[] */
-    protected $filterHandlers = [];
-
-    /**
-     * Constructor.
-     */
-    public function __construct(Expr $expr)
+    public string $alias;
+    protected string $key;
+    protected array $valueMatchers = [];
+    protected array $filterHandlers = [];
+    public function __construct(private readonly Expr $expr)
     {
-        $this->expr = $expr;
         $this->setupDefaults();
     }
 
@@ -43,19 +28,19 @@ class QueryParameterParser
         $word = "[\p{L}\p{N}_\/]+";
 
         // @codingStandardsIgnoreStart
-        $this->addValueMatcher("<\s?({$word})", [
+        $this->addValueMatcher("<\s?($word)", [
             'value' => '$1',
             'operator' => 'lt',
         ]);
-        $this->addValueMatcher("<=\s?({$word})", [
+        $this->addValueMatcher("<=\s?($word)", [
             'value' => '$1',
             'operator' => 'lte',
         ]);
-        $this->addValueMatcher(">=\s?({$word})", [
+        $this->addValueMatcher(">=\s?($word)", [
             'value' => '$1',
             'operator' => 'gte',
         ]);
-        $this->addValueMatcher(">\s?({$word})", [
+        $this->addValueMatcher(">\s?($word)", [
             'value' => '$1',
             'operator' => 'gt',
         ]);
@@ -63,7 +48,7 @@ class QueryParameterParser
             'value' => '',
             'operator' => 'isNotNull',
         ]);
-        $this->addValueMatcher("!\s?({$word})", [
+        $this->addValueMatcher("!\s?($word)", [
             'value' => '$1',
             'operator' => 'neq',
         ]);
@@ -79,11 +64,11 @@ class QueryParameterParser
             },
             'operator' => 'in',
         ]);
-        $this->addValueMatcher("(%{$word}|{$word}%|%{$word}%)", [
+        $this->addValueMatcher("(%$word|$word%|%$word%)", [
             'value' => '$1',
             'operator' => 'like',
         ]);
-        $this->addValueMatcher("({$word})", [
+        $this->addValueMatcher("($word)", [
             'value' => '$1',
             'operator' => 'eq',
         ]);
@@ -195,7 +180,7 @@ class QueryParameterParser
 
     /**
      * This handler processes multiple value queries as defined in the Bolt 'Fetching Content'
-     * documentation. It allows a value to be parsed to and AND/OR expression.
+     * documentation. It allows a value to be parsed to an AND/OR expression.
      *
      * For example, this handler will correctly parse values like:
      *     'username': 'fred||bob'
@@ -214,7 +199,7 @@ class QueryParameterParser
         $values = preg_split('/ *(&&|\|\|) */', $value, -1, PREG_SPLIT_DELIM_CAPTURE);
         $op = $values[1];
 
-        $comparison = 'andX';
+        $comparison = '';
 
         if ($op === '&&') {
             $comparison = 'andX';
@@ -294,9 +279,8 @@ class QueryParameterParser
     /**
      * The default handler is the last to be run and handles simple value parsing.
      *
-     * @param string|array|bool $value
      */
-    public function defaultFilterHandler(string $key, $value, Expr $expr): Filter
+    public function defaultFilterHandler(string $key, bool|array|string $value, Expr $expr): Filter
     {
         $filter = new Filter();
         $filter->setKey($key);
@@ -365,7 +349,7 @@ class QueryParameterParser
     /**
      * The goal of this class is to turn any key:value into a Filter class.
      * Adding a handler here will push the new filter callback onto the top
-     * of the Queue along with the built in defaults.
+     * of the Queue along with the built-in defaults.
      *
      * Note: the callback should either return nothing or an instance of
      * \Bolt\Storage\Filter
@@ -376,15 +360,15 @@ class QueryParameterParser
     }
 
     /**
-     * Adds an additional token to parse for value parameters.
+     * Adds a token to parse for value parameters.
      *
      * This gives the ability to define additional value -> operator matches
      *
      * @param string $token Regex pattern to match against
      * @param array $params Options to provide to the matched param
-     * @param bool $priority If set item will be prepended to start of list
+     * @param bool|null $priority If set item will be prepended to start of list
      */
-    public function addValueMatcher(string $token, array $params = [], $priority = null): void
+    public function addValueMatcher(string $token, array $params = [], bool $priority = null): void
     {
         if ($priority) {
             array_unshift($this->valueMatchers, [

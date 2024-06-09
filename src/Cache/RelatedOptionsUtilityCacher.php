@@ -9,7 +9,7 @@ class RelatedOptionsUtilityCacher extends RelatedOptionsUtility implements Cachi
 {
     use CachingTrait;
 
-    public const CACHE_CONFIG_KEY = 'related_options';
+    public const string CACHE_CONFIG_KEY = 'related_options';
 
     public function fetchRelatedOptions(ContentType $fromContentType, string $contentTypeSlug, string $order, string $format, bool $required, ?bool $allowEmpty, int $maxAmount, bool $linkToRecord): array
     {

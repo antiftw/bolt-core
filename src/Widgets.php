@@ -24,40 +24,17 @@ use Twig\Environment;
  */
 class Widgets
 {
-    /** @var Collection */
-    private $queue;
-
-    /** @var RequestStack */
-    private $requestStack;
-
-    /** @var QueueProcessor */
-    private $queueProcessor;
-
-    /** @var array */
-    private $rendered = [];
-
-    /** @var Environment */
-    private $twig;
-
-    /** @var CacheInterface */
-    private $cache;
-
-    /** @var Stopwatch */
-    private $stopwatch;
+    private Collection $queue;
+    private array $rendered = [];
 
     public function __construct(
-        RequestStack $requestStack,
-        QueueProcessor $queueProcessor,
-        Environment $twig,
-        CacheInterface $cache,
-        Stopwatch $stopwatch
+        private readonly RequestStack $requestStack,
+        private readonly QueueProcessor $queueProcessor,
+        private readonly Environment $twig,
+        private readonly CacheInterface $cache,
+        private readonly Stopwatch $stopwatch
     ) {
         $this->queue = new Collection([]);
-        $this->requestStack = $requestStack;
-        $this->queueProcessor = $queueProcessor;
-        $this->twig = $twig;
-        $this->cache = $cache;
-        $this->stopwatch = $stopwatch;
     }
 
     public function registerWidget(WidgetInterface $widget): void

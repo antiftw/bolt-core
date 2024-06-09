@@ -12,8 +12,7 @@ class FlocOptOutHeader extends BaseWidget implements WidgetInterface, ResponseAw
 {
     use ResponseTrait;
 
-    /** @var ExtensionInterface */
-    protected $extension;
+    protected ExtensionInterface $extension;
 
     public function __invoke(array $params = []): ?string
     {

@@ -12,15 +12,15 @@ use Symfony\Component\HttpFoundation\Request;
  */
 class RequestZone
 {
-    protected const KEY = 'zone';
+    protected const string KEY = 'zone';
 
-    public const FRONTEND = 'frontend';
-    public const BACKEND = 'backend';
-    public const ASYNC = 'async';
+    public const string FRONTEND = 'frontend';
+    public const string BACKEND = 'backend';
+    public const string ASYNC = 'async';
 
-    public const EVERYWHERE = 'everywhere';
-    public const NOWHERE = 'nowhere';
-    public const ERROR = 'error';
+    public const string EVERYWHERE = 'everywhere';
+    public const string NOWHERE = 'nowhere';
+    public const string ERROR = 'error';
 
     /**
      * Check if request is for frontend routes.
@@ -70,7 +70,7 @@ class RequestZone
         if (!$request) {
             return static::NOWHERE;
         }
-        
+
         return $request->attributes->get(static::KEY) ?: static::NOWHERE;
     }
 

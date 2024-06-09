@@ -19,31 +19,14 @@ use Twig\Environment;
  * This class is after booting the Kernel, on KernelEvents::REQUEST and ConsoleEvents::COMMAND.
  * It provides services in classes that cannot be autowired.
  */
-class EntityServiceProvider implements EventSubscriberInterface
+readonly class EntityServiceProvider implements EventSubscriberInterface
 {
-    /** @var EntityManagerInterface */
-    private $em;
-
-    /** @var ContainerInterface */
-    private $container;
-
-    /** @var Sanitiser */
-    private $sanitiser;
-
-    /** @var Environment */
-    private $twig;
-
     public function __construct(
-        EntityManagerInterface $em,
-        ContainerInterface $container,
-        Sanitiser $sanitiser,
-        Environment $twig)
-    {
-        $this->em = $em;
-        $this->container = $container;
-        $this->sanitiser = $sanitiser;
-        $this->twig = $twig;
-    }
+        private EntityManagerInterface $em,
+        private ContainerInterface $container,
+        private Sanitiser $sanitiser,
+        private Environment $twig
+    ) {}
 
     public function run(): void
     {

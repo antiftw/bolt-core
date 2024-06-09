@@ -10,14 +10,9 @@ use ComposerPackages\Types;
 
 class ExtensionRegistry
 {
-    /** @var ExtensionInterface[] */
-    protected $extensions = [];
-
-    /** @var array */
-    protected $extensionClasses = [];
-
-    /** @var PackageInterface[] */
-    protected $themes = [];
+    protected array $extensions = [];
+    protected array $extensionClasses = [];
+    protected array $themes = [];
 
     /**
      * @see ExtensionCompilerPass::process()
