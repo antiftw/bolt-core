@@ -8,7 +8,7 @@ use Bolt\Entity\User;
 use Bolt\Event\UserEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Security\Http\Event\LoginSuccessEvent;
 
 /**

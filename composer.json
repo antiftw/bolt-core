@@ -113,8 +113,8 @@
         "ext-pdo_sqlite": "*",
         "acmecorp/reference-extension": "dev-master",
         "bobdenotter/configuration-notices": "dev-master",
-        "bobdenotter/weatherwidget": "^1.1",
-        "bolt/newswidget": "^1.3",
+        "bobdenotter/weatherwidget": "dev-master",
+        "bolt/newswidget": "dev-master",
         "coduo/php-matcher": "^6.0.15",
         "dama/doctrine-test-bundle": "^8.2",
         "nyholm/psr7": "^1.4",
@@ -205,6 +205,14 @@
         "antiftw-bdo-configuration-notices": {
             "type": "vcs",
             "url": "https://github.com/antiftw/bdo-configuration-notices"
+        },
+        "antiftw-bdo-weatherwidget": {
+            "type": "vcs",
+            "url": "https://github.com/antiftw/bdo-weatherwidget"
+        },
+        "antiftw-bolt-newswidget": {
+            "type": "vcs",
+            "url": "https://github.com/antiftw/bolt-newswidget"
         }
     }
 }

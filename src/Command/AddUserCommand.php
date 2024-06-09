@@ -9,6 +9,7 @@ use Bolt\Configuration\Config;
 use Bolt\Entity\User;
 use Bolt\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\InvalidArgumentException;
 use Symfony\Component\Console\Exception\RuntimeException;
@@ -43,14 +44,15 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  * @author Yonel Ceruto <yonelceruto@gmail.com>
  */
+#[AsCommand(name: 'bolt:add-user', description: 'Creates users and stores them in the database')]
 class AddUserCommand extends Command
 {
     /**
      * to make your command lazily loaded, configure the $defaultName static property,
      * so it will be instantiated only when the command is actually called.
      */
-    protected static $defaultName = 'bolt:add-user';
-    protected static $defaultDescription = 'Creates users and stores them in the database';
+    protected static string $defaultName = 'bolt:add-user';
+    protected static string $defaultDescription = 'Creates users and stores them in the database';
     private SymfonyStyle $io;
 
     public function __construct(

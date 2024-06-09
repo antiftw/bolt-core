@@ -4,17 +4,17 @@ declare(strict_types=1);
 
 namespace Bolt\Command;
 
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Webimpress\SafeWriter\Exception\ExceptionInterface;
 use Webimpress\SafeWriter\FileWriter;
-
+#[AsCommand(name: 'bolt:reset-secret', description: 'Reset the APP_SECRET for this Bolt site.')]
 class ResetSecretCommand extends Command
 {
-    /** @var string */
-    protected static $defaultName = 'bolt:reset-secret';
+    protected static string $defaultName = 'bolt:reset-secret';
 
     public function __construct(private readonly string $projectDir)
     {

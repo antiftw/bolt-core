@@ -11,9 +11,8 @@ use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 class FileListingController implements AsyncZoneInterface
 {
@@ -23,7 +22,6 @@ class FileListingController implements AsyncZoneInterface
     public function __construct(
         private readonly FilesIndex $filesIndex,
         private readonly Config $config,
-        private readonly Security $security,
         RequestStack $requestStack,
         string $projectDir,
         string $publicFolder,
@@ -34,15 +32,12 @@ class FileListingController implements AsyncZoneInterface
     }
 
     #[Route('/list_files', name: 'bolt_async_filelisting', methods: ['GET'])]
+    #[IsGranted('list_files')]
     public function index(): JsonResponse
     {
         $locationName = $this->request->query->get('location', 'files');
         $type = $this->request->query->get('type', '');
         $locationTopLevel = explode('/', Path::canonicalize($locationName))[0];
-
-        if (! $this->security->isGranted('list_files:' . $locationTopLevel)) {
-            return new JsonResponse('permission denied', Response::HTTP_UNAUTHORIZED);
-        }
 
         // @todo: config->getPath does not return the correct relative URL.
         // Hence, we use the Path::makeRelative. Fix this once config generates the correct relative path.

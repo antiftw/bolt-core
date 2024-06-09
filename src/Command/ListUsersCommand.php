@@ -6,6 +6,7 @@ namespace Bolt\Command;
 
 use Bolt\Entity\User;
 use Bolt\Repository\UserRepository;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -29,10 +30,10 @@ use Symfony\Component\Mime\Email;
  *
  * @author Javier Eguiluz <javier.eguiluz@gmail.com>
  */
+#[AsCommand(name: 'bolt:list-users', description: 'Lists all the existing users')]
 class ListUsersCommand extends Command
 {
-    /** @var string */
-    protected static $defaultName = 'bolt:list-users';
+    protected static string $defaultName = 'bolt:list-users';
 
     public function __construct(
         private readonly MailerInterface $mailer,

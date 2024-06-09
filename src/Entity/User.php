@@ -74,8 +74,8 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     private string $status = UserStatus::ENABLED;
 
     #[ORM\OneToMany(
-        mappedBy: 'user',
         targetEntity: UserAuthToken::class,
+        mappedBy: 'user',
         cascade: ['persist', 'remove'],
         fetch: 'EAGER',
         orphanRemoval: true,
@@ -336,4 +336,10 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     {
         $this->about = $about;
     }
+
+    public function getUserIdentifier(): string
+    {
+        return $this->username;
+    }
+
 }

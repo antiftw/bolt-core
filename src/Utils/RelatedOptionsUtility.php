@@ -13,12 +13,12 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  *
  * Decorated by `Bolt\Cache\RelatedOptionsUtilityCacher`
  */
-readonly class RelatedOptionsUtility
+class RelatedOptionsUtility
 {
     public function __construct(
-        private Query $query,
-        private ContentHelper $contentHelper,
-        private UrlGeneratorInterface $router
+        private readonly Query $query,
+        private readonly ContentHelper $contentHelper,
+        private readonly UrlGeneratorInterface $router
     ) {}
 
     /**

@@ -8,17 +8,17 @@ use Bolt\Controller\CsrfTrait;
 use Bolt\Entity\Content;
 use Bolt\Event\ContentEvent;
 use Doctrine\Persistence\ObjectManager;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Symfony\Bridge\Doctrine\ManagerRegistry;
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
-#[Security("is_granted('bulk_operations')")]
+#[IsGranted("bulk_operations")]
 class BulkOperationsController extends AbstractController implements BackendZoneInterface
 {
     use CsrfTrait;

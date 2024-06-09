@@ -8,7 +8,7 @@ use Bolt\Entity\User;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpKernel\KernelInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 
 class RequestProcessor
 {

@@ -9,13 +9,13 @@ use Bolt\Log\LoggerTrait;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
-readonly class ContentSaveSubscriber implements EventSubscriberInterface
+class ContentSaveSubscriber implements EventSubscriberInterface
 {
     use LoggerTrait;
 
     public const int PRIORITY = 100;
 
-    public function __construct(private TagAwareCacheInterface $cache) {}
+    public function __construct(private readonly TagAwareCacheInterface $cache) {}
 
     public function postSave(ContentEvent $event): ContentEvent
     {

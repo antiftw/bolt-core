@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Bolt\Command;
 
 use Bolt\Configuration\Config;
+use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -12,9 +13,10 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Finder\Finder;
 
+#[AsCommand(name: 'bolt:copy-assets', description: 'Copy built asset files into the project root')]
 class CopyAssetsCommand extends Command
 {
-    protected static $defaultName = 'bolt:copy-assets';
+    protected static string $defaultName = 'bolt:copy-assets';
     private string $publicDirectory;
 
     public function __construct(

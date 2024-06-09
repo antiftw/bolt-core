@@ -4,16 +4,17 @@ declare(strict_types=1);
 
 namespace Bolt\Api\Extensions;
 
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Extension\QueryItemExtensionInterface;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Doctrine\Orm\Extension\QueryCollectionExtensionInterface;
+use ApiPlatform\Doctrine\Orm\Extension\QueryItemExtensionInterface;
+use ApiPlatform\Doctrine\Orm\Util\QueryNameGeneratorInterface;
+use ApiPlatform\Metadata\Operation;
 use Bolt\Configuration\Config;
 use Bolt\Entity\Content;
 use Bolt\Entity\Field;
 use Bolt\Enum\Statuses;
 use Doctrine\ORM\Query\Expr\Join;
 use Doctrine\ORM\QueryBuilder;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 final class ContentExtension implements QueryCollectionExtensionInterface, QueryItemExtensionInterface
 {
@@ -28,8 +29,13 @@ final class ContentExtension implements QueryCollectionExtensionInterface, Query
         })->values();
     }
 
-    public function applyToCollection(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, ?string $operationName = null): void
-    {
+    public function applyToCollection(
+        QueryBuilder $queryBuilder,
+        QueryNameGeneratorInterface $queryNameGenerator,
+        string $resourceClass,
+        ?Operation $operation = null,
+        array $context = []
+    ): void {
         /*
          * Note: We're not distinguishing between `viewless` and `viewless_listing` here. In the
          * context of the API it makes no sense to say "You can get a list, but not the details"
@@ -45,8 +51,14 @@ final class ContentExtension implements QueryCollectionExtensionInterface, Query
         }
     }
 
-    public function applyToItem(QueryBuilder $queryBuilder, QueryNameGeneratorInterface $queryNameGenerator, string $resourceClass, array $identifiers, ?string $operationName = null, array $context = []): void
-    {
+    public function applyToItem(
+        QueryBuilder $queryBuilder,
+        QueryNameGeneratorInterface $queryNameGenerator,
+        string $resourceClass,
+        array $identifiers,
+        ?Operation $operation = null,
+        array $context = []
+    ): void {
         if ($resourceClass === Content::class) {
             $this->filterUnpublishedViewlessContent($queryBuilder);
         }

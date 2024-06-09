@@ -7,6 +7,7 @@ namespace Bolt\Log;
 use Bolt\Entity\Log;
 use Doctrine\ORM\EntityManagerInterface;
 use Monolog\Handler\AbstractProcessingHandler;
+use Monolog\LogRecord;
 
 class LogHandler extends AbstractProcessingHandler
 {
@@ -18,7 +19,7 @@ class LogHandler extends AbstractProcessingHandler
     /**
      * Called when writing to our database
      */
-    protected function write(array $record): void
+    protected function write(array|LogRecord $record): void
     {
         $logEntry = new Log();
         $logEntry->setMessage($record['message']);

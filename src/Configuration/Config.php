@@ -17,7 +17,7 @@ use Bolt\Controller\Backend\ClearCacheController;
 use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Contracts\Cache\CacheInterface;
-use Tightenco\Collect\Support\Collection;
+use Illuminate\Support\Collection;
 
 class Config
 {

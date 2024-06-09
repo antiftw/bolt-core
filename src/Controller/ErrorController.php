@@ -19,7 +19,7 @@ use Symfony\Component\HttpKernel\Controller\ErrorController as SymfonyErrorContr
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 

@@ -7,7 +7,7 @@ namespace Bolt\Menu;
 use Bolt\Configuration\Config;
 use Bolt\Entity\User;
 use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Security\Core\Security;
+use Symfony\Bundle\SecurityBundle\Security;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
