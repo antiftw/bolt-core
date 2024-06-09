@@ -8,7 +8,7 @@ use Bolt\Configuration\Config;
 use Bolt\Storage\Query;
 use Bolt\Widgets;
 use Doctrine\ORM\EntityManagerInterface;
-use Symfony\Component\DependencyInjection\ContainerInterface;
+use Psr\Container\ContainerInterface;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;

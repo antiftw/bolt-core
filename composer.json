@@ -112,7 +112,7 @@
         "ext-curl": "*",
         "ext-pdo_sqlite": "*",
         "acmecorp/reference-extension": "dev-master",
-        "bobdenotter/configuration-notices": "^1.2",
+        "bobdenotter/configuration-notices": "dev-master",
         "bobdenotter/weatherwidget": "^1.1",
         "bolt/newswidget": "^1.3",
         "coduo/php-matcher": "^6.0.15",
@@ -201,6 +201,10 @@
         "antiftw-bolt-reference-extension": {
             "type": "vcs",
             "url": "https://github.com/antiftw/bolt-reference-extension"
+        },
+        "antiftw-bdo-configuration-notices": {
+            "type": "vcs",
+            "url": "https://github.com/antiftw/bdo-configuration-notices"
         }
     }
 }
