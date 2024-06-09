@@ -111,7 +111,7 @@
     "require-dev": {
         "ext-curl": "*",
         "ext-pdo_sqlite": "*",
-        "acmecorp/reference-extension": "^1.2",
+        "acmecorp/reference-extension": "dev-master",
         "bobdenotter/configuration-notices": "^1.2",
         "bobdenotter/weatherwidget": "^1.1",
         "bolt/newswidget": "^1.3",
@@ -197,6 +197,10 @@
         "antiftw-php-translation-loco-adapter": {
             "type": "vcs",
             "url": "https://github.com/antiftw/php-translation-loco-adapter"
+        },
+        "antiftw-bolt-reference-extension": {
+            "type": "vcs",
+            "url": "https://github.com/antiftw/bolt-reference-extension"
         }
     }
 }
