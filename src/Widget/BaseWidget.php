@@ -30,9 +30,7 @@ abstract class BaseWidget implements WidgetInterface
 
     /** @var ?string from RequestZone */
     protected ?string $zone;
-
-    /** @var ExtensionInterface */
-    protected ExtensionInterface $extension;
+    protected ?ExtensionInterface $extension;
 
     protected ?int $priority = 0;
 
@@ -133,7 +131,7 @@ abstract class BaseWidget implements WidgetInterface
         $this->extension = $extension;
     }
 
-    public function getExtension(): ExtensionInterface
+    public function getExtension(): ?ExtensionInterface
     {
         return $this->extension;
     }
