@@ -23,6 +23,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Support\Collection;
+use Symfony\Contracts\Service\Attribute\Required;
 use Twig\Environment;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
@@ -39,9 +40,7 @@ class TwigAwareController extends AbstractController
     protected string $defaultLocale;
     private CommonExtension $commonExtension;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setAutowire(Config $config, Environment $twig, Packages $packages, Canonical $canonical, Sanitiser $sanitiser, RequestStack $requestStack, TemplateChooser $templateChooser, string $defaultLocale, CommonExtension $commonExtension): void
     {
         $this->config = $config;
