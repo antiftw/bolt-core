@@ -10,10 +10,9 @@ use Bolt\Entity\Content;
 use Bolt\Twig\ContentExtension;
 use Illuminate\Support\Collection;
 
-readonly class TemplateChooser
+class TemplateChooser
 {
-
-    public function __construct(private Config $config, private ContentExtension $contentExtension) {}
+    public function __construct(private readonly Config $config, private readonly ContentExtension $contentExtension) {}
 
     public function forHomepage(?Content $content = null): array
     {
