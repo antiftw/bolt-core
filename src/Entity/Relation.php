@@ -4,29 +4,28 @@ declare(strict_types=1);
 
 namespace Bolt\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Post;
 use Bolt\Repository\RelationRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 #[ApiResource(
-    collectionOperations: [
-        "get" => ["security" => "is_granted('api:get')"],
-        "post" => ["security" => "is_granted('api:post')"]
+    operations: [
+        new Get(denormalizationContext: ["security" => "is_granted('api:get')"]),
+        new Post(denormalizationContext: ["security" => "is_granted('api:post')"]),
+        new Delete(denormalizationContext: ["security" => "is_granted('api:delete')"]),
     ],
-    graphql: [
+    normalizationContext: ["groups" => ["get_relation"]],
+    graphQlOperations: [
         "item_query" => ["security" => "is_granted('api:get')"],
         "collection_query" => ["security" => "is_granted('api:get')"],
         "create" => ["security" => "is_granted('api:post')"],
         "delete" => ["security" => "is_granted('api:delete')"]
-    ],
-    itemOperations: [
-        "get" => ["security" => "is_granted('api:get')"],
-        "put" => ["security" => "is_granted('api:post')"],
-        "delete" => ["security" => "is_granted('api:delete')"]
-    ],
-    normalizationContext: ["groups" => ["get_relation"]]
+    ]
 )]
 #[ORM\Entity(repositoryClass: RelationRepository::class)]
 #[ApiFilter(SearchFilter::class, strategy: 'partial')]

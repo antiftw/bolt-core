@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Bolt\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Annotation\ApiSubresource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
 use Bolt\Configuration\Content\ContentType;
 use Bolt\Entity\Field\Excerptable;
 use Bolt\Entity\Field\ScalarCastable;
@@ -23,33 +26,37 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\MaxDepth;
-use Tightenco\Collect\Support\Collection as LaravelCollection;
+use Illuminate\Support\Collection as LaravelCollection;
 use Twig\Template;
 
 #[ApiResource(
-    collectionOperations: [
-        "get" => ["security" => "is_granted('api:get')"],
-        "post" => ["security" => "is_granted('api:post')"]
+    operations: [
+        new Get(denormalizationContext: ["security" => "is_granted('api:get')"]),
+        new Post(denormalizationContext: ["security" => "is_granted('api:post')"]),
+        new Delete(denormalizationContext: ["security" => "is_granted('api:delete')"])
     ],
-    graphql: [
+    normalizationContext: ["groups" => ["get_content"]],
+    denormalizationContext: ["groups" => ["api_write"], "enable_max_depth" => true],
+    graphQlOperations: [
         "item_query" => ["security" => "is_granted('api:get')"],
         "collection_query" => ["security" => "is_granted('api:get')"],
         "create" => ["security" => "is_granted('api:post')"],
         "delete" => ["security" => "is_granted('api:delete')"]
-    ],
-    itemOperations: [
-        "get" => ["security" => "is_granted('api:get')"],
-        "put" => ["security" => "is_granted('api:post')"],
-        "delete" => ["security" => "is_granted('api:delete')"]
-    ],
-    denormalizationContext: ["groups" => ["api_write"], "enable_max_depth" => true],
-    normalizationContext: ["groups" => ["get_content"]]
+    ]
 )]
+// todo-s7: this should replace sub-resource to the content type, but im not sure it does what it has to.
+#[ApiResource(
+    uriTemplate: "/content/{id}/field",
+    operations: [
+        new Get(denormalizationContext: ['security' => "is_granted('api:get')"]),
+    ],
+    uriVariables: [ "id" => new Link(fromClass: Content::class)],
 
+)]
 #[ApiFilter(SearchFilter::class)]
 #[ORM\Entity(repositoryClass: ContentRepository::class)]
-#[ORM\Index(columns: ["content_type"], name: "content_type_idx")]
-#[ORM\Index(columns: ["status"], name: "status_idx")]
+#[ORM\Index(name: "content_type_idx", columns: ["content_type"])]
+#[ORM\Index(name: "status_idx", columns: ["status"])]
 #[ORM\HasLifecycleCallbacks]
 class Content
 {
@@ -96,7 +103,6 @@ class Content
     #[ORM\Column(type: 'string', length: 191, nullable: true)]
     private string$listFormat;
 
-    #[ApiSubresource(maxDepth: 1)]
     #[MaxDepth(1)]
     #[ORM\ManyToMany(
         targetEntity: Field::class,
@@ -117,11 +123,11 @@ class Content
     private ?ContentType $contentTypeDefinition = null;
 
     /** One content has many relations, to and from, these are relations pointing from this content. */
-    #[ORM\OneToMany(mappedBy: "fromContent", targetEntity: Relation::class)]
+    #[ORM\OneToMany(targetEntity: Relation::class, mappedBy: "fromContent")]
     private ArrayCollection $relationsFromThisContent;
 
     /** One content has many relations, to and from, these are relations pointing to this content. */
-    #[ORM\OneToMany(mappedBy: "toContent", targetEntity: Relation::class)]
+    #[ORM\OneToMany(targetEntity: Relation::class, mappedBy: "toContent")]
     private ArrayCollection $relationsToThisContent;
 
     public function __construct(?ContentType $contentTypeDefinition = null)

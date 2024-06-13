@@ -4,9 +4,13 @@ declare(strict_types=1);
 
 namespace Bolt\Entity;
 
-use ApiPlatform\Core\Annotation\ApiFilter;
-use ApiPlatform\Core\Annotation\ApiResource;
-use ApiPlatform\Core\Bridge\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\ApiFilter;
+use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\Link;
+use ApiPlatform\Metadata\Post;
 use Bolt\Common\Arr;
 use Bolt\Configuration\Content\FieldType;
 use Bolt\Event\Listener\FieldFillListener;
@@ -22,28 +26,28 @@ use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 use Twig\Markup;
 #[ApiResource(
-    collectionOperations: [
-        'get' => ['security' => "is_granted('api:get')"],
-        'post' => ['security' => "is_granted('api:post')"],
+    uriTemplate: "/content/{contentId}/field/{id}",
+    operations: [
+        new Post(denormalizationContext: ['security' => "is_granted('api:post')"]),
+        new Get(denormalizationContext: ['security' => "is_granted('api:get')"]),
+        new Delete(denormalizationContext: ['security' => "is_granted('api:delete')"]),
     ],
-    graphql: [
+//// todo-s7: not sure what to do with this
+//    subresourceOperations: [
+//        'api_contents_fields_get_subresource' => [
+//            'method' => 'GET',
+//        ],
+//    ],
+    uriVariables: [ "id" => new Link(fromClass: Field::class), "companyId" => new Link(toProperty: 'content', fromClass: Content::class)],
+
+    normalizationContext: ['groups' => ['get_field']],
+    denormalizationContext: ['groups' => ['api_write'], 'enable_max_depth' => true],
+    graphQlOperations: [
         'item_query' => ['security' => "is_granted('api:get')"],
         'collection_query' => ['security' => "is_granted('api:get')"],
         'create' => ['security' => "is_granted('api:post')"],
         'delete' => ['security' => "is_granted('api:delete')"],
     ],
-    itemOperations: [
-        'get' => ['security' => "is_granted('api:get')"],
-        'put' => ['security' => "is_granted('api:post')"],
-        'delete' => ['security' => "is_granted('api:delete')"],
-    ],
-    subresourceOperations: [
-        'api_contents_fields_get_subresource' => [
-            'method' => 'GET',
-        ],
-    ],
-    denormalizationContext: ['groups' => ['api_write'], 'enable_max_depth' => true],
-    normalizationContext: ['groups' => ['get_field']],
 )]
 
 #[ApiFilter(SearchFilter::class)]
@@ -79,7 +83,7 @@ class Field implements FieldInterface, TranslatableInterface
 
     #[ORM\ManyToOne(targetEntity: Field::class, cascade: ["persist"])]
     #[ORM\JoinColumn(onDelete: "CASCADE")]
-    private Field $parent;
+    private ?Field $parent;
 
     private ?FieldType $fieldTypeDefinition;
     private bool $useDefaultLocale = true;
