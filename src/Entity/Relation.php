@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GraphQl\Operation;
 use ApiPlatform\Metadata\Post;
 use Bolt\Repository\RelationRepository;
 use Doctrine\ORM\Mapping as ORM;
@@ -21,10 +22,9 @@ use Symfony\Component\Serializer\Annotation\Groups;
     ],
     normalizationContext: ["groups" => ["get_relation"]],
     graphQlOperations: [
-        "item_query" => ["security" => "is_granted('api:get')"],
-        "collection_query" => ["security" => "is_granted('api:get')"],
-        "create" => ["security" => "is_granted('api:post')"],
-        "delete" => ["security" => "is_granted('api:delete')"]
+        new Operation(denormalizationContext: ["security" => "is_granted('api:get')"], name: "get"),
+        new Operation(denormalizationContext: ["security" => "is_granted('api:post')"], name: "create"),
+        new Operation(denormalizationContext: ["security" => "is_granted('api:delete')"], name: "delete"),
     ]
 )]
 #[ORM\Entity(repositoryClass: RelationRepository::class)]
