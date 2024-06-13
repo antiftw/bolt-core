@@ -9,6 +9,7 @@ use ApiPlatform\Metadata\ApiResource;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GraphQl\Operation;
 use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use Bolt\Configuration\Content\ContentType;
@@ -38,10 +39,9 @@ use Twig\Template;
     normalizationContext: ["groups" => ["get_content"]],
     denormalizationContext: ["groups" => ["api_write"], "enable_max_depth" => true],
     graphQlOperations: [
-        "item_query" => ["security" => "is_granted('api:get')"],
-        "collection_query" => ["security" => "is_granted('api:get')"],
-        "create" => ["security" => "is_granted('api:post')"],
-        "delete" => ["security" => "is_granted('api:delete')"]
+        new Operation(denormalizationContext: ["security" => "is_granted('api:get')"], name: "get"),
+        new Operation(denormalizationContext: ["security" => "is_granted('api:post')"], name: "create"),
+        new Operation(denormalizationContext: ["security" => "is_granted('api:delete')"], name: "delete"),
     ]
 )]
 // todo-s7: this should replace sub-resource to the content type, but im not sure it does what it has to.
