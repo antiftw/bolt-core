@@ -7,7 +7,7 @@ namespace Bolt\Controller\Backend\Async;
 use Bolt\Common\Str;
 use Bolt\Configuration\Config;
 use Bolt\Controller\CsrfTrait;
-use Bolt\Factory\orig\MediaFactory;
+use Bolt\Factory\MediaFactory;
 use Bolt\Twig\TextExtension;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;

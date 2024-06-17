@@ -6,7 +6,7 @@ namespace Bolt\DataFixtures;
 
 use Bolt\Configuration\FileLocations;
 use Bolt\Entity\User;
-use Bolt\Factory\orig\MediaFactory;
+use Bolt\Factory\MediaFactory;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
 use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;

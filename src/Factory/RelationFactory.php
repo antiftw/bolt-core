@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Bolt\Factory\orig;
+namespace Bolt\Factory;
 
 use Bolt\Entity\Content;
 use Bolt\Entity\Relation;

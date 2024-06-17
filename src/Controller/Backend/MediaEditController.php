@@ -8,7 +8,7 @@ use Bolt\Configuration\FileLocations;
 use Bolt\Controller\CsrfTrait;
 use Bolt\Controller\TwigAwareController;
 use Bolt\Entity\Media;
-use Bolt\Factory\orig\MediaFactory;
+use Bolt\Factory\MediaFactory;
 use Doctrine\ORM\EntityManagerInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Filesystem\Path;
