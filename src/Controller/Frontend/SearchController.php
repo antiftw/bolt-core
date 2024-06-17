@@ -9,7 +9,7 @@ use Bolt\Repository\ContentRepository;
 use Pagerfanta\Adapter\ArrayAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 class SearchController extends TwigAwareController implements FrontendZoneInterface
 {

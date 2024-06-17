@@ -7,9 +7,7 @@ namespace Bolt\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Filesystem\Path;
 
-/**
- * @ORM\Entity(repositoryClass="Bolt\Repository\MediaRepository")
- */
+#[ORM\Entity(repositoryClass: 'Bolt\Repository\MediaRepository')]
 class Media
 {
     #[ORM\Id]

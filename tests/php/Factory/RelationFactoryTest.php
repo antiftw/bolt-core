@@ -6,7 +6,7 @@ namespace Bolt\Tests\Factory;
 
 use Bolt\Entity\Content;
 use Bolt\Entity\Relation;
-use Bolt\Factory\RelationFactory;
+use Bolt\Factory\orig\RelationFactory;
 use Bolt\Repository\ContentRepository;
 use Bolt\Repository\RelationRepository;
 use Bolt\Tests\DbAwareTestCase;

@@ -5,13 +5,15 @@ declare(strict_types=1);
 namespace Bolt\DataFixtures;
 
 use Bolt\Configuration\FileLocations;
-use Bolt\Factory\MediaFactory;
+use Bolt\Entity\User;
+use Bolt\Factory\orig\MediaFactory;
 use Doctrine\Bundle\FixturesBundle\FixtureGroupInterface;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
 use Faker\Factory;
 use Faker\Generator;
 
-class ImagesFixtures extends BaseFixture implements FixtureGroupInterface
+class ImagesFixtures extends BaseFixture implements FixtureGroupInterface, DependentFixtureInterface
 {
     private Generator$faker;
 
@@ -40,8 +42,11 @@ class ImagesFixtures extends BaseFixture implements FixtureGroupInterface
         $index = $this->getImagesIndex($path);
 
         foreach ($index as $file) {
+
             $media = $this->mediaFactory->createOrUpdateMedia($file, 'files', $this->faker->sentence());
-            $media->setAuthor($this->getRandomReference('user'))
+            /** @var User $author */
+            $author = $this->getRandomReference(User::class);
+            $media->setAuthor($author)
                 ->setDescription($this->faker->paragraphs(3, true))
                 ->setCopyright('© Unsplash');
 
@@ -49,5 +54,12 @@ class ImagesFixtures extends BaseFixture implements FixtureGroupInterface
         }
 
         $manager->flush();
+    }
+
+    public function getDependencies(): array
+    {
+         return [
+            UserFixtures::class,
+        ];
     }
 }

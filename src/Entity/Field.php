@@ -83,7 +83,7 @@ class Field implements FieldInterface, TranslatableInterface
 
     #[ORM\ManyToOne(targetEntity: Field::class, cascade: ["persist"])]
     #[ORM\JoinColumn(onDelete: "CASCADE")]
-    private ?Field $parent;
+    private ?Field $parent = null;
 
     private ?FieldType $fieldTypeDefinition;
     private bool $useDefaultLocale = true;

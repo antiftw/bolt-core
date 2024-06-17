@@ -7,6 +7,7 @@ namespace Bolt\Entity;
 use Bolt\Common\Str;
 use Bolt\Configuration\Content\TaxonomyType;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Tightenco\Collect\Support\Collection as LaravelCollection;
@@ -21,7 +22,7 @@ class Taxonomy
     private ?int $id = null;
 
     #[ORM\ManyToMany(targetEntity: Content::class, inversedBy: 'taxonomies')]
-    private ArrayCollection $content;
+    private Collection $content;
 
     #[ORM\Column(type: 'string', length: 191)]
     #[Groups(['get_content', 'public'])]

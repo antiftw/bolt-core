@@ -11,7 +11,7 @@ use ComposerPackages\Versions;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 
 #[Security('is_granted("extensions")')]
 class ExtensionsController extends AbstractController implements BackendZoneInterface

@@ -23,7 +23,14 @@ abstract class BaseFixture extends Fixture
         $this->referencesIndex = [];
     }
 
-    protected function getRandomReference(string $entityName)
+    protected function getRandomReference(string $fullyQualifiedClassName): object{
+        $references = $this->referenceRepository->getReferencesByClass();
+        $references = $references[$fullyQualifiedClassName];
+        $randomReferenceKey = array_rand($references);
+        return $references[$randomReferenceKey];
+    }
+
+    protected function getRandomReferenceOld(string $entityName)
     {
         if (isset($this->referencesIndex[$entityName]) === false) {
             $this->referencesIndex[$entityName] = [];
@@ -41,6 +48,7 @@ abstract class BaseFixture extends Fixture
 
         return $this->getReference($this->referencesIndex[$entityName][$randomReferenceKey]);
     }
+
 
     protected function getRandomTaxonomies(string $type, int $amount): array
     {

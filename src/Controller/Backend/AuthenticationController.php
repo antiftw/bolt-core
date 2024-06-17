@@ -8,7 +8,7 @@ use Bolt\Controller\TwigAwareController;
 use Bolt\Form\LoginType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Http\Authentication\AuthenticationUtils;
 
 class AuthenticationController extends TwigAwareController implements BackendZoneInterface

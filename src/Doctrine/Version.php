@@ -27,13 +27,13 @@ class Version
      */
     public function getPlatform(): array
     {
-        $wrapped = $this->connection->getWrappedConnection();
+        $wrapped = $this->connection->getNativeConnection();
 
         // if the wrapped connection has itself a wrapped connection, use that one, etc.
         // This is the case in phpunit tests that use the dama/doctrine-test-bundle functionality
         while (true) {
-            if (method_exists($wrapped, 'getWrappedConnection')) {
-                $nextLevel = $wrapped->getWrappedConnection();
+            if (method_exists($wrapped, 'getNativeConnection')) {
+                $nextLevel = $wrapped->getNativeConnection();
                 if ($nextLevel) {
                     $wrapped = $nextLevel;
                 } else {

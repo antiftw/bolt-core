@@ -12,14 +12,10 @@ use Symfony\Component\Console\Input\StringInput;
 
 class DbAwareTestCase extends WebTestCase
 {
-    /** @var Application */
-    private static $application;
+    private static Application $application;
+    private EntityManager $entityManager;
 
-    /** @var EntityManager */
-    private $entityManager;
-
-    /** @var KernelBrowser $client */
-    protected $client;
+    protected KernelBrowser $client;
 
     protected function getEm(): EntityManager
     {
