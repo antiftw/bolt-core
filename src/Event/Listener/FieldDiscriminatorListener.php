@@ -36,7 +36,7 @@ class FieldDiscriminatorListener
     {
         $mappingDriver = $em->getConfiguration()->getMetadataDriverImpl();
         if ($mappingDriver === null) {
-            throw new ORMException('Could not load mapping driver');
+            throw ORMException('Could not load mapping driver');
         }
         $this->mappingDriver = $mappingDriver;
     }
