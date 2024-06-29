@@ -20,7 +20,7 @@
         "doctrine/doctrine-bundle": "^2.12",
         "doctrine/doctrine-fixtures-bundle": "^3.6",
         "doctrine/doctrine-migrations-bundle": "^3.2",
-        "doctrine/orm": "^2.19",
+        "doctrine/orm": "^3",
         "doctrine/persistence": "^3.0",
         "drupol/composer-packages": "^2.0",
         "embed/embed": "^3.4",
