@@ -60,7 +60,7 @@ class Taxonomy
     /**
      * @see \Bolt\Event\Listener\TaxonomyFillListener
      */
-    public function setDefinitionFromTaxonomyTypesConfig(LaravelCollection $taxonomyTypesConfig): void
+    public function setDefinitionFromTaxonomyTypesConfig(\Illuminate\Support\Collection $taxonomyTypesConfig): void
     {
         $this->taxonomyTypeDefinition = TaxonomyType::factory($this->type, $taxonomyTypesConfig);
     }

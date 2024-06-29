@@ -33,12 +33,6 @@ use Twig\Markup;
         new Get(denormalizationContext: ['security' => "is_granted('api:get')"]),
         new Delete(denormalizationContext: ['security' => "is_granted('api:delete')"]),
     ],
-//// todo-s7: not sure what to do with this
-//    subresourceOperations: [
-//        'api_contents_fields_get_subresource' => [
-//            'method' => 'GET',
-//        ],
-//    ],
     uriVariables: [ "id" => new Link(fromClass: Field::class), "companyId" => new Link(toProperty: 'content', fromClass: Content::class)],
 
     normalizationContext: ['groups' => ['get_field']],
@@ -49,7 +43,12 @@ use Twig\Markup;
         new Operation(denormalizationContext: ["security" => "is_granted('api:delete')"], name: "delete"),
     ],
 )]
-
+//// todo-s7: not sure what to do with this
+//    subresourceOperations: [
+//        'api_contents_fields_get_subresource' => [
+//            'method' => 'GET',
+//        ],
+//    ],
 #[ApiFilter(SearchFilter::class)]
 #[ORM\Entity(repositoryClass: "Bolt\Repository\FieldRepository")]
 #[ORM\InheritanceType("SINGLE_TABLE")]
@@ -263,7 +262,7 @@ class Field implements FieldInterface, TranslatableInterface
                     // and references {{ record }}
                     'record' => $this->getContent(),
                 ]);
-            } catch (LoaderError|SyntaxError $e) {
+            } catch (LoaderError|SyntaxError) {
                 // Prevent saving error (translations getting cleared if Twig code contains errors)
                 $value = $valueBeforeRenderingAsTwig;
             }

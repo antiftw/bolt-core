@@ -55,8 +55,8 @@ use Twig\Template;
 )]
 #[ApiFilter(SearchFilter::class)]
 #[ORM\Entity(repositoryClass: ContentRepository::class)]
-#[ORM\Index(name: "content_type_idx", columns: ["content_type"])]
-#[ORM\Index(name: "status_idx", columns: ["status"])]
+#[ORM\Index(columns: ["content_type"], name: "content_type_idx")]
+#[ORM\Index(columns: ["status"], name: "status_idx")]
 #[ORM\HasLifecycleCallbacks]
 class Content
 {
@@ -114,21 +114,21 @@ class Content
     )]
     #[ORM\OrderBy(["sortorder" => "ASC"])]
     #[Groups(["api_write"])]
-    private ArrayCollection $fields;
+    private Collection $fields;
 
     #[MaxDepth(1)]
     #[ORM\ManyToMany(targetEntity: Taxonomy::class, mappedBy: "content", cascade: ["persist"])]
-    private ArrayCollection $taxonomies;
+    private Collection $taxonomies;
 
     private ?ContentType $contentTypeDefinition = null;
 
     /** One content has many relations, to and from, these are relations pointing from this content. */
-    #[ORM\OneToMany(targetEntity: Relation::class, mappedBy: "fromContent")]
-    private ArrayCollection $relationsFromThisContent;
+    #[ORM\OneToMany(mappedBy: "fromContent", targetEntity: Relation::class)]
+    private Collection $relationsFromThisContent;
 
     /** One content has many relations, to and from, these are relations pointing to this content. */
-    #[ORM\OneToMany(targetEntity: Relation::class, mappedBy: "toContent")]
-    private ArrayCollection $relationsToThisContent;
+    #[ORM\OneToMany(mappedBy: "toContent", targetEntity: Relation::class)]
+    private Collection $relationsToThisContent;
 
     public function __construct(?ContentType $contentTypeDefinition = null)
     {

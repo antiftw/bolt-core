@@ -11,6 +11,7 @@ use Bolt\Configuration\FileLocations;
 use Bolt\Entity\Content;
 use Bolt\Entity\Field;
 use Bolt\Entity\Field\SelectField;
+use Bolt\Entity\User;
 use Bolt\Enum\Statuses;
 use Bolt\Repository\FieldRepository;
 use Bolt\Twig\ContentExtension;
@@ -89,7 +90,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 if ($i === 1) {
                     $author = $this->getReference('user_admin');
                 } else {
-                    $author = $this->getRandomReference('user');
+                    $author = $this->getRandomReference(User::class);
                 }
 
                 $content = new Content();

@@ -11,14 +11,16 @@ use HTMLPurifier_HTML5Config;
 class Sanitiser
 {
     private ?HTMLPurifier $purifier = null;
-    private Config$config;
+
+    public function __construct(private readonly Config $config)
+    {
+    }
 
     /**
      * @required
      */
     public function init(Config $config): void
     {
-        $this->config = $config;
     }
 
     private function getPurifier(): HTMLPurifier

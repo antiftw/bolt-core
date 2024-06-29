@@ -9,9 +9,9 @@ use Illuminate\Support\Collection;
 
 class ContentType extends DeepCollection
 {
-    public function __call($name, $arguments)
+    public function __call($method, $parameters)
     {
-        return $this->get($name);
+        return $this->get($method);
     }
 
     public static function factory(?string $name, Collection $contentTypesConfig): self

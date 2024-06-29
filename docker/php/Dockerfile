@@ -1,5 +1,5 @@
 # https://github.com/docker-library/php/blob/master/7.3/buster/fpm/Dockerfile
-FROM php:7.3-fpm-buster
+FROM php:8.3-fpm
 
 ENV PHP_MEMORYLIMIT 2048M
 ENV PHP_TIMEZONE Europe/Warsaw
@@ -39,8 +39,7 @@ RUN extBuildDeps=" \
             libzip-dev \
             sendmail && \
     rm -rf /var/lib/apt/lists/* && \
-    docker-php-ext-configure gd --with-jpeg-dir=/usr/lib/x86_64-linux-gnu --with-png-dir=/usr/lib/x86_64-linux-gnu --with-freetype-dir=/usr/lib/x86_64-linux-gnu && \
-    docker-php-ext-configure intl --enable-intl && \
+	docker-php-ext-configure intl --enable-intl && \
     docker-php-ext-install \
             exif \
             pdo \
@@ -48,7 +47,6 @@ RUN extBuildDeps=" \
             zip \
             intl \
             iconv \
-            mbstring \
             gd \
             pcntl \
             opcache && \
