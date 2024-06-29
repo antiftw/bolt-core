@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Bolt\Doctrine\Functions;
 
 use Doctrine\ORM\Query\AST\Functions\FunctionNode;
-use Doctrine\ORM\Query\AST\SimpleArithmeticExpression;
-use Doctrine\ORM\Query\Lexer;
+use Doctrine\ORM\Query\AST;
+use Doctrine\ORM\Query\TokenType;
 
 class Rand extends FunctionNode
 {
-    private ?SimpleArithmeticExpression $expression = null;
+    private AST\Node|string $expression = '';
 
     public function getSql(\Doctrine\ORM\Query\SqlWalker $sqlWalker): string
     {
@@ -29,13 +29,13 @@ class Rand extends FunctionNode
     public function parse(\Doctrine\ORM\Query\Parser $parser): void
     {
         $lexer = $parser->getLexer();
-        $parser->match(Lexer::T_IDENTIFIER);
-        $parser->match(Lexer::T_OPEN_PARENTHESIS);
+        $parser->match(TokenType::T_IDENTIFIER);
+        $parser->match(TokenType::T_OPEN_PARENTHESIS);
 
-        if ($lexer->lookahead['type'] !== Lexer::T_CLOSE_PARENTHESIS) {
+        if ($lexer->lookahead->type !== TokenType::T_CLOSE_PARENTHESIS) {
             $this->expression = $parser->SimpleArithmeticExpression();
         }
 
-        $parser->match(Lexer::T_CLOSE_PARENTHESIS);
+        $parser->match(TokenType::T_CLOSE_PARENTHESIS);
     }
 }
