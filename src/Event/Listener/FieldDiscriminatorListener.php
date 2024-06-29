@@ -5,9 +5,10 @@ declare(strict_types=1);
 namespace Bolt\Event\Listener;
 
 use Bolt\Entity\FieldInterface;
+use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
-use Doctrine\ORM\Exception\ORMException;
+use Doctrine\ORM\Exception\ORME xception;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 
 /**
@@ -36,7 +37,7 @@ class FieldDiscriminatorListener
     {
         $mappingDriver = $em->getConfiguration()->getMetadataDriverImpl();
         if ($mappingDriver === null) {
-            throw ORMException('Could not load mapping driver');
+            throw new Exception('Could not load mapping driver');
         }
         $this->mappingDriver = $mappingDriver;
     }
