@@ -8,7 +8,7 @@ use Bolt\Canonical;
 use Bolt\Configuration\Config;
 use Bolt\Configuration\Content\ContentType;
 use Bolt\Entity\Content;
-use Bolt\Entity\Field\TemplateselectField;
+use Bolt\Entity\Field\TemplateSelectField;
 use Bolt\Enum\Statuses;
 use Bolt\Storage\Query;
 use Bolt\TemplateChooser;
@@ -199,7 +199,7 @@ class TwigAwareController extends AbstractController
         if (is_array($template)) {
             $templates = (new Collection($template))
                 ->map(function ($element): ?string {
-                    if ($element instanceof TemplateselectField) {
+                    if ($element instanceof TemplateSelectField) {
                         return $element->__toString();
                     }
 

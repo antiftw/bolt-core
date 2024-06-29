@@ -10,6 +10,9 @@ use Countable;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\DiscriminatorMap(value: [
+    'file' => FileField::class,
+])]
 class FileField extends Field implements FieldInterface, Countable, RawPersistable
 {
     use FileExtrasTrait;

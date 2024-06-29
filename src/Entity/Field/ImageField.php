@@ -16,6 +16,9 @@ use Symfony\Component\Asset\PathPackage;
 use Symfony\Component\Asset\VersionStrategy\EmptyVersionStrategy;
 
 #[ORM\Entity]
+#[ORM\DiscriminatorMap(value: [
+    'image' => ImageField::class,
+])]
 class ImageField extends Field implements FieldInterface, MediaAwareInterface, Countable, RawPersistable
 {
     use FileExtrasTrait;

@@ -10,6 +10,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Twig\Markup;
 
 #[ORM\Entity]
+#[ORM\DiscriminatorMap(value: [
+    'embed' => EmbedField::class,
+])]
 class EmbedField extends Field implements FieldInterface
 {
     public const string TYPE = 'embed';

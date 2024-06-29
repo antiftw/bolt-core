@@ -15,6 +15,9 @@ use Bolt\Repository\FieldRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\DiscriminatorMap(value: [
+    'collection' => CollectionField::class,
+])]
 class CollectionField extends Field implements Excerptable, FieldInterface, FieldParentInterface, ListFieldInterface, RawPersistable, \Iterator
 {
     use FieldParentTrait;
