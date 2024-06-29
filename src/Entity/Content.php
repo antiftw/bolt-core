@@ -55,8 +55,8 @@ use Twig\Template;
 )]
 #[ApiFilter(SearchFilter::class)]
 #[ORM\Entity(repositoryClass: ContentRepository::class)]
-#[ORM\Index(columns: ["content_type"], name: "content_type_idx")]
-#[ORM\Index(columns: ["status"], name: "status_idx")]
+#[ORM\Index(name: "content_type_idx", columns: ["content_type"])]
+#[ORM\Index(name: "status_idx", columns: ["status"])]
 #[ORM\HasLifecycleCallbacks]
 class Content
 {
@@ -65,43 +65,43 @@ class Content
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     #[Groups(["get_content", "api_write"])]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 191)]
+    #[ORM\Column(length: 191)]
     #[Groups(["get_content", "api_write"])]
-    private string $contentType;
+    private string $contentType = '';
 
     #[ORM\ManyToOne(targetEntity: User::class, fetch: "EAGER")]
     #[ORM\JoinColumn(nullable: true)]
-    private ?User $author;
+    private ?User $author = null;
 
-    #[ORM\Column(type: 'string', length: 191)]
+    #[ORM\Column(length: 191)]
     #[Groups(["get_content", "api_write"])]
-    private string $status;
+    private string $status = Statuses::DRAFT;
 
-    #[ORM\Column(type: 'datetime')]
+    #[ORM\Column]
     #[Groups(["get_content", "api_write"])]
     private \DateTime $createdAt;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(nullable: true)]
     #[Groups(["get_content", "api_write"])]
     private ?\DateTime $modifiedAt = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(nullable: true)]
     #[Groups(["get_content", "api_write"])]
     private ?\DateTime $publishedAt = null;
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(nullable: true)]
     #[Groups(["get_content", "api_write"])]
-    private ?\DateTime $depublishedAt = null;
+    private ?\DateTime $dePublishedAt = null;
 
-    #[ORM\Column(type: 'string', length: 191, nullable: true)]
-    private string $title;
+    #[ORM\Column(length: 191, nullable: true)]
+    private string $title = '';
 
-    #[ORM\Column(type: 'string', length: 191, nullable: true)]
-    private string$listFormat;
+    #[ORM\Column(length: 191, nullable: true)]
+    private string $listFormat = '';
 
     #[MaxDepth(1)]
     #[ORM\ManyToMany(
@@ -123,17 +123,16 @@ class Content
     private ?ContentType $contentTypeDefinition = null;
 
     /** One content has many relations, to and from, these are relations pointing from this content. */
-    #[ORM\OneToMany(mappedBy: "fromContent", targetEntity: Relation::class)]
+    #[ORM\OneToMany(targetEntity: Relation::class, mappedBy: "fromContent")]
     private Collection $relationsFromThisContent;
 
     /** One content has many relations, to and from, these are relations pointing to this content. */
-    #[ORM\OneToMany(mappedBy: "toContent", targetEntity: Relation::class)]
+    #[ORM\OneToMany(targetEntity: Relation::class, mappedBy: "toContent")]
     private Collection $relationsToThisContent;
 
     public function __construct(?ContentType $contentTypeDefinition = null)
     {
         $this->createdAt = $this->convertToUTCFromLocal(new \DateTime());
-        $this->status = Statuses::DRAFT;
         $this->taxonomies = new ArrayCollection();
         $this->fields = new ArrayCollection();
         $this->relationsFromThisContent = new ArrayCollection();
@@ -410,24 +409,24 @@ class Content
         return $this;
     }
 
-    public function getDepublishedAt(): ?\DateTime
+    public function getDePublishedAt(): ?\DateTime
     {
-        return $this->convertToLocalFromDatabase($this->depublishedAt);
+        return $this->convertToLocalFromDatabase($this->dePublishedAt);
     }
 
-    public function setDepublishedAt(?\DateTime $depublishedAt): self
+    public function setDePublishedAt(?\DateTime $dePublishedAt): self
     {
-        $this->depublishedAt = $this->convertToUTCFromLocal($depublishedAt);
+        $this->dePublishedAt = $this->convertToUTCFromLocal($dePublishedAt);
 
         return $this;
     }
 
-    public function getRawFields(): ArrayCollection
+    public function getRawFields(): Collection
     {
         return $this->fields;
     }
 
-    public function getFields(): ArrayCollection
+    public function getFields(): Collection
     {
         return $this->standaloneFieldsFilter();
     }
@@ -446,7 +445,7 @@ class Content
             }
         }
 
-        // Make sure we have a 'slug', even if none is defined in the contentype
+        // Make sure we have a 'slug', even if none is defined in the content-type
         if (! array_key_exists('slug', $fieldValues)) {
             $fieldValues['slug'] = $this->getSlug();
         }
@@ -697,7 +696,7 @@ class Content
      * Get the current regular fields, with the fields that are not present in
      * the definition anymore filtered out
      */
-    private function standaloneFieldsFilter(): ArrayCollection
+    private function standaloneFieldsFilter(): Collection
     {
         $definition = $this->getDefinition();
 
@@ -744,7 +743,7 @@ class Content
         return $result;
     }
 
-    public function getRelationsFromThisContent() : ArrayCollection
+    public function getRelationsFromThisContent() : Collection
     {
         return $this->relationsFromThisContent;
     }
@@ -772,7 +771,7 @@ class Content
         return $this;
     }
 
-    public function getRelationsToThisContent(): ArrayCollection
+    public function getRelationsToThisContent(): Collection
     {
         return $this->relationsToThisContent;
     }

@@ -36,7 +36,7 @@ class TaxonomyTest extends DbAwareTestCase
         $this->assertSame('foo', $taxonomy->getType());
         $this->assertSame('baar', $taxonomy->getSlug());
         $this->assertSame('Pømpidöm', $taxonomy->getName());
-        $this->assertSame(1000, $taxonomy->getSortorder());
+        $this->assertSame(1000, $taxonomy->getSortOrder());
     }
 
     public function testFactoryWithMinimalParameters(): void
@@ -46,7 +46,7 @@ class TaxonomyTest extends DbAwareTestCase
         $this->assertSame('foo', $taxonomy->getType());
         $this->assertSame('doeoep', $taxonomy->getSlug());
         $this->assertSame('Døøp', $taxonomy->getName());
-        $this->assertSame(0, $taxonomy->getSortorder());
+        $this->assertSame(0, $taxonomy->getSortOrder());
     }
 
     public function testSetSlug(): void
@@ -75,8 +75,8 @@ class TaxonomyTest extends DbAwareTestCase
     {
         $taxonomy = $this->taxonomyRepository->factory('foo', 'bar', 'baz', 1000);
 
-        $taxonomy->setSortorder(10);
+        $taxonomy->setSortOrder(10);
 
-        $this->assertSame(10, $taxonomy->getSortorder());
+        $this->assertSame(10, $taxonomy->getSortOrder());
     }
 }

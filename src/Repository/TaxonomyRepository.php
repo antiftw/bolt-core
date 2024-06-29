@@ -51,7 +51,7 @@ class TaxonomyRepository extends ServiceEntityRepository
         $taxonomy->setType($type);
         $taxonomy->setSlug($slug);
         $taxonomy->setName($name);
-        $taxonomy->setSortorder($sortorder);
+        $taxonomy->setSortOrder($sortorder);
 
         return $taxonomy;
     }

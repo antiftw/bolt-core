@@ -289,7 +289,7 @@ class ContentExtension extends AbstractExtension
             "id" => $content->getId(),
             "createdAt" => $content->getCreatedAt(),
             "publishedAt" => $content->getPublishedAt(),
-            "depublishedAt" => $content->getDepublishedAt(),
+            "depublishedAt" => $content->getDePublishedAt(),
             "modifiedAt" => $content->getModifiedAt(),
             default => throw new \RuntimeException('Ordering content by this column is not yet implemented'),
         };

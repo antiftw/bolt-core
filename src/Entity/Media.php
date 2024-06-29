@@ -12,63 +12,65 @@ class Media
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 191)]
-    private string $location;
+    #[ORM\Column(length: 191)]
+    private string $location = '';
 
-    #[ORM\Column(type: 'text', length: 1000)]
-    private string $path;
+    #[ORM\Column(length: 1000)]
+    private string $path = '';
 
-    #[ORM\Column(type: 'string', length: 191)]
-    private string $filename;
+    #[ORM\Column(length: 191)]
+    private string $filename = '';
 
-    #[ORM\Column(type: 'string', length: 191)]
-    private string $type;
+    #[ORM\Column(length: 191)]
+    private string $type = '';
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $width;
+    #[ORM\Column(nullable: true)]
+    private ?int $width = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $height;
+    #[ORM\Column(nullable: true)]
+    private ?int $height = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $filesize;
+    #[ORM\Column(nullable: true)]
+    private ?int $filesize = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $cropX;
+    #[ORM\Column(nullable: true)]
+    private ?int $cropX = null;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private ?int $cropY;
+    #[ORM\Column(nullable: true)]
+    private ?int $cropY = null;
 
-    #[ORM\Column(type: 'float', nullable: true)]
-    private ?float $cropZoom;
+    #[ORM\Column(nullable: true)]
+    private ?float $cropZoom = null;
 
     #[ORM\ManyToOne(targetEntity: User::class)]
     #[ORM\JoinColumn(nullable: true)]
-    private ?User $author;
+    private ?User $author = null;
 
-    #[ORM\Column(type: "datetime")]
+    #[ORM\Column]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(type: "datetime", nullable: true)]
-    private ?\DateTimeInterface $modifiedAt;
+    #[ORM\Column(nullable: true)]
+    private ?\DateTimeInterface $modifiedAt = null;
 
-    #[ORM\Column(type: "string", length: 191, nullable: true)]
-    private ?string $title;
+    #[ORM\Column(length: 191, nullable: true)]
+    private ?string $title = null;
 
-    #[ORM\Column(type: "string", length: 1000, nullable: true)]
-    private ?string $description;
+    #[ORM\Column(length: 1000, nullable: true)]
+    private ?string $description = null;
 
-    #[ORM\Column(type: "string", length: 1000, nullable: true)]
-    private ?string $originalFilename;
+    #[ORM\Column(length: 1000, nullable: true)]
+    private ?string $originalFilename = null;
 
-    #[ORM\Column(type: "string", length: 191, nullable: true)]
-    private ?string $copyright;
+    #[ORM\Column(length: 191, nullable: true)]
+    private ?string $copyright = null;
 
-    public function __construct()
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
     {
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int

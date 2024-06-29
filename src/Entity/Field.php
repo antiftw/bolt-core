@@ -58,27 +58,27 @@ class Field implements FieldInterface, TranslatableInterface
 {
     use TranslatableTrait;
 
-    public const TYPE = 'generic';
+    public const string TYPE = 'generic';
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string', length: 191)]
+    #[ORM\Column(length: 191)]
     #[Groups(['get_field', 'api_write'])]
-    public string $name;
+    public string $name = '';
 
-    #[ORM\Column(type: 'integer')]
-    private int $sortorder = 0;
+    #[ORM\Column]
+    private int $sortOrder = 0;
 
-    #[ORM\Column(type: 'integer', nullable: true)]
-    private int $version;
+    #[ORM\Column(nullable: true)]
+    private int $version = 0;
 
     #[ORM\ManyToOne(targetEntity: Content::class, fetch: "EAGER", inversedBy: "fields")]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['api_write'])]
-    private Content $content;
+    private ?Content $content = null;
 
     #[ORM\ManyToOne(targetEntity: Field::class, cascade: ["persist"])]
     #[ORM\JoinColumn(onDelete: "CASCADE")]
@@ -120,9 +120,7 @@ class Field implements FieldInterface, TranslatableInterface
         return $this->id;
     }
 
-    /**
-     * @Groups("get_field")
-     */
+    #[Groups('get_field')]
     public function getDefinition(): FieldType
     {
         if ($this->fieldTypeDefinition === null) {
@@ -178,10 +176,8 @@ class Field implements FieldInterface, TranslatableInterface
         return $this->translate($this->getDefaultLocale(), false)->get($key);
     }
 
-    /**
-     * @Groups("get_field")
-     * @SerializedName("value")
-     */
+    #[Groups('get_field')]
+    #[SerializedName('value')]
     public function getApiValue()
     {
         if (! $this->isTranslatable()) {
@@ -298,14 +294,14 @@ class Field implements FieldInterface, TranslatableInterface
         return $this;
     }
 
-    public function getSortorder(): ?int
+    public function getSortOrder(): ?int
     {
-        return $this->sortorder;
+        return $this->sortOrder;
     }
 
-    public function setSortorder(int $sortorder): self
+    public function setSortOrder(int $sortOrder): self
     {
-        $this->sortorder = $sortorder;
+        $this->sortOrder = $sortOrder;
 
         return $this;
     }

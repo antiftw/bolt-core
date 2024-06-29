@@ -8,6 +8,7 @@ use Bolt\Common\Json;
 use Bolt\Enum\UserStatus;
 use Bolt\Repository\UserRepository;
 use Cocur\Slugify\Slugify;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
@@ -31,26 +32,26 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     #[Assert\NotBlank(message: 'user.not_valid_display_name', normalizer: 'trim', groups: ['add_user', 'edit_user', 'edit_user_without_pw'])]
     #[Assert\Length(min: 2, max: 50, minMessage: 'user.not_valid_display_name', groups: ['add_user', 'edit_user', 'edit_user_without_pw'])]
     #[Groups(['get_content', 'get_user'])]
-    private string $displayName;
+    private string $displayName = '';
 
     #[ORM\Column(type: 'string', length: 191, unique: true)]
     #[Assert\NotBlank(normalizer: 'trim', groups: ['add_user'])]
     #[Assert\Length(min: 2, max: 50, groups: ['add_user'])]
     #[Assert\Regex(pattern: '/^[a-z0-9_]+$/', message: 'user.username_invalid_characters', groups: ['add_user'])]
     #[Groups('get_user')]
-    private string $username;
+    private string $username = '';
 
     #[ORM\Column(type: 'string', length: 191, unique: true)]
     #[Assert\NotBlank(normalizer: 'trim')]
     #[Assert\Email(message: 'user.not_valid_email', groups: ['add_user', 'edit_user', 'edit_user_without_pw'])]
     #[Groups('get_user')]
-    private string $email;
+    private string $email = '';
 
     #[ORM\Column(type: 'string', length: 191)]
-    private string $password;
+    private string $password = '';
 
     #[Assert\Length(min: 6, minMessage: 'user.not_valid_password', groups: ['add_user', 'edit_user'])]
-    private ?string $plainPassword;
+    private ?string $plainPassword = '';
 
     #[ORM\Column(type: 'json')]
     #[Groups('get_user')]
@@ -58,17 +59,17 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
 
     #[ORM\Column(type: 'datetime', nullable: true)]
     #[Groups('get_user')]
-    private \DateTimeInterface $lastseenAt;
+    private ?\DateTimeInterface $lastseenAt = null;
 
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private string $lastIp;
+    private string $lastIp = '';
 
     #[ORM\Column(type: 'string', length: 191, nullable: true)]
     #[Groups('get_user')]
-    private string $locale;
+    private string $locale = 'en';
 
     #[ORM\Column(type: 'string', length: 191, nullable: true)]
-    private string $backendTheme;
+    private string $backendTheme = 'default';
 
     #[ORM\Column(type: 'string', length: 30, options: ['default' => 'enabled'])]
     private string $status = UserStatus::ENABLED;
@@ -84,12 +85,14 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     private Collection $userAuthTokens;
 
     #[ORM\Column(type: 'string', length: 250, nullable: true)]
-    private string $avatar;
+    private string $avatar = '';
 
     #[ORM\Column(type: 'string', length: 1024, nullable: true)]
-    private string $about;
+    private string $about = '';
 
-    public function __construct() {}
+    public function __construct() {
+        $this->userAuthTokens = new ArrayCollection();
+    }
 
     public function setId($id): void
     {

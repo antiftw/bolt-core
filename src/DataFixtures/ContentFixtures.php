@@ -169,7 +169,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
         foreach ($collectionItems as $name => $type) {
             $child = $this->loadField($content, $name, $type, $contentType, $preset, false);
             $child->setParent($field);
-            $child->setSortorder($i);
+            $child->setSortOrder($i);
             $content->addField($child);
             ++$i;
         }
@@ -212,7 +212,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 $field->setValue($this->getValuesforFieldType($fieldType, $contentType['singleton'], $content));
             }
         }
-        $field->setSortorder($sortorder * 5);
+        $field->setSortOrder($sortorder * 5);
 
         if ($addToContent) {
             $content->addField($field);

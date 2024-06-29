@@ -82,7 +82,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
 
         if ($this->request->getMethod() === 'POST') {
             $content->setPublishedAt(null);
-            $content->setDepublishedAt(null);
+            $content->setDePublishedAt(null);
 
             return $this->save($content, $contentValidator);
         }
@@ -111,7 +111,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
             $this->denyAccessUnlessGranted(ContentVoter::CONTENT_EDIT, $originalContent);
             $originalStatus = $originalContent->getStatus();
             $originalPublishedAt = $originalContent->getPublishedAt();
-            $originalDePublishedAt = $originalContent->getDepublishedAt();
+            $originalDePublishedAt = $originalContent->getDePublishedAt();
             $originalAuthor = $originalContent->getAuthor();
         } else {
             $originalStatus = null;
@@ -134,7 +134,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
 
             // deny if we detect the publication dates field being changed
             if (($originalPublishedAt !== null && Date::datesDiffer($originalPublishedAt, $content->getPublishedAt())) ||
-                ($originalDePublishedAt !== null && Date::datesDiffer($originalDePublishedAt, $content->getDepublishedAt()))
+                ($originalDePublishedAt !== null && Date::datesDiffer($originalDePublishedAt, $content->getDePublishedAt()))
             ) {
                 $this->denyAccessUnlessGranted(ContentVoter::CONTENT_CHANGE_STATUS, $content);
             }
@@ -218,7 +218,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         $content->setCreatedAt(null);
         $content->setAuthor($user);
         $content->setModifiedAt(null);
-        $content->setDepublishedAt(null);
+        $content->setDePublishedAt(null);
         $content->setPublishedAt(null);
 
         $event = new ContentEvent($content);
@@ -310,7 +310,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         $this->contentFillListener->fillContent($content);
 
         $content->setPublishedAt(! empty($formData['publishedAt']) ? new Carbon($formData['publishedAt']) : null);
-        $content->setDepublishedAt(! empty($formData['depublishedAt']) ? new Carbon($formData['depublishedAt']) : null);
+        $content->setDePublishedAt(! empty($formData['depublishedAt']) ? new Carbon($formData['depublishedAt']) : null);
 
         $status = Json::findScalar($formData['status']);
         if (in_array($status, Statuses::all(), true) === true) {
@@ -408,7 +408,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
                         // Note, $collection side is set by $collection->setValue() below
                         $field->setParent($collection);
                         $newFields[$order] = $field;
-                        $field->setSortorder($order);
+                        $field->setSortOrder($order);
                         $content->addField($field);
                         $this->updateField($field, $value, $locale);
                         $tm->applyTranslations($field, $collectionName, $orderId);
@@ -533,7 +533,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
                 $repoTaxonomy = $this->taxonomyRepository->factory($key, (string) $slug);
             }
 
-            $repoTaxonomy->setSortorder($order);
+            $repoTaxonomy->setSortOrder($order);
 
             $content->addTaxonomy($repoTaxonomy);
         }

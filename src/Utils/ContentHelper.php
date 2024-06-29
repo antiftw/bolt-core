@@ -152,7 +152,7 @@ class ContentHelper
                 }
 
                 if ($match[1] === 'depublishedAt') {
-                    return $this->localeExtension->localdate($record->getDepublishedAt(), $dateFormat, $locale);
+                    return $this->localeExtension->localdate($record->getDePublishedAt(), $dateFormat, $locale);
                 }
 
                 if ($match[1] === 'contenttype') {

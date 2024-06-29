@@ -8,11 +8,11 @@ use Bolt\Twig\ContentExtension;
 use Symfony\Component\Serializer\Annotation\Groups;
 
 /**
- * @see \Bolt\Entity\Content
+ * @see Content
  */
 trait ContentExtrasTrait
 {
-    private ?ContentExtension $contentExtension;
+    private ?ContentExtension $contentExtension = null;
 
     public function setContentExtension(ContentExtension $contentExtension): void
     {

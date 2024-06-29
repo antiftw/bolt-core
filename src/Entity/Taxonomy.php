@@ -10,35 +10,34 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use Tightenco\Collect\Support\Collection as LaravelCollection;
 
 #[ORM\Entity(repositoryClass: 'Bolt\Repository\TaxonomyRepository')]
 class Taxonomy
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     #[Groups('public')]
     private ?int $id = null;
 
     #[ORM\ManyToMany(targetEntity: Content::class, inversedBy: 'taxonomies')]
     private Collection $content;
 
-    #[ORM\Column(type: 'string', length: 191)]
+    #[ORM\Column(length: 191)]
     #[Groups(['get_content', 'public'])]
-    private string $type;
+    private string $type= '';
 
-    #[ORM\Column(type: 'string', length: 191)]
+    #[ORM\Column(length: 191)]
     #[Groups(['get_content', 'public'])]
-    private string $slug;
+    private string $slug = '';
 
-    #[ORM\Column(type: 'string', length: 191)]
+    #[ORM\Column(length: 191)]
     #[Groups(['get_content', 'public'])]
-    private string $name;
+    private string $name = '';
 
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     #[Groups('public')]
-    private int $sortorder = 0;
+    private int $sortOrder = 0;
 
     private ?TaxonomyType $taxonomyTypeDefinition = null;
 
@@ -65,7 +64,7 @@ class Taxonomy
         $this->taxonomyTypeDefinition = TaxonomyType::factory($this->type, $taxonomyTypesConfig);
     }
 
-    public function getContent(): ArrayCollection
+    public function getContent(): Collection
     {
         return $this->content;
     }
@@ -142,14 +141,14 @@ class Taxonomy
         return $this;
     }
 
-    public function getSortorder(): ?int
+    public function getSortOrder(): ?int
     {
-        return $this->sortorder;
+        return $this->sortOrder;
     }
 
-    public function setSortorder(int $sortorder): self
+    public function setSortOrder(int $sortOrder): self
     {
-        $this->sortorder = $sortorder;
+        $this->sortOrder = $sortOrder;
 
         return $this;
     }

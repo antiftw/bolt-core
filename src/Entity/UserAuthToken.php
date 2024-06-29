@@ -13,10 +13,10 @@ class UserAuthToken
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column(type: 'integer')]
-    private int $id;
+    private ?int $id = null;
 
     #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'userAuthTokens')]
-    private User $user;
+    private ?User $user = null;
 
     #[ORM\Column(type: 'string', length: 255)]
     private string $useragent;

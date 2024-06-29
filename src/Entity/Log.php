@@ -17,31 +17,30 @@ class Log
     private ?int $id = null;
 
     #[ORM\Column(name: 'message', type: 'text')]
-    private string $message;
+    private string $message = '';
 
-    #[ORM\Column(name: "context",type: 'array', nullable: true)]
-    private array $context;
+    #[ORM\Column(name: "context",type: 'json', nullable: true)]
+    private array $context = [];
 
     #[ORM\Column(name: 'level', type: 'smallint')]
-    private int $level;
+    private int $level = 0;
 
     #[ORM\Column(name: 'level_name', type: 'string', length: 50)]
-    private string $levelName;
+    private string $levelName = '';
 
     #[ORM\Column(name: "created_at", type: 'datetime')]
     private \DateTime $createdAt;
 
-    #[ORM\Column(name: 'extra', type: 'array', nullable: true)]
-    private array $extra;
+    #[ORM\Column(name: 'extra', type: 'json', nullable: true)]
+    private array $extra = [];
 
-    /** @ORM\Column(name="`user`", type="array", nullable=true) */
-    #[ORM\Column(name: '`user`', type: 'array', nullable: true)]
+    #[ORM\Column(name: '`user`', type: 'json', nullable: true)]
     private array $user;
 
     #[ORM\Column(name: 'content', type: 'integer', nullable: true)]
     private int $content;
 
-    #[ORM\Column(name: 'location', type: 'array', nullable: true)]
+    #[ORM\Column(name: 'location', type: 'json', nullable: true)]
     private array $location;
 
     #[ORM\PrePersist]
