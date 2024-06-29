@@ -8,7 +8,6 @@ use Bolt\Entity\FieldInterface;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
-use Doctrine\ORM\Exception\ORME xception;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 
 /**
