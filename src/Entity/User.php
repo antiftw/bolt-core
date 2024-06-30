@@ -62,7 +62,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     private ?\DateTimeInterface $lastseenAt = null;
 
     #[ORM\Column(type: 'string', length: 100, nullable: true)]
-    private string $lastIp = '';
+    private ?string $lastIp = '';
 
     #[ORM\Column(type: 'string', length: 191, nullable: true)]
     #[Groups('get_user')]
