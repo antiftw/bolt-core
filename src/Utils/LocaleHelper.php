@@ -28,10 +28,9 @@ class LocaleHelper
         private readonly string $defaultLocale
     ) {
         $this->localeCodes = new Collection(explode('|', $locales));
-
-
         $this->flagCodes = $this->getFlagCodes();
         $this->codetoCountry = $this->getCodetoCountry();
+        $this->currentLocale = new Collection();
     }
 
     public function getCurrentLocale(Environment $twig): ?Collection
