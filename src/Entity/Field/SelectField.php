@@ -12,6 +12,9 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Illuminate\Support\Collection;
 
 #[ORM\Entity]
+#[ORM\DiscriminatorMap(value: [
+    'select' => SelectField::class,
+])]
 class SelectField extends Field implements FieldInterface, RawPersistable, \Iterator
 {
     use IterableFieldTrait;

@@ -16,6 +16,9 @@ use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
 
 #[ORM\Entity]
+#[ORM\DiscriminatorMap(value: [
+    'set' => SetField::class,
+])]
 class SetField extends Field implements Excerptable, FieldInterface, FieldParentInterface, ListFieldInterface, RawPersistable, \Iterator
 {
     use FieldParentTrait;
@@ -36,20 +39,20 @@ class SetField extends Field implements Excerptable, FieldInterface, FieldParent
 
         $definedFields = array_flip($this->getDefinition()->get('fields', new Collection())->keys()->toArray());
 
-        $value = [];
+        $result = [];
 
         /** @var Field $field */
         foreach ($value as $field) {
             // todo: This should be able to handle an array of fields
             // in key-value format, not just Field.php types.
             $field->setParent($this);
-            $value[$field->getName()] = $field;
+            $result[$field->getName()] = $field;
         }
 
         // Sorts the fields in the order specified in the definition
-        $value = array_merge(array_flip(array_intersect(array_keys($definedFields), array_keys($value))), $value);
+        $result = array_merge(array_flip(array_intersect(array_keys($definedFields), array_keys($result))), $result);
 
-        $this->fields = $value;
+        $this->fields = $result;
 
         return $this;
     }

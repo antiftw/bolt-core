@@ -10,6 +10,9 @@ use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\DiscriminatorMap(value: [
+    'data' => DataField::class,
+])]
 class DataField extends Field implements FieldInterface
 {
     public const string TYPE = 'data';

@@ -14,6 +14,7 @@ use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use Bolt\Common\Arr;
 use Bolt\Configuration\Content\FieldType;
+use Bolt\Entity\Field\BlockField;
 use Bolt\Event\Listener\FieldFillListener;
 use Bolt\Utils\Sanitiser;
 use Doctrine\ORM\Mapping as ORM;
@@ -53,7 +54,9 @@ use Twig\Markup;
 #[ORM\Entity(repositoryClass: "Bolt\Repository\FieldRepository")]
 #[ORM\InheritanceType("SINGLE_TABLE")]
 #[ORM\DiscriminatorColumn(name: "type", type: "string", length: 191)]
-#[ORM\DiscriminatorMap(["generic" => "Field"])]
+#[ORM\DiscriminatorMap(value: [
+    'generic' => Field::class,
+])]
 class Field implements FieldInterface, TranslatableInterface
 {
     use TranslatableTrait;

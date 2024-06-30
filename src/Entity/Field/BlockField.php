@@ -9,6 +9,9 @@ use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
+#[ORM\DiscriminatorMap(value: [
+    'block' => BlockField::class,
+])]
 class BlockField extends Field implements FieldInterface
 {
     public const string TYPE = 'block';

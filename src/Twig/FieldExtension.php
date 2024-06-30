@@ -9,7 +9,7 @@ use Bolt\Configuration\Config;
 use Bolt\Entity\Content;
 use Bolt\Entity\Field;
 use Bolt\Entity\Field\SelectField;
-use Bolt\Entity\Field\TemplateselectField;
+use Bolt\Entity\Field\TemplateSelectField;
 use Bolt\Repository\ContentRepository;
 use Bolt\Repository\FieldRepository;
 use Bolt\Storage\Query;
@@ -125,7 +125,7 @@ class FieldExtension extends AbstractExtension
         return $records;
     }
 
-    public function getListTemplates(TemplateselectField $field): Collection
+    public function getListTemplates(TemplateSelectField $field): Collection
     {
         $definition = $field->getDefinition();
         $current = current($field->getValue());

@@ -12,7 +12,10 @@ use Bolt\Entity\ListFieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-class FilelistField extends Field implements FieldInterface, ListFieldInterface, RawPersistable, \Iterator
+#[ORM\DiscriminatorMap(value: [
+    'file-list' => FileListField::class,
+])]
+class FileListField extends Field implements FieldInterface, ListFieldInterface, RawPersistable, \Iterator
 {
     use IterableFieldTrait;
 
