@@ -63,10 +63,10 @@ class LocaleExtension extends AbstractExtension
         $current = $this->localeHelper->getCurrentLocale($twig);
 
         if ($current) {
-            return $current->get('code');
+            return $current->get('code') ?? 'en';
         }
 
-        return '';
+        return 'en';
     }
 
     public function translate(string $id, array $parameters = [], $domain = null, $locale = null): string
