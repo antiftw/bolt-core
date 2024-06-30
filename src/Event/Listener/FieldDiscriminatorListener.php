@@ -30,7 +30,7 @@ class FieldDiscriminatorListener
     private array $map = [];
 
     /**
-     * @throws ORMException
+     * @throws \Exception
      */
     public function __construct(EntityManagerInterface $em)
     {
