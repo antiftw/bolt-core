@@ -10,9 +10,6 @@ use Bolt\Utils\Markdown;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\DiscriminatorMap(value: [
-    'markdown' => MarkdownField::class,
-])]
 class MarkdownField extends Field implements Excerptable, FieldInterface, RawPersistable
 {
     public const string TYPE = 'markdown';

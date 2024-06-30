@@ -16,9 +16,6 @@ use Doctrine\ORM\Mapping as ORM;
 use Illuminate\Support\Collection;
 
 #[ORM\Entity]
-#[ORM\DiscriminatorMap(value: [
-    'set' => SetField::class,
-])]
 class SetField extends Field implements Excerptable, FieldInterface, FieldParentInterface, ListFieldInterface, RawPersistable, \Iterator
 {
     use FieldParentTrait;

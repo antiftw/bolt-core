@@ -13,7 +13,7 @@ class Log
 {
     #[ORM\Id]
     #[ORM\GeneratedValue(strategy: 'AUTO')]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(name: 'message', type: 'text')]
@@ -25,7 +25,7 @@ class Log
     #[ORM\Column(name: 'level', type: 'smallint')]
     private int $level = 0;
 
-    #[ORM\Column(name: 'level_name', type: 'string', length: 50)]
+    #[ORM\Column(name: 'level_name', length: 50)]
     private string $levelName = '';
 
     #[ORM\Column(name: "created_at", type: 'datetime')]
@@ -37,7 +37,7 @@ class Log
     #[ORM\Column(name: '`user`', type: 'json', nullable: true)]
     private array $user;
 
-    #[ORM\Column(name: 'content', type: 'integer', nullable: true)]
+    #[ORM\Column(name: 'content', nullable: true)]
     private int $content;
 
     #[ORM\Column(name: 'location', type: 'json', nullable: true)]

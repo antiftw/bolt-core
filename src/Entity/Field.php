@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Bolt\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use ApiPlatform\Metadata\Delete;
 use ApiPlatform\Metadata\Get;
 use ApiPlatform\Metadata\GraphQl\Operation;
@@ -14,19 +14,19 @@ use ApiPlatform\Metadata\Link;
 use ApiPlatform\Metadata\Post;
 use Bolt\Common\Arr;
 use Bolt\Configuration\Content\FieldType;
-use Bolt\Entity\Field\BlockField;
 use Bolt\Event\Listener\FieldFillListener;
 use Bolt\Utils\Sanitiser;
 use Doctrine\ORM\Mapping as ORM;
+use Illuminate\Support\Collection;
 use Knp\DoctrineBehaviors\Contract\Entity\TranslatableInterface;
 use Knp\DoctrineBehaviors\Model\Translatable\TranslatableTrait;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Symfony\Component\Serializer\Annotation\SerializedName;
-use Illuminate\Support\Collection;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\SyntaxError;
 use Twig\Markup;
+
 #[ApiResource(
     uriTemplate: "/content/{contentId}/field/{id}",
     operations: [
@@ -54,9 +54,7 @@ use Twig\Markup;
 #[ORM\Entity(repositoryClass: "Bolt\Repository\FieldRepository")]
 #[ORM\InheritanceType("SINGLE_TABLE")]
 #[ORM\DiscriminatorColumn(name: "type", type: "string", length: 191)]
-#[ORM\DiscriminatorMap(value: [
-    'generic' => Field::class,
-])]
+#[ORM\DiscriminatorMap(["generic" => Field::class])]
 class Field implements FieldInterface, TranslatableInterface
 {
     use TranslatableTrait;

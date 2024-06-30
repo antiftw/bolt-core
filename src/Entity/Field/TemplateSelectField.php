@@ -10,9 +10,6 @@ use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\DiscriminatorMap(value: [
-    'template-select' => TemplateSelectField::class,
-])]
 class TemplateSelectField extends Field implements FieldInterface
 {
     public const string TYPE = 'templateselect';

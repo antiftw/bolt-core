@@ -14,7 +14,7 @@ class FieldTranslation implements TranslationInterface
 
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     private ?int $id = null;
 
     #[ORM\Column(type: 'json', options: ['jsonb' => true])]

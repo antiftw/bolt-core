@@ -12,9 +12,6 @@ use Bolt\Entity\ListFieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\DiscriminatorMap(value: [
-    'image-list' => ImageList::class,
-])]
 class ImagelistField extends Field implements FieldInterface, ListFieldInterface, RawPersistable, \Iterator
 {
     use IterableFieldTrait;

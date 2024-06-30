@@ -24,30 +24,30 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     #[Groups('get_user')]
     private ?int $id = null;
 
-    #[ORM\Column(type: 'string')]
+    #[ORM\Column]
     #[Assert\NotBlank(message: 'user.not_valid_display_name', normalizer: 'trim', groups: ['add_user', 'edit_user', 'edit_user_without_pw'])]
     #[Assert\Length(min: 2, max: 50, minMessage: 'user.not_valid_display_name', groups: ['add_user', 'edit_user', 'edit_user_without_pw'])]
     #[Groups(['get_content', 'get_user'])]
     private string $displayName = '';
 
-    #[ORM\Column(type: 'string', length: 191, unique: true)]
+    #[ORM\Column(length: 191, unique: true)]
     #[Assert\NotBlank(normalizer: 'trim', groups: ['add_user'])]
     #[Assert\Length(min: 2, max: 50, groups: ['add_user'])]
     #[Assert\Regex(pattern: '/^[a-z0-9_]+$/', message: 'user.username_invalid_characters', groups: ['add_user'])]
     #[Groups('get_user')]
     private string $username = '';
 
-    #[ORM\Column(type: 'string', length: 191, unique: true)]
+    #[ORM\Column(length: 191, unique: true)]
     #[Assert\NotBlank(normalizer: 'trim')]
     #[Assert\Email(message: 'user.not_valid_email', groups: ['add_user', 'edit_user', 'edit_user_without_pw'])]
     #[Groups('get_user')]
     private string $email = '';
 
-    #[ORM\Column(type: 'string', length: 191)]
+    #[ORM\Column(length: 191)]
     private string $password = '';
 
     #[Assert\Length(min: 6, minMessage: 'user.not_valid_password', groups: ['add_user', 'edit_user'])]
@@ -57,21 +57,21 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     #[Groups('get_user')]
     private array $roles = [];
 
-    #[ORM\Column(type: 'datetime', nullable: true)]
+    #[ORM\Column(nullable: true)]
     #[Groups('get_user')]
-    private ?\DateTimeInterface $lastseenAt = null;
+    private ?\DateTimeInterface $lastSeenAt = null;
 
-    #[ORM\Column(type: 'string', length: 100, nullable: true)]
+    #[ORM\Column(length: 100, nullable: true)]
     private ?string $lastIp = '';
 
-    #[ORM\Column(type: 'string', length: 191, nullable: true)]
+    #[ORM\Column(length: 191, nullable: true)]
     #[Groups('get_user')]
-    private string $locale = 'en';
+    private ?string $locale = 'en';
 
-    #[ORM\Column(type: 'string', length: 191, nullable: true)]
-    private string $backendTheme = 'default';
+    #[ORM\Column(length: 191, nullable: true)]
+    private ?string $backendTheme = 'default';
 
-    #[ORM\Column(type: 'string', length: 30, options: ['default' => 'enabled'])]
+    #[ORM\Column(length: 30, options: ['default' => 'enabled'])]
     private string $status = UserStatus::ENABLED;
 
     #[ORM\OneToMany(
@@ -84,11 +84,11 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     )]
     private Collection $userAuthTokens;
 
-    #[ORM\Column(type: 'string', length: 250, nullable: true)]
-    private string $avatar = '';
+    #[ORM\Column(length: 250, nullable: true)]
+    private ?string $avatar = '';
 
-    #[ORM\Column(type: 'string', length: 1024, nullable: true)]
-    private string $about = '';
+    #[ORM\Column(length: 1024, nullable: true)]
+    private ?string $about = '';
 
     public function __construct() {
         $this->userAuthTokens = new ArrayCollection();
@@ -233,9 +233,9 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     /**
      * {@inheritdoc}
      */
-    public function unserialize($serialized): void
+    public function unserialize($data): void
     {
-        $this->__unserialize(unserialize($serialized, ['allowed_classes' => false]));
+        $this->__unserialize(unserialize($data, ['allowed_classes' => false]));
     }
 
     public function __unserialize(array $data): void
@@ -244,14 +244,14 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
         [$this->id, $this->username, $this->password] = $data;
     }
 
-    public function getLastseenAt(): ?\DateTimeInterface
+    public function getLastSeenAt(): ?\DateTimeInterface
     {
-        return $this->lastseenAt;
+        return $this->lastSeenAt;
     }
 
-    public function setLastseenAt(\DateTimeInterface $lastseenAt): self
+    public function setLastSeenAt(\DateTimeInterface $lastSeenAt): self
     {
-        $this->lastseenAt = $lastseenAt;
+        $this->lastSeenAt = $lastSeenAt;
 
         return $this;
     }

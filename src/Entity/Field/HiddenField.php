@@ -10,9 +10,6 @@ use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\DiscriminatorMap(value: [
-    'hidden' => HiddenField::class,
-])]
 class HiddenField extends Field implements FieldInterface, ScalarCastable, RawPersistable
 {
     public const string TYPE = 'hidden';

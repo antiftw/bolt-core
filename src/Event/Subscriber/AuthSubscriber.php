@@ -25,7 +25,7 @@ class AuthSubscriber implements EventSubscriberInterface
         /** @var User $user */
         $user = $event->getAuthenticationToken()->getUser();
         $request = $this->requestStack->getCurrentRequest();
-        $user->setLastseenAt(new \DateTime());
+        $user->setLastSeenAt(new \DateTime());
         $user->setLastIp($request->getClientIp());
 
         $uaParser = Parser::create();

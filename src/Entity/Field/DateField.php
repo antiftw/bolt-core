@@ -9,9 +9,6 @@ use Bolt\Entity\FieldInterface;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity]
-#[ORM\DiscriminatorMap(value: [
-    'date' => DateField::class,
-])]
 class DateField extends Field implements FieldInterface, ScalarCastable
 {
     public const string TYPE = 'date';

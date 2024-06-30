@@ -33,15 +33,15 @@ class Relation
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
-    #[ORM\Column(type: 'integer')]
+    #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(targetEntity: Content::class, fetch: "EAGER", inversedBy: "relationsFromThisContent")]
+    #[ORM\ManyToOne(fetch: "EAGER", inversedBy: "relationsFromThisContent")]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     #[Groups("get_relation")]
     private Content $fromContent;
 
-    #[ORM\ManyToOne(targetEntity: Content::class, fetch: "EAGER", inversedBy: "relationsToThisContent")]
+    #[ORM\ManyToOne(fetch: "EAGER", inversedBy: "relationsToThisContent")]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     #[Groups("get_relation")]
     private Content $toContent;
@@ -111,7 +111,7 @@ class Relation
 
     public function getDefinition(): array
     {
-        if (empty($this->definition) && $this->fromContent instanceof Content) {
+        if (empty($this->definition)) {
             $this->setDefinitionFromContentDefinition();
         }
 
