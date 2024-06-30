@@ -54,7 +54,7 @@ use Twig\Markup;
 #[ORM\Entity(repositoryClass: "Bolt\Repository\FieldRepository")]
 #[ORM\InheritanceType("SINGLE_TABLE")]
 #[ORM\DiscriminatorColumn(name: "type", type: "string", length: 191)]
-#[ORM\DiscriminatorMap(["generic" => Field::class])]
+#[ORM\DiscriminatorMap(["generic" => 'Field'])]
 class Field implements FieldInterface, TranslatableInterface
 {
     use TranslatableTrait;
