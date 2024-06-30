@@ -11,8 +11,7 @@ use Psr\Log\LoggerInterface;
 
 final class Version20211123103530 extends AbstractMigration
 {
-    /** @var string */
-    private $tablePrefix;
+    private string $tablePrefix;
 
     public function __construct(Connection $connection, LoggerInterface $logger)
     {

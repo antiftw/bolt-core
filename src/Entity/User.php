@@ -57,7 +57,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     #[Groups('get_user')]
     private array $roles = [];
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(name:'lastseen_at', nullable: true)]
     #[Groups('get_user')]
     private ?\DateTimeInterface $lastSeenAt = null;
 

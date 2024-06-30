@@ -93,7 +93,7 @@ class Content
     #[Groups(["get_content", "api_write"])]
     private ?\DateTime $publishedAt = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(name:'depublished_at', nullable: true)]
     #[Groups(["get_content", "api_write"])]
     private ?\DateTime $dePublishedAt = null;
 

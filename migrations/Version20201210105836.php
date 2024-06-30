@@ -13,8 +13,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 final class Version20201210105836 extends AbstractMigration
 {
-    /** @var string */
-    private $tablePrefix;
+    private string $tablePrefix;
 
     public function __construct(Connection $connection, LoggerInterface $logger)
     {
