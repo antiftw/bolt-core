@@ -20,28 +20,28 @@ abstract class BaseWidget implements WidgetInterface
     use RequestTrait;
     use ResponseTrait;
 
-    protected ?string $name;
+    protected ?string $name = null;
 
     /** @var string from Target enum */
-    protected string $target;
+    protected string $target = '';
 
     /** @var string[] */
     protected ?array $targets = [];
 
     /** @var ?string from RequestZone */
-    protected ?string $zone;
+    protected ?string $zone = null;
     protected ?ExtensionInterface $extension;
 
     protected ?int $priority = 0;
 
     /** @var ?string filename of Twig template */
-    protected ?string $template;
+    protected ?string $template = null;
 
     /** @var ?string path to Twig templates folder */
-    protected ?string $templateFolder;
+    protected ?string $templateFolder = null;
 
     /** @var ?string */
-    protected ?string $slug;
+    protected ?string $slug = null;
 
     /** @var int duration (in seconds) to cache output */
     protected int $cacheDuration = 600;
