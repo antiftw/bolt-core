@@ -23,30 +23,34 @@ abstract class BaseFixture extends Fixture
         $this->referencesIndex = [];
     }
 
-    protected function getRandomReference(string $fullyQualifiedClassName): object{
+    protected function getRandomReferenceWrong(string $fullyQualifiedClassName): object{
         $references = $this->referenceRepository->getReferencesByClass();
         $references = $references[$fullyQualifiedClassName];
         $randomReferenceKey = array_rand($references);
         return $references[$randomReferenceKey];
     }
 
-    protected function getRandomReferenceOld(string $entityName)
+    protected function getRandomReference(string $entityName)
     {
+        $referenceName = $entityName;
         if (isset($this->referencesIndex[$entityName]) === false) {
             $this->referencesIndex[$entityName] = [];
 
-            foreach (array_keys($this->referenceRepository->getReferencesByClass()) as $key) {
-                if (mb_strpos($key, $entityName . '_') === 0) {
-                    $this->referencesIndex[$entityName][] = $key;
+            foreach ($this->referenceRepository->getReferencesByClass() as $class => $references) {
+                foreach($references as $referenceName => $reference) {
+                    if (mb_strpos($referenceName, $entityName . '_') === 0) {
+                        $this->referencesIndex[$entityName][$referenceName] = $class;
+                    }
                 }
             }
         }
         if (empty($this->referencesIndex[$entityName])) {
             throw new \Exception(sprintf('Cannot find any references for Entity "%s"', $entityName));
         }
+
         $randomReferenceKey = array_rand($this->referencesIndex[$entityName]);
 
-        return $this->getReference($this->referencesIndex[$entityName][$randomReferenceKey]);
+        return $this->getReference($randomReferenceKey, $this->referencesIndex[$entityName][$referenceName]);
     }
 
 

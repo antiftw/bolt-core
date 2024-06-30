@@ -11,7 +11,6 @@ use Bolt\Configuration\FileLocations;
 use Bolt\Entity\Content;
 use Bolt\Entity\Field;
 use Bolt\Entity\Field\SelectField;
-use Bolt\Entity\User;
 use Bolt\Enum\Statuses;
 use Bolt\Repository\FieldRepository;
 use Bolt\Twig\ContentExtension;
@@ -35,8 +34,9 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
         private readonly FileLocations $fileLocations,
         private readonly TagAwareCacheInterface $cache,
         private readonly string $defaultLocale,
-        private readonly ContentExtension $contentExtension
-    ) {
+        private readonly ContentExtension $contentExtension)
+    {
+
         $this->faker = Factory::create();
         $seed = $this->config->get('general/fixtures_seed');
         if (! empty($seed)) {
@@ -61,7 +61,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
 
     public function load(ObjectManager $manager): void
     {
-        $path = $this->fileLocations->get('files')->getBasePath();
+        $path = $this->fileLocations->get('files')->getBasepath();
         $this->imagesIndex = $this->getImagesIndex($path);
 
         $this->loadContent($manager);
@@ -90,7 +90,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 if ($i === 1) {
                     $author = $this->getReference('user_admin');
                 } else {
-                    $author = $this->getRandomReference(User::class);
+                    $author = $this->getRandomReference('user');
                 }
 
                 $content = new Content();
@@ -169,7 +169,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
         foreach ($collectionItems as $name => $type) {
             $child = $this->loadField($content, $name, $type, $contentType, $preset, false);
             $child->setParent($field);
-            $child->setSortOrder($i);
+            $child->setSortorder($i);
             $content->addField($child);
             ++$i;
         }
@@ -212,7 +212,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 $field->setValue($this->getValuesforFieldType($fieldType, $contentType['singleton'], $content));
             }
         }
-        $field->setSortOrder($sortorder * 5);
+        $field->setSortorder($sortorder++ * 5);
 
         if ($addToContent) {
             $content->addField($field);
@@ -254,12 +254,18 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
     {
         return [
             preg_replace_callback(
-                        '/{(\w+)}/i',
-                        function ($match) {
-                            return $this->faker->{$match[1]};
-                        },
-                        $format
-                    ),
+                '/{(\w+)}/i',
+                function ($match) {
+                    $match = $match[1];
+
+                    try {
+                        return $this->faker->{$match};
+                    } finally {
+                    }
+                    return '(unknown)';
+                },
+                $format
+            ),
         ];
     }
 
