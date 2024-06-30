@@ -36,12 +36,12 @@ class Relation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(fetch: "EAGER", inversedBy: "relationsFromThisContent")]
+    #[ORM\ManyToOne(targetEntity: Content::class,fetch: "EAGER", inversedBy: "relationsFromThisContent")]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     #[Groups("get_relation")]
     private Content $fromContent;
 
-    #[ORM\ManyToOne(fetch: "EAGER", inversedBy: "relationsToThisContent")]
+    #[ORM\ManyToOne(targetEntity: Content::class,fetch: "EAGER", inversedBy: "relationsToThisContent")]
     #[ORM\JoinColumn(nullable: false, onDelete: "CASCADE")]
     #[Groups("get_relation")]
     private Content $toContent;

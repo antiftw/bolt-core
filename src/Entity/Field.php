@@ -70,7 +70,7 @@ class Field implements FieldInterface, TranslatableInterface
     #[Groups(['get_field', 'api_write'])]
     public string $name = '';
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'sortorder')]
     private int $sortOrder = 0;
 
     #[ORM\Column(nullable: true)]

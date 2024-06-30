@@ -15,7 +15,7 @@ class UserAuthToken
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\ManyToOne(cascade: ['persist'], inversedBy: 'userAuthTokens')]
+    #[ORM\ManyToOne(targetEntity: User::class, cascade: ['persist'], inversedBy: 'userAuthTokens')]
     private ?User $user = null;
 
     #[ORM\Column(length: 255)]

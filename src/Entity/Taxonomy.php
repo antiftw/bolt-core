@@ -35,7 +35,7 @@ class Taxonomy
     #[Groups(['get_content', 'public'])]
     private string $name = '';
 
-    #[ORM\Column]
+    #[ORM\Column(name: 'sortorder')]
     #[Groups('public')]
     private int $sortOrder = 0;
 
