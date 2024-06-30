@@ -45,8 +45,8 @@ class TimedPublishSubscriber implements EventSubscriberInterface
         );
 
         try {
-            $conn->executeUpdate($queryPublish, [':now' => $now]);
-            $conn->executeUpdate($queryDePublish, [':now' => $now]);
+            $conn->executeStatement($queryPublish, [':now' => $now]);
+            $conn->executeStatement($queryDePublish, [':now' => $now]);
         } catch (\Throwable $e) {
             // Fail silently, output user-friendly exception elsewhere.
         }
