@@ -107,9 +107,7 @@ class FileEditController extends TwigAwareController implements BackendZoneInter
         return new RedirectResponse($url);
     }
 
-    /**
-     * @Route("/file-delete/", name="bolt_file_delete", methods={"POST", "GET"})
-     */
+    #[Route('/file-delete/', name: 'bolt_file_delete', methods: ['POST', 'GET'])]
     public function handleDelete(): Response
     {
         try {
@@ -155,9 +153,7 @@ class FileEditController extends TwigAwareController implements BackendZoneInter
         ]);
     }
 
-    /**
-     * @Route("/file-duplicate/", name="bolt_file_duplicate", methods={"POST", "GET"})
-     */
+    #[Route('/file-duplicate/', name: 'bolt_file_duplicate', methods: ['POST', 'GET'])]
     public function handleDuplicate(): Response
     {
         try {

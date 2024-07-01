@@ -95,9 +95,7 @@ class UploadController extends AbstractController implements AsyncZoneInterface
         return $response;
     }
 
-    /**
-     * @Route("/upload", name="bolt_async_upload", methods={"POST"})
-     */
+    #[Route('/upload', name: 'bolt_async_upload', methods: ['POST'])]
     public function handleUpload(Request $request): JsonResponse
     {
         try {

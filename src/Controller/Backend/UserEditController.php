@@ -8,13 +8,14 @@ use Bolt\Common\Str;
 use Bolt\Configuration\Config;
 use Bolt\Controller\CsrfTrait;
 use Bolt\Controller\TwigAwareController;
+use Bolt\Entity\Content;
+use Bolt\Entity\Media;
 use Bolt\Entity\User;
 use Bolt\Enum\UserStatus;
 use Bolt\Event\UserEvent;
 use Bolt\Form\UserType;
 use Bolt\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -22,6 +23,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 
@@ -47,10 +49,8 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
         $this->assignableRoles = $config->get('permissions/assignable_roles')->all();
     }
 
-    /**
-     * @Route("/user-edit/add", methods={"GET","POST"}, name="bolt_user_add")
-     * @Security("is_granted('user:add')")
-     */
+    #[Route('/user-edit/add', name: 'bolt_user_add', methods: ['GET', 'POST'])]
+    #[isGranted("user:add")]
     public function add(Request $request): Response
     {
         $user = UserRepository::factory();
@@ -99,11 +99,8 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
         ]);
     }
 
-    /**
-     * @Route("/profile-edit", methods={"GET","POST"}, name="bolt_profile_edit")
-     *
-     * @Security("is_granted('editprofile')")
-     */
+    #[Route('/profile-edit', name: 'bolt_profile_edit', methods: ['GET', 'POST'])]
+    #[IsGranted("editprofile")]
     public function editProfile(Request $request): Response
     {
         $submitted_data = $request->request->get('user');
@@ -113,11 +110,8 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
         return $this->handleEdit(true, $user, $submitted_data);
     }
 
-    /**
-     * @Route("/user-edit/{id}", methods={"GET","POST"}, name="bolt_user_edit", requirements={"id": "\d+"})
-     *
-     * @Security("is_granted('user:edit')")
-     */
+    #[Route('/user-edit/{id}', name: 'bolt_user_edit', requirements: ['id' => '\d+'], methods: ['GET', 'POST'])]
+    #[IsGranted("user:edit")]
     public function edit(User $user, Request $request): Response
     {
         $submitted_data = $request->request->get('user');
@@ -125,10 +119,8 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
         return $this->handleEdit(false, $user, $submitted_data);
     }
 
-    /**
-     * @Route("/user-status/{id}", methods={"POST", "GET"}, name="bolt_user_update_status", requirements={"id": "\d+"})
-     * @Security("is_granted('user:status')") -- first check, more detailed checks in method
-     */
+    #[Route('/user-status/{id}', name: 'bolt_user_update_status', requirements: ['id' => '\d+'], methods: ['POST', 'GET'])]
+    #[IsGranted("user:status")] // first check, more detailed checks in method
     public function status(User $user): Response
     {
         $this->validateCsrf('useredit');
@@ -146,10 +138,8 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
         return new RedirectResponse($url);
     }
 
-    /**
-     * @Route("/user-delete/{id}", methods={"POST", "GET"}, name="bolt_user_delete", requirements={"id": "\d+"})
-     * @Security("is_granted('user:delete')")
-     */
+    #[Route('/user-delete/{id}', name: 'bolt_user_delete', requirements: ['id' => '\d+'], methods: ['POST', 'GET'])]
+    #[IsGranted("user:delete")]
     public function delete(User $user): Response
     {
         $this->validateCsrf('useredit');
