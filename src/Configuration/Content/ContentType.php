@@ -9,7 +9,7 @@ use Illuminate\Support\Collection;
 
 class ContentType extends DeepCollection
 {
-    public function __call($method, $parameters)
+    public function __call($method, $parameters): mixed
     {
         return $this->get($method);
     }
