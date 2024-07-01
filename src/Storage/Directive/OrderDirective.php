@@ -21,25 +21,12 @@ class OrderDirective
 {
     public const string NAME = 'order';
 
-    /** @var LocaleHelper */
-    private $localeHelper;
-
-    /** @var Environment */
-    private $twig;
-
-    /** @var Notifications */
-    private $notifications;
-
-    /** @var FieldQueryUtils */
-    private $utils;
-
-    public function __construct(LocaleHelper $localeHelper, Environment $twig, Notifications $notifications, FieldQueryUtils $utils)
-    {
-        $this->localeHelper = $localeHelper;
-        $this->twig = $twig;
-        $this->notifications = $notifications;
-        $this->utils = $utils;
-    }
+    public function __construct(
+        private readonly LocaleHelper $localeHelper,
+        private readonly Environment $twig,
+        private readonly Notifications $notifications,
+        private readonly FieldQueryUtils $utils
+    ) {}
 
     public function __invoke(QueryInterface $query, string $order): void
     {
@@ -62,8 +49,8 @@ class OrderDirective
             }
 
             if (is_array($order)) {
-                foreach ($order as $orderitem) {
-                    $this->setOrderBy($query, $orderitem, $direction, $locale);
+                foreach ($order as $orderItem) {
+                    $this->setOrderBy($query, $orderItem, $direction, $locale);
                 }
             } else {
                 $this->setOrderBy($query, $order, $direction, $locale);
@@ -122,7 +109,7 @@ class OrderDirective
             if ($this->utils->isFieldType($query, $order, NumberField::TYPE)) {
                 $this->orderByNumericField($query, $translationsAlias, $direction);
             } else {
-                // Note the `lower()` in the `addOrderBy()`. It is essential to sorting the
+                // Note the `lower()` in the `addOrderBy()`. It is essential for sorting the
                 // results correctly. See also https://github.com/bolt/core/issues/1190
                 // again: lower breaks postgresql jsonb compatibility, first cast as txt
                 // cast as TEXT or CHAR, depending on SQL support. See Bolt\Doctrine\Query\Cast.php
@@ -134,12 +121,12 @@ class OrderDirective
             $query->incrementIndex();
         } else {
             $this->notifications->warning('Incorrect OrderBy clause for field that does not exist',
-                "A query with ordering on a Field or Taxonomy (`{$order}`) that's not defined, will yield unexpected results. Update your `{% setcontent %}`-statement");
+                "A query with ordering on a Field or Taxonomy (`$order`) that's not defined, will yield unexpected results. Update your `{% setcontent %}`-statement");
         }
     }
 
     /**
-     * Cobble together the sorting order, and whether or not it's a column in `content` or `fields`.
+     * Cobble together the sorting order, and whether it's a column in `content` or `fields`.
      */
     private function createSortBy(string $order): array
     {

@@ -18,7 +18,7 @@ class LocaleHelper
     private Collection $localeCodes;
     private Collection $flagCodes;
     private Collection $codetoCountry;
-    private Collection $currentLocale;
+    private ?Collection $currentLocale;
 
     public function __construct(
         string $locales,
@@ -30,7 +30,7 @@ class LocaleHelper
         $this->localeCodes = new Collection(explode('|', $locales));
         $this->flagCodes = $this->getFlagCodes();
         $this->codetoCountry = $this->getCodetoCountry();
-        $this->currentLocale = new Collection();
+        $this->currentLocale = null;
     }
 
     public function getCurrentLocale(Environment $twig): ?Collection
