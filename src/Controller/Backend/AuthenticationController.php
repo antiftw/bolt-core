@@ -47,8 +47,8 @@ class AuthenticationController extends TwigAwareController implements BackendZon
      * But, this will never be executed. Symfony will intercept this first
      * and handle the logout automatically. See logout in config/packages/security.yaml
      *
-     * @Route("/logout", name="bolt_logout")
      */
+    #[Route('/logout', name: 'bolt_logout')]
     public function logout(): void
     {
         throw new \Exception('This should never be reached!');
