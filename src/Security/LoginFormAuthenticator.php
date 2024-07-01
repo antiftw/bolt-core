@@ -17,6 +17,7 @@ use Symfony\Component\Security\Http\Authenticator\Passport\Badge\RememberMeBadge
 use Symfony\Component\Security\Http\Authenticator\Passport\Badge\UserBadge;
 use Symfony\Component\Security\Http\Authenticator\Passport\Credentials\PasswordCredentials;
 use Symfony\Component\Security\Http\Authenticator\Passport\Passport;
+use Symfony\Component\Security\Http\SecurityRequestAttributes;
 
 class LoginFormAuthenticator extends AbstractAuthenticator implements AuthenticatorInterface
 {
@@ -43,7 +44,7 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
         ];
 
         $request->getSession()->set(
-            Security::LAST_USERNAME,
+            SecurityRequestAttributes::LAST_USERNAME,
             $credentials['username']
         );
 
@@ -77,7 +78,7 @@ class LoginFormAuthenticator extends AbstractAuthenticator implements Authentica
     public function onAuthenticationFailure(Request $request, AuthenticationException $exception): ?Response
     {
         if ($request->hasSession()) {
-            $request->getSession()->set(Security::AUTHENTICATION_ERROR, $exception);
+            $request->getSession()->set(SecurityRequestAttributes::AUTHENTICATION_ERROR, $exception);
         }
 
         // Redirect back to where we came from
