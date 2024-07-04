@@ -35,6 +35,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
+use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Illuminate\Support\Collection;
@@ -57,9 +58,10 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly ContentFillListener $contentFillListener,
         private readonly EventDispatcherInterface $dispatcher,
-        string $defaultLocale,
         private readonly TranslatorInterface $translator,
-        private readonly ContentHelper $contentHelper
+        private readonly ContentHelper $contentHelper,
+        protected readonly CsrfTokenManagerInterface $csrfTokenManager,
+        string $defaultLocale,
     ) {
         $this->defaultLocale = $defaultLocale;
     }
