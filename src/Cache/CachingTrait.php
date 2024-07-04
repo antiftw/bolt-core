@@ -9,11 +9,11 @@ use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 trait CachingTrait
 {
-    private TagAwareCacheInterface $cache;
-    private Stopwatch $stopwatch;
+    private readonly TagAwareCacheInterface $cache;
+    private readonly Stopwatch $stopwatch;
     private string $cacheKey = '';
     private array $cacheTags = [];
-    private Config $config;
+    private readonly Config $config;
 
     /**
      * @required
