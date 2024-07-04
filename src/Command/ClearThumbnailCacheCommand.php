@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'cache:thumbs', description: 'Clear Bolt\'s thumbnail cache folder')]
 class ClearThumbnailCacheCommand extends Command
 {
-    protected static string $defaultName = 'cache:thumbs';
+    protected static $defaultName = 'cache:thumbs';
 
     public function __construct(private readonly ThumbnailCacheClearer $thumbnailCacheClearer)
     {

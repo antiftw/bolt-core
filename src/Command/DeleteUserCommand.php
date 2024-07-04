@@ -37,7 +37,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[AsCommand(name: 'bolt:delete-user', description: 'Deletes users from the database')]
 class DeleteUserCommand extends Command
 {
-    protected static string $defaultName = 'bolt:delete-user';
+    protected static $defaultName = 'bolt:delete-user';
     private SymfonyStyle $io;
 
     public function __construct(

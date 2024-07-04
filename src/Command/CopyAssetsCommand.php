@@ -16,7 +16,7 @@ use Symfony\Component\Finder\Finder;
 #[AsCommand(name: 'bolt:copy-assets', description: 'Copy built asset files into the project root')]
 class CopyAssetsCommand extends Command
 {
-    protected static string $defaultName = 'bolt:copy-assets';
+    protected static $defaultName = 'bolt:copy-assets';
     private string $publicDirectory;
 
     public function __construct(

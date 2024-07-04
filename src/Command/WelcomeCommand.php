@@ -18,7 +18,7 @@ class WelcomeCommand extends Command
 {
     use ImageTrait;
 
-    protected static string $defaultName = 'bolt:welcome';
+    protected static $defaultName = 'bolt:welcome';
 
     /**
      * {@inheritdoc}

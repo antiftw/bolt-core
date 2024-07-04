@@ -14,7 +14,7 @@ use Webimpress\SafeWriter\FileWriter;
 #[AsCommand(name: 'bolt:reset-secret', description: 'Reset the APP_SECRET for this Bolt site.')]
 class ResetSecretCommand extends Command
 {
-    protected static string $defaultName = 'bolt:reset-secret';
+    protected static $defaultName = 'bolt:reset-secret';
 
     public function __construct(private readonly string $projectDir)
     {

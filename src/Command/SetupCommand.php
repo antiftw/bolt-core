@@ -16,7 +16,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'bolt:setup', description: 'Run Bolt setup / installation commands')]
 class SetupCommand extends Command
 {
-    protected static string $defaultName = 'bolt:setup';
+    protected static $defaultName = 'bolt:setup';
     private array $errors = [];
 
     public function __construct(private readonly Connection $connection)

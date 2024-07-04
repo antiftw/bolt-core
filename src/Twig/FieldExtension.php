@@ -125,7 +125,7 @@ class FieldExtension extends AbstractExtension
         return $records;
     }
 
-    public function getListTemplates(TemplateSelectField $field): Collection
+    public function getListTemplates(Field $field): Collection
     {
         $definition = $field->getDefinition();
         $current = current($field->getValue());
@@ -143,7 +143,7 @@ class FieldExtension extends AbstractExtension
         $finder
             ->files()
             ->in($templatesPath)
-            ->path($definition->get('path'))
+            ->path($definition->get('path') ?? '')
             ->sortByName()
             ->filter(function (SplFileInfo $file) use ($filter) {
                 return preg_match($filter, $file->getRelativePathname()) === 1;

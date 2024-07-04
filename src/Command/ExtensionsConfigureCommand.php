@@ -19,7 +19,7 @@ use Symfony\Component\Filesystem\Path;
 )]
 class ExtensionsConfigureCommand extends Command
 {
-    protected static string $defaultName = 'extensions:configure';
+    protected static $defaultName = 'extensions:configure';
 
     public function __construct(
         private readonly ExtensionRegistry $extensionRegistry,

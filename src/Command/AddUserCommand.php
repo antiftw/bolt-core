@@ -51,8 +51,8 @@ class AddUserCommand extends Command
      * to make your command lazily loaded, configure the $defaultName static property,
      * so it will be instantiated only when the command is actually called.
      */
-    protected static string $defaultName = 'bolt:add-user';
-    protected static string $defaultDescription = 'Creates users and stores them in the database';
+    protected static $defaultName = 'bolt:add-user';
+    protected static $defaultDescription = 'Creates users and stores them in the database';
     private SymfonyStyle $io;
 
     public function __construct(

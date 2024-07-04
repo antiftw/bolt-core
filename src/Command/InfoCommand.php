@@ -18,7 +18,7 @@ class InfoCommand extends Command
 {
     use ImageTrait;
 
-    protected static string $defaultName = 'bolt:info';
+    protected static $defaultName = 'bolt:info';
     private object $composer;
     private SymfonyStyle $io;
 

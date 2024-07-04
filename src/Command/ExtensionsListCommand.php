@@ -14,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'extensions:list', description: 'List installed Extensions')]
 class ExtensionsListCommand extends Command
 {
-    protected static string $defaultName = 'extensions:list';
+    protected static $defaultName = 'extensions:list';
 
     public function __construct(private readonly ExtensionRegistry $extensionRegistry)
     {

@@ -18,7 +18,7 @@ use Symfony\Component\Finder\Finder;
 #[AsCommand(name: 'bolt:copy-themes', description: 'Copy theme files into the public/themes folder')]
 class CopyThemesCommand extends Command
 {
-    protected static string $defaultName = 'bolt:copy-themes';
+    protected static $defaultName = 'bolt:copy-themes';
     private string $publicDirectory;
     private string $projectDir;
 

@@ -14,7 +14,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 #[AsCommand(name: 'extensions:services', description: 'List services available in Extensions')]
 class ExtensionsServicesCommand extends Command
 {
-    protected static string $defaultName = 'extensions:services';
+    protected static $defaultName = 'extensions:services';
 
     public function __construct(private readonly ContainerInterface $container)
     {

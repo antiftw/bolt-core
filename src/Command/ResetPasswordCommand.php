@@ -25,7 +25,7 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 #[AsCommand(name: 'bolt:reset-password', description: 'Reset password for a user.')]
 class ResetPasswordCommand extends Command
 {
-    protected static string $defaultName = 'bolt:reset-password';
+    protected static $defaultName = 'bolt:reset-password';
 
     public function __construct(
         private readonly EntityManagerInterface $em,

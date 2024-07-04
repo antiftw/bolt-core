@@ -14,7 +14,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 class ClearListFormatCommand extends Command
 {
     /** @var string */
-    protected static string $defaultName = 'cache:list-format-clear';
+    protected static $defaultName = 'cache:list-format-clear';
 
     public function __construct(private readonly ListFormatHelper $listFormatHelper)
     {

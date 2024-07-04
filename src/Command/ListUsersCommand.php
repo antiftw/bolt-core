@@ -33,7 +33,7 @@ use Symfony\Component\Mime\Email;
 #[AsCommand(name: 'bolt:list-users', description: 'Lists all the existing users')]
 class ListUsersCommand extends Command
 {
-    protected static string $defaultName = 'bolt:list-users';
+    protected static $defaultName = 'bolt:list-users';
 
     public function __construct(
         private readonly MailerInterface $mailer,

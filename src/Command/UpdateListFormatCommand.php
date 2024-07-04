@@ -13,7 +13,7 @@ use Symfony\Component\Console\Style\SymfonyStyle;
 #[AsCommand(name: 'bolt:update-list-format', description: 'Update Bolt\'s cached ListFormat data.')]
 class UpdateListFormatCommand extends Command
 {
-    protected static string $defaultName = 'bolt:update-list-format';
+    protected static $defaultName = 'bolt:update-list-format';
 
     public function __construct(private readonly ListFormatHelper $listFormatHelper)
     {
