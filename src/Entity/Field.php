@@ -70,8 +70,8 @@ class Field implements FieldInterface, TranslatableInterface
     #[Groups(['get_field', 'api_write'])]
     public string $name = '';
 
-    #[ORM\Column(name: 'sortorder')]
-    private int $sortOrder = 0;
+    #[ORM\Column]
+    private int $sortorder = 0;
 
     #[ORM\Column(nullable: true)]
     private int $version = 0;
@@ -295,14 +295,14 @@ class Field implements FieldInterface, TranslatableInterface
         return $this;
     }
 
-    public function getSortOrder(): ?int
+    public function getSortorder(): ?int
     {
-        return $this->sortOrder;
+        return $this->sortorder;
     }
 
-    public function setSortOrder(int $sortOrder): self
+    public function setSortorder(int $sortorder): self
     {
-        $this->sortOrder = $sortOrder;
+        $this->sortorder = $sortorder;
 
         return $this;
     }
