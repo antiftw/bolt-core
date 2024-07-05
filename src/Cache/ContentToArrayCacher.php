@@ -7,6 +7,7 @@ use Bolt\Entity\Content;
 use Bolt\Twig\JsonExtension;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
+use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class ContentToArrayCacher extends JsonExtension implements CachingInterface
 {
@@ -17,7 +18,8 @@ class ContentToArrayCacher extends JsonExtension implements CachingInterface
     public function __construct(
         private readonly NormalizerInterface $normalizer,
         private readonly Stopwatch $stopwatch,
-        private readonly Config $config
+        private readonly Config $config,
+        TagAwareCacheInterface $cache
     )
     {
         parent::__construct($normalizer, $stopwatch);
