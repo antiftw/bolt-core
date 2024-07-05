@@ -16,11 +16,12 @@ use Bolt\Repository\FieldRepository;
 use Bolt\Repository\UserRepository;
 use Bolt\Twig\ContentExtension;
 use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs as BaseLifecycleEventArgs;
 
-#[AsEntityListener(event: Events::preUpdate, entity: Content::class)]
+#[AsDoctrineListener(event: Events::preUpdate)]
+#[AsDoctrineListener(event: Events::prePersist)]
+#[AsDoctrineListener(event: Events::postLoad)]
 readonly class ContentFillListener
 {
     public function __construct(

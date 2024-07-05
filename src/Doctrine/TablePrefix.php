@@ -4,10 +4,13 @@ declare(strict_types=1);
 
 namespace Bolt\Doctrine;
 
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
+use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\Persistence\ManagerRegistry;
 
+#[AsDoctrineListener(event: Events::loadClassMetadata)]
 class TablePrefix
 {
     use TablePrefixTrait;
