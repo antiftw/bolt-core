@@ -12,7 +12,7 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostLoadEventArgs;
 use Doctrine\ORM\Events;
 
-#[AsDoctrineListener(Events::postLoad)]
+//#[AsDoctrineListener(Events::postLoad)]
 class UserAvatarLoadListener
 {
     private DeepCollection $avatarConfig;

@@ -19,9 +19,9 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs as BaseLifecycleEventArgs;
 
-#[AsDoctrineListener(event: Events::preUpdate)]
-#[AsDoctrineListener(event: Events::prePersist)]
-#[AsDoctrineListener(event: Events::postLoad)]
+//#[AsDoctrineListener(event: Events::preUpdate)]
+//#[AsDoctrineListener(event: Events::prePersist)]
+//#[AsDoctrineListener(event: Events::postLoad)]
 readonly class ContentFillListener
 {
     public function __construct(

@@ -17,7 +17,7 @@ use Doctrine\Persistence\Mapping\Driver\MappingDriver;
  *
  * @see https://medium.com/@jasperkuperus/defining-discriminator-maps-at-child-level-in-doctrine-2-1cd2ded95ffb
  */
-#[AsDoctrineListener(event: Events::loadClassMetadata)]
+//#[AsDoctrineListener(event: Events::loadClassMetadata)]
 class FieldDiscriminatorListener
 {
     private MappingDriver $mappingDriver;

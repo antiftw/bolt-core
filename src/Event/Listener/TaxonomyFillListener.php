@@ -11,7 +11,7 @@ use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostLoadEventArgs;
 use Doctrine\ORM\Events;
 
-#[AsDoctrineListener(event: Events::postLoad)]
+//#[AsDoctrineListener(event: Events::postLoad)]
 readonly class TaxonomyFillListener
 {
     public function __construct(private Config $config) {}

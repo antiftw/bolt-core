@@ -15,7 +15,7 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 use Doctrine\ORM\Events;
 use Twig\Markup;
 
-#[AsDoctrineListener(event: Events::preUpdate)]
+//#[AsDoctrineListener(event: Events::preUpdate)]
 readonly class FieldFillListener
 {
     public function __construct(private Sanitiser $sanitiser) {}
