@@ -10,7 +10,7 @@ use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 
 trait CsrfTrait
 {
-    protected CsrfTokenManagerInterface$csrfTokenManager;
+    protected readonly CsrfTokenManagerInterface $csrfTokenManager;
 
     /**
      * @required
