@@ -7,14 +7,13 @@ namespace Bolt\Controller;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
 use Symfony\Component\Security\Csrf\CsrfToken;
 use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 trait CsrfTrait
 {
     protected readonly CsrfTokenManagerInterface $csrfTokenManager;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setCsrfTokenManager(CsrfTokenManagerInterface $csrfTokenManager): void
     {
         $this->csrfTokenManager = $csrfTokenManager;

@@ -6,27 +6,24 @@ use Bolt\Configuration\Config;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 trait CachingTrait
 {
     private readonly TagAwareCacheInterface $cache;
     private readonly Stopwatch $stopwatch;
+    private readonly Config $config;
     private string $cacheKey = '';
     private array $cacheTags = [];
-    private readonly Config $config;
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setCache(TagAwareCacheInterface $cache, Stopwatch $stopwatch): void
     {
         $this->cache = $cache;
         $this->stopwatch = $stopwatch;
     }
 
-    /**
-     * @required
-     */
+    #[Required]
     public function setConfig(Config $config): void
     {
         $this->config = $config;
