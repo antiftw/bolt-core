@@ -16,10 +16,10 @@ class CanonicalCacher extends Canonical implements CachingInterface
     use CachingTrait;
 
     public function __construct(
-        Config $config,
-        UrlGeneratorInterface $urlGenerator,
+        private readonly Config $config,
+        private readonly UrlGeneratorInterface $urlGenerator,
         RequestStack $requestStack,
-        RouterInterface $router,
+        private readonly RouterInterface $router,
         private readonly Stopwatch $stopwatch,
         private readonly TagAwareCacheInterface $cache,
         string $defaultLocale
