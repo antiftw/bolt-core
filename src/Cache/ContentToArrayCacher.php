@@ -19,7 +19,7 @@ class ContentToArrayCacher extends JsonExtension implements CachingInterface
         private readonly NormalizerInterface $normalizer,
         private readonly Stopwatch $stopwatch,
         private readonly Config $config,
-        TagAwareCacheInterface $cache
+        private readonly TagAwareCacheInterface $cache
     )
     {
         parent::__construct($normalizer, $stopwatch);

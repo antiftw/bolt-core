@@ -238,7 +238,7 @@ class Field implements FieldInterface, TranslatableInterface
         return $value;
     }
 
-    public function getTwigValue(): string|array|Markup|bool
+    public function getTwigValue(): string|array|Markup|bool|null
     {
         $value = $this->getParsedValue();
 
