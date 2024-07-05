@@ -96,7 +96,7 @@ class ImageExtension extends AbstractExtension
         return sprintf('<img src="%s" alt="%s" %s %s %s>', $path, $alt, $width, $height, $lazy);
     }
 
-    public function thumbnail(ImageField|array|string $image, ?int $width = null, ?int $height = null, ?string $location = null, ?string $path = null, ?string $fit = null, ?int $quality = null): string
+    public function thumbnail(ImageField|array|string $image, ?int $width = null, ?int $height = null, ?string $location = null, ?string $path = null, ?string $fit = null, ?int $quality = null): ?string
     {
         $filename = $this->getFilename($image, true);
 
