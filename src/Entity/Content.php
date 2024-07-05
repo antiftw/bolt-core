@@ -104,7 +104,7 @@ class Content
     private string $listFormat = '';
 
     #[MaxDepth(1)]
-    #[ORM\ManyToMany(
+    #[ORM\OneToMany(
         targetEntity: Field::class,
         mappedBy: "content",
         cascade: ["persist"],
