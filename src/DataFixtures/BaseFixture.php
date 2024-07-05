@@ -32,7 +32,8 @@ abstract class BaseFixture extends Fixture
 
     protected function getRandomReference(string $entityName)
     {
-       if (!array_key_exists($entityName, $this->referencesIndex)) {
+        $referenceName = $entityName;
+        if (isset($this->referencesIndex[$entityName]) === false) {
             $this->referencesIndex[$entityName] = [];
 
             foreach ($this->referenceRepository->getReferencesByClass() as $class => $references) {
@@ -43,14 +44,13 @@ abstract class BaseFixture extends Fixture
                 }
             }
         }
-
-        if (array_key_exists($entityName, $this->referencesIndex) && empty($this->referencesIndex[$entityName])) {
+        if (empty($this->referencesIndex[$entityName])) {
             throw new \Exception(sprintf('Cannot find any references for Entity "%s"', $entityName));
         }
 
         $randomReferenceKey = array_rand($this->referencesIndex[$entityName]);
 
-        return $this->getReference($randomReferenceKey, $this->referencesIndex[$entityName][$randomReferenceKey]);
+        return $this->getReference($randomReferenceKey, $this->referencesIndex[$entityName][$referenceName]);
     }
 
 

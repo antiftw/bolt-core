@@ -124,7 +124,6 @@ class Relation
     public function setDefinitionFromContentDefinition(): void
     {
         $contentTypeDefinition = $this->fromContent->getDefinition();
-
         if ($contentTypeDefinition === null) {
             throw new \InvalidArgumentException('Owning Content not fully initialized');
         }

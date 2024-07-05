@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Bolt\Event\Listener;
 
 use Bolt\Entity\FieldInterface;
-use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\DBAL\Exception;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Event\LoadClassMetadataEventArgs;
-use Doctrine\ORM\Events;
 use Doctrine\Persistence\Mapping\Driver\MappingDriver;
 
 /**
@@ -17,7 +15,6 @@ use Doctrine\Persistence\Mapping\Driver\MappingDriver;
  *
  * @see https://medium.com/@jasperkuperus/defining-discriminator-maps-at-child-level-in-doctrine-2-1cd2ded95ffb
  */
-//#[AsDoctrineListener(event: Events::loadClassMetadata)]
 class FieldDiscriminatorListener
 {
     private MappingDriver $mappingDriver;

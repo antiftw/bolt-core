@@ -210,7 +210,9 @@ class Content
         $this->contentTypeDefinition = $contentType;
     }
 
-    #[Groups("get_definition")]
+    /**
+     * @Groups("get_definition")
+     */
     public function getDefinition(): ?ContentType
     {
         return $this->contentTypeDefinition;
@@ -386,8 +388,10 @@ class Content
         return $this;
     }
 
-    #[ORM\PrePersist]
-    #[ORM\PreUpdate]
+    /**
+     * @ORM\PrePersist()
+     * @ORM\PreUpdate()
+     */
     public function updateModifiedAt(): void
     {
         $this->setModifiedAt(new \DateTime());
@@ -427,7 +431,9 @@ class Content
         return $this->standaloneFieldsFilter();
     }
 
-    #[Groups("get_content")]
+    /**
+     * @Groups("get_content")
+     */
     public function getFieldValues(): array
     {
         $fieldValues = $this->getFieldValuesFromDefinition();
@@ -447,7 +453,9 @@ class Content
         return $fieldValues;
     }
 
-    #[Groups("get_content")]
+    /**
+     * @Groups("get_content")
+     */
     public function getTaxonomyValues(): array
     {
         $taxonomyValues = [];
@@ -557,7 +565,9 @@ class Content
         return $this;
     }
 
-    #[Groups("get_content")]
+    /**
+     * @Groups("get_content")
+     */
     public function getAuthorName(): ?string
     {
         return $this->getAuthor()?->getDisplayName();

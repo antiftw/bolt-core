@@ -256,7 +256,13 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
             preg_replace_callback(
                 '/{(\w+)}/i',
                 function ($match) {
-                    return $this->faker->{$match[1]};
+                    $match = $match[1];
+
+                    try {
+                        return $this->faker->{$match};
+                    } finally {
+                    }
+                    return '(unknown)';
                 },
                 $format
             ),

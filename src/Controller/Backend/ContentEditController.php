@@ -35,7 +35,6 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
-use Symfony\Component\Security\Csrf\CsrfTokenManagerInterface;
 use Symfony\Contracts\EventDispatcher\EventDispatcherInterface;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Illuminate\Support\Collection;
@@ -58,10 +57,9 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         private readonly UrlGeneratorInterface $urlGenerator,
         private readonly ContentFillListener $contentFillListener,
         private readonly EventDispatcherInterface $dispatcher,
-        private readonly TranslatorInterface $translator,
-        private readonly ContentHelper $contentHelper,
-        protected readonly CsrfTokenManagerInterface $csrfTokenManager,
         string $defaultLocale,
+        private readonly TranslatorInterface $translator,
+        private readonly ContentHelper $contentHelper
     ) {
         $this->defaultLocale = $defaultLocale;
     }
@@ -410,7 +408,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
                         // Note, $collection side is set by $collection->setValue() below
                         $field->setParent($collection);
                         $newFields[$order] = $field;
-                        $field->setSortorder($order);
+                        $field->setSortOrder($order);
                         $content->addField($field);
                         $this->updateField($field, $value, $locale);
                         $tm->applyTranslations($field, $collectionName, $orderId);

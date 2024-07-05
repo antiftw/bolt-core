@@ -70,13 +70,13 @@ class Field implements FieldInterface, TranslatableInterface
     #[Groups(['get_field', 'api_write'])]
     public string $name = '';
 
-    #[ORM\Column]
-    private int $sortorder = 0;
+    #[ORM\Column(name: 'sortorder')]
+    private int $sortOrder = 0;
 
     #[ORM\Column(nullable: true)]
     private int $version = 0;
 
-    #[ORM\ManyToMany(targetEntity: Content::class, inversedBy: "fields", fetch: "EAGER")]
+    #[ORM\ManyToOne(targetEntity: Content::class, fetch: "EAGER", inversedBy: "fields")]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['api_write'])]
     private ?Content $content = null;
@@ -295,14 +295,14 @@ class Field implements FieldInterface, TranslatableInterface
         return $this;
     }
 
-    public function getSortorder(): ?int
+    public function getSortOrder(): ?int
     {
-        return $this->sortorder;
+        return $this->sortOrder;
     }
 
-    public function setSortorder(int $sortorder): self
+    public function setSortOrder(int $sortOrder): self
     {
-        $this->sortorder = $sortorder;
+        $this->sortOrder = $sortOrder;
 
         return $this;
     }
