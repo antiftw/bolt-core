@@ -45,7 +45,7 @@ class ImagesFixtures extends BaseFixture implements FixtureGroupInterface, Depen
 
             $media = $this->mediaFactory->createOrUpdateMedia($file, 'files', $this->faker->sentence());
             /** @var User $author */
-            $author = $this->getRandomReference(User::class);
+            $author = $this->getRandomReference('user');
             $media->setAuthor($author)
                 ->setDescription($this->faker->paragraphs(3, true))
                 ->setCopyright('© Unsplash');

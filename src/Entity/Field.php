@@ -76,7 +76,7 @@ class Field implements FieldInterface, TranslatableInterface
     #[ORM\Column(nullable: true)]
     private int $version = 0;
 
-    #[ORM\ManyToOne(targetEntity: Content::class, fetch: "EAGER", inversedBy: "fields")]
+    #[ORM\ManyToMany(targetEntity: Content::class, inversedBy: "fields", fetch: "EAGER")]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['api_write'])]
     private ?Content $content = null;

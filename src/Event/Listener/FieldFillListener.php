@@ -9,10 +9,13 @@ use Bolt\Entity\Field\RawPersistable;
 use Bolt\Entity\FieldInterface;
 use Bolt\Entity\FieldTranslation;
 use Bolt\Utils\Sanitiser;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsEntityListener;
 use Doctrine\ORM\Event\PostLoadEventArgs;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
+use Doctrine\ORM\Events;
 use Twig\Markup;
 
+#[AsEntityListener(event: Events::preUpdate, entity: FieldTranslation::class)]
 readonly class FieldFillListener
 {
     public function __construct(private Sanitiser $sanitiser) {}
