@@ -2,14 +2,9 @@
 
 namespace Bolt\Cache;
 
-use Bolt\Canonical;
-use Bolt\Configuration\Config;
 use Bolt\Entity\Content;
-use Bolt\Twig\LocaleExtension;
 use Bolt\Utils\ContentHelper;
-use Symfony\Component\HttpFoundation\RequestStack;
-use Symfony\Component\Stopwatch\Stopwatch;
-use Symfony\Contracts\Cache\TagAwareCacheInterface;
+
 class GetFormatCacher extends ContentHelper implements CachingInterface
 {
     use CachingTrait;

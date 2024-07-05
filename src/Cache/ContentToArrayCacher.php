@@ -2,12 +2,8 @@
 
 namespace Bolt\Cache;
 
-use Bolt\Configuration\Config;
 use Bolt\Entity\Content;
 use Bolt\Twig\JsonExtension;
-use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
-use Symfony\Component\Stopwatch\Stopwatch;
-use Symfony\Contracts\Cache\TagAwareCacheInterface;
 
 class ContentToArrayCacher extends JsonExtension implements CachingInterface
 {
