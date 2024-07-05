@@ -410,7 +410,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
                         // Note, $collection side is set by $collection->setValue() below
                         $field->setParent($collection);
                         $newFields[$order] = $field;
-                        $field->setSortOrder($order);
+                        $field->setSortorder($order);
                         $content->addField($field);
                         $this->updateField($field, $value, $locale);
                         $tm->applyTranslations($field, $collectionName, $orderId);
