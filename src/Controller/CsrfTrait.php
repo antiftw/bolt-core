@@ -11,7 +11,7 @@ use Symfony\Contracts\Service\Attribute\Required;
 
 trait CsrfTrait
 {
-    protected readonly CsrfTokenManagerInterface $csrfTokenManager;
+    protected CsrfTokenManagerInterface $csrfTokenManager;
 
     #[Required]
     public function setCsrfTokenManager(CsrfTokenManagerInterface $csrfTokenManager): void

@@ -10,21 +10,9 @@ use Bolt\Utils\ContentHelper;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
-
 class GetFormatCacher extends ContentHelper implements CachingInterface
 {
     use CachingTrait;
-
-    public function __construct(
-        RequestStack $requestStack,
-        private readonly Canonical $canonical,
-        private readonly Config $config,
-        private readonly LocaleExtension $localeExtension,
-        private readonly Stopwatch $stopwatch,
-        private readonly TagAwareCacheInterface $cache,
-    ) {
-        parent::__construct($requestStack, $canonical, $config, $localeExtension);
-    }
 
     public const string CACHE_CONFIG_KEY = 'formatter';
 
