@@ -47,7 +47,6 @@ abstract class BaseWidget implements WidgetInterface
     /** @var int duration (in seconds) to cache output */
     protected int $cacheDuration = 600;
 
-    public function __construct(private readonly Environment $twig) {}
 
     public function setName(string $name): WidgetInterface
     {
