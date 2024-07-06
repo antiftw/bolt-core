@@ -9,7 +9,7 @@ use Bolt\Configuration\Config;
 
 class ThumbnailHelper
 {
-    private Config$config;
+    private ?Config $config;
 
     public function __construct(?Config $config = null)
     {
