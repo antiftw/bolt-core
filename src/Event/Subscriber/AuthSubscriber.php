@@ -17,7 +17,6 @@ class AuthSubscriber implements EventSubscriberInterface
 {
     use LoggerTrait;
 
-
     public function __construct(private readonly RequestStack $requestStack, private readonly EntityManagerInterface $em) {}
 
     public function onAuthenticationSuccess(AuthenticationSuccessEvent $event): void

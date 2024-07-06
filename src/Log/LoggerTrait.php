@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Bolt\Log;
 
-use ECSPrefix202206\Symfony\Contracts\Service\Attribute\Required;
 use Psr\Log\LoggerInterface;
+use Symfony\Contracts\Service\Attribute\Required;
 
 trait LoggerTrait
 {
