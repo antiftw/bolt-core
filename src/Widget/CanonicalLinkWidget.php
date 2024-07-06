@@ -23,7 +23,9 @@ class CanonicalLinkWidget extends BaseWidget
         private readonly Canonical $canonical,
         private readonly Config $config,
         protected Environment $twig
-    ) {}
+    ) {
+        $this->setTwig($this->twig);
+    }
 
     protected function run(array $params = []): ?string
     {
