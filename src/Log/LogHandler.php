@@ -26,8 +26,8 @@ class LogHandler extends AbstractProcessingHandler
         $logEntry->setLevel($record['level']);
         $logEntry->setLevelName($record['level_name']);
         $logEntry->setExtra($record['extra']);
-        $logEntry->setUser($record['user'] ?? null);
-        $logEntry->setLocation($record['location']);
+        $logEntry->setUser($record->extra['user'] ?? null);
+        $logEntry->setLocation($record->extra['location']);
         $logEntry->setContext($record['context']);
 
         $this->em->persist($logEntry);
