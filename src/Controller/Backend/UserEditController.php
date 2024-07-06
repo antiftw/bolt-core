@@ -56,7 +56,7 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
         $user = UserRepository::factory();
 
         /** @var array $submitted_data */
-        $submitted_data = $request->request->all()['user'];
+        $submitted_data = $this->handleUserRequest($request);
 
         $event = new UserEvent($user);
         $this->dispatcher->dispatch($event, UserEvent::ON_ADD);
@@ -103,7 +103,7 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
     #[IsGranted("editprofile")]
     public function editProfile(Request $request): Response
     {
-        $submitted_data = $request->request->all()['user'];
+        $submitted_data = $this->handleUserRequest($request);
         /** @var User $user */
         $user = $this->getUser();
 
@@ -114,7 +114,7 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
     #[IsGranted("user:edit")]
     public function edit(User $user, Request $request): Response
     {
-        $submitted_data = $request->request->all()['user'];
+        $submitted_data = $this->handleUserRequest($request);
 
         return $this->handleEdit(false, $user, $submitted_data);
     }
@@ -267,5 +267,14 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
         return $this->render('@bolt/users/edit.html.twig', [
             'userForm' => $form->createView(),
         ]);
+    }
+
+    private function handleUserRequest(Request $request): bool|float|int|string
+    {
+        if($request->getMethod() === Request::METHOD_GET) {
+            return $request->request->get('user');
+        }else {
+            return $request->request->all()['user'];
+        }
     }
 }
