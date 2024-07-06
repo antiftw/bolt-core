@@ -72,7 +72,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     private ?string $backendTheme = 'default';
 
     #[ORM\Column(length: 30, options: ['default' => 'enabled'])]
-    private UserStatus $status;
+    private string $status = UserStatus::ENABLED;
 
     #[ORM\OneToMany(
         targetEntity: UserAuthToken::class,
