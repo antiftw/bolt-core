@@ -81,15 +81,15 @@ class Content
     #[Groups(["get_content", "api_write"])]
     private string $status = Statuses::DRAFT;
 
-    #[ORM\Column]
+    #[ORM\Column(type: 'datetime')]
     #[Groups(["get_content", "api_write"])]
     private \DateTime $createdAt;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     #[Groups(["get_content", "api_write"])]
     private ?\DateTime $modifiedAt = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: 'datetime', nullable: true)]
     #[Groups(["get_content", "api_write"])]
     private ?\DateTime $publishedAt = null;
 

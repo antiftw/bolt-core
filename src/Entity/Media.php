@@ -49,10 +49,10 @@ class Media
     #[ORM\JoinColumn(nullable: true)]
     private ?User $author = null;
 
-    #[ORM\Column]
+    #[ORM\Column(type: "datetime")]
     private \DateTimeInterface $createdAt;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column(type: "datetime", nullable: true)]
     private ?\DateTimeInterface $modifiedAt = null;
 
     #[ORM\Column(length: 191, nullable: true)]
