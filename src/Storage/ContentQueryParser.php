@@ -23,7 +23,7 @@ use Symfony\Component\HttpFoundation\RequestStack;
  */
 class ContentQueryParser
 {
-    protected string$query;
+    protected string $query = '';
     protected array $params = [];
     protected array $contentTypes = [];
     protected string $operation;
@@ -32,22 +32,20 @@ class ContentQueryParser
     protected array $directives = [];
     protected array $handlers = [];
     protected array $services = [];
-    protected ?QueryScopeInterface $scope;
 
     public function __construct(
         private readonly RequestStack $requestStack,
         private readonly ContentRepository $repo,
         private readonly Config $config,
         private readonly DirectiveHandler $directiveHandler,
-        ?QueryInterface $queryHandler = null
-    ) {
+        private readonly QueryScopeInterface $scope,
+        ?QueryInterface $queryHandler = null,
 
+    ) {
         if ($queryHandler !== null) {
             $this->addService('select', $queryHandler);
         }
-
         $this->setupDefaults();
-
     }
 
     /**
