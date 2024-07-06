@@ -5,14 +5,12 @@ declare(strict_types=1);
 namespace Bolt\Widget;
 
 use Bolt\Widget\Exception\WidgetException;
-use Symfony\Contracts\Service\Attribute\Required;
 use Twig\Environment;
 
 trait TwigTrait
 {
-    private ?Environment $twig;
+    private readonly Environment $twig;
 
-    #[Required]
     public function setTwig(Environment $twig): self
     {
         $this->twig = $twig;
