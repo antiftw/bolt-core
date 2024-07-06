@@ -71,7 +71,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     #[ORM\Column(length: 191, nullable: true)]
     private ?string $backendTheme = 'default';
 
-    #[ORM\Column(length: 30, enumType: UserStatus::class, options: ['default' => 'enabled'])]
+    #[ORM\Column(length: 30, options: ['default' => 'enabled'])]
     private UserStatus $status;
 
     #[ORM\OneToMany(
@@ -163,12 +163,12 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
         return $this;
     }
 
-    public function setStatus(UserStatus $status): void
+    public function setStatus(string $status): void
     {
         $this->status = $status;
     }
 
-    public function getStatus(): ?UserStatus
+    public function getStatus(): ?string
     {
         return $this->status;
     }

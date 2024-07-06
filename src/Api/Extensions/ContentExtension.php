@@ -72,7 +72,7 @@ final class ContentExtension implements QueryCollectionExtensionInterface, Query
     {
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $queryBuilder->andWhere(sprintf('%s.status = :status', $rootAlias));
-        $queryBuilder->setParameter('status', Statuses::PUBLISHED->value);
+        $queryBuilder->setParameter('status', Statuses::PUBLISHED);
 
         //todo: Fix this when https://github.com/doctrine/orm/issues/3835 closed.
         if ($this->viewlessContentTypes->isNotEmpty()) {
@@ -85,7 +85,7 @@ final class ContentExtension implements QueryCollectionExtensionInterface, Query
     {
         $rootAlias = $queryBuilder->getRootAliases()[0];
         $queryBuilder->join($rootAlias . '.content', 'c', Join::WITH, 'c.status = :status');
-        $queryBuilder->setParameter('status', Statuses::PUBLISHED->value);
+        $queryBuilder->setParameter('status', Statuses::PUBLISHED);
 
         //todo: Fix this when https://github.com/doctrine/orm/issues/3835 closed.
         if ($this->viewlessContentTypes->isNotEmpty()) {

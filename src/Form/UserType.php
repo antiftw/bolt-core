@@ -119,7 +119,7 @@ class UserType extends AbstractType
                     'multiple' => true,
                 ])
                 ->add('status', ChoiceType::class, [
-                    'choices' => UserStatus::cases(),
+                    'choices' => UserStatus::all(),
                 ]);
         }
 

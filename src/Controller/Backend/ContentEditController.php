@@ -249,7 +249,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
 
         $this->denyAccessUnlessGranted(ContentVoter::CONTENT_CHANGE_STATUS, $content);
 
-        $content->setStatus(Statuses::fromString($this->getFromRequest('status')));
+        $content->setStatus($this->getFromRequest('status'));
 
         $event = new ContentEvent($content);
         $this->dispatcher->dispatch($event, ContentEvent::PRE_STATUS_CHANGE);
@@ -313,8 +313,8 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         $content->setDePublishedAt(! empty($formData['depublishedAt']) ? new Carbon($formData['depublishedAt']) : null);
 
         $status = Json::findScalar($formData['status']);
-        if (in_array($status, Statuses::cases(), true) === true) {
-            $content->setStatus($status->value);
+        if (in_array($status, Statuses::all(), true) === true) {
+            $content->setStatus($status);
         }
 
         if (isset($formData['fields'])) {

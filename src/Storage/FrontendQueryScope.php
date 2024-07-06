@@ -67,7 +67,7 @@ class FrontendQueryScope implements QueryScopeInterface
         // Setup status to only published unless otherwise specified
         $status = $query->getParameter('status');
         if (! $status) {
-            $query->setParameter('status', Statuses::PUBLISHED->value);
+            $query->setParameter('status', Statuses::PUBLISHED);
         }
     }
 }

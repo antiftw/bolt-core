@@ -106,7 +106,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 $preset = $this->getPreset($contentType['slug']);
 
                 if ($i === 1 || ! empty($preset)) {
-                    $content->setStatus($preset['status'] ?? Statuses::PUBLISHED->value->value);
+                    $content->setStatus($preset['status'] ?? Statuses::PUBLISHED);
                 } else {
                     $content->setStatus($this->getRandomStatus());
                 }
@@ -452,17 +452,17 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
         $records['blocks'][] = [
             'title' => '404 Page not found',
             'slug' => '404-not-found',
-            'status' => Statuses::HELD->value,
+            'status' => Statuses::HELD,
         ];
         $records['blocks'][] = [
             'title' => '403 Forbidden',
             'slug' => '403-forbidden',
-            'status' => Statuses::HELD->value,
+            'status' => Statuses::HELD,
         ];
         $records['blocks'][] = [
             'title' => '503 Service Unavailable (Maintenance Mode)',
             'slug' => '503-maintenance mode',
-            'status' => Statuses::HELD->value,
+            'status' => Statuses::HELD,
         ];
         $records['tests'][] = [
             'selectfield' => 'bar',

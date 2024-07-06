@@ -53,7 +53,7 @@ class ContentRepository extends ServiceEntityRepository
 
         if ($onlyPublished) {
             $qb->andWhere('content.status = :status')
-                ->setParameter('status', Statuses::PUBLISHED->value);
+                ->setParameter('status', Statuses::PUBLISHED);
         }
 
         [ $order, $direction, $sortByField ] = $this->createSortBy($taxonomy);
@@ -135,7 +135,7 @@ class ContentRepository extends ServiceEntityRepository
 
         if ($onlyPublished) {
             $qb->andWhere('content.status = :status')
-                ->setParameter('status', Statuses::PUBLISHED->value);
+                ->setParameter('status', Statuses::PUBLISHED);
         }
 
         $qb->andWhere('content.contentType IN (:cts)')
@@ -236,7 +236,7 @@ class ContentRepository extends ServiceEntityRepository
             ->where($whereClause)
             ->setParameter('value', $currentValue)
             ->andWhere('content.status = :status')
-            ->setParameter('status', Statuses::PUBLISHED->value)
+            ->setParameter('status', Statuses::PUBLISHED)
             ->setMaxResults(1);
 
         if ($contentType) {
