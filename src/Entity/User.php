@@ -71,7 +71,7 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
     #[ORM\Column(length: 191, nullable: true)]
     private ?string $backendTheme = 'default';
 
-    #[ORM\Column(length: 30, options: ['default' => 'enabled'])]
+    #[ORM\Column(length: 30, enumType: UserStatus::class, options: ['default' => 'enabled'])]
     private UserStatus $status;
 
     #[ORM\OneToMany(
