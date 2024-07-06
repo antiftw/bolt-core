@@ -22,6 +22,7 @@ class CanonicalLinkWidget extends BaseWidget
     public function __construct(
         private readonly Canonical $canonical,
         private readonly Config $config,
+        protected Environment $twig
     ) {}
 
     protected function run(array $params = []): ?string
