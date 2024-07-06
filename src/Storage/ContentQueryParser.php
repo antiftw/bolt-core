@@ -32,15 +32,14 @@ class ContentQueryParser
     protected array $directives = [];
     protected array $handlers = [];
     protected array $services = [];
+    protected ?QueryScopeInterface $scope = null;
 
     public function __construct(
         private readonly RequestStack $requestStack,
         private readonly ContentRepository $repo,
         private readonly Config $config,
         private readonly DirectiveHandler $directiveHandler,
-        private readonly QueryScopeInterface $scope,
         ?QueryInterface $queryHandler = null,
-
     ) {
         if ($queryHandler !== null) {
             $this->addService('select', $queryHandler);
