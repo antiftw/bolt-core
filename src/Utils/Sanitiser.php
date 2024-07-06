@@ -12,14 +12,12 @@ use Symfony\Contracts\Service\Attribute\Required;
 class Sanitiser
 {
     private ?HTMLPurifier $purifier = null;
-
-    public function __construct(private readonly Config $config)
-    {
-    }
+    private Config $config;
 
     #[Required]
     public function init(Config $config): void
     {
+        $this->config = $config;
     }
 
     private function getPurifier(): HTMLPurifier

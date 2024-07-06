@@ -194,7 +194,7 @@ class ContentExtension extends AbstractExtension
         return null;
     }
 
-    public function getExcerpt(Content|Field|string|Markup $content, int $length = 280, bool $includeTitle = false, ?string $focus = null, bool $wrap = false): string
+    public function getExcerpt(Content|Field|string|Markup|null $content, int $length = 280, bool $includeTitle = false, ?string $focus = null, bool $wrap = false): string
     {
         if (is_string($content) || $content instanceof Markup || $content instanceof Field) {
             return Excerpt::getExcerpt((string) $content, $length, $focus);
