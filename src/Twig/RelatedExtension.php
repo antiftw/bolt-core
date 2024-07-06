@@ -66,7 +66,7 @@ class RelatedExtension extends AbstractExtension
         }
 
         // If the originating content is _not_ published, we'll need to set this. Context is probably a "secret preview link".
-        if ($content->getStatus() != Statuses::PUBLISHED->value) {
+        if ($content->getStatus() != Statuses::PUBLISHED) {
             $publishedOnly = false;
         }
 
@@ -97,7 +97,7 @@ class RelatedExtension extends AbstractExtension
         }
 
         // If the originating content is _not_ published, we'll need to set this. Context is probably a "secret preview link".
-        if ($content->getStatus() != Statuses::PUBLISHED->value) {
+        if ($content->getStatus() != Statuses::PUBLISHED) {
             $publishedOnly = false;
         }
 
