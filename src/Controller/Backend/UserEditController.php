@@ -269,7 +269,7 @@ class UserEditController extends TwigAwareController implements BackendZoneInter
         ]);
     }
 
-    private function handleUserRequest(Request $request): bool|float|int|string
+    private function handleUserRequest(Request $request): bool|float|int|string|null|array
     {
         if($request->getMethod() === Request::METHOD_GET) {
             return $request->request->get('user');
