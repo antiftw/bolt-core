@@ -163,12 +163,12 @@ class User implements UserInterface, \Serializable, PasswordAuthenticatedUserInt
         return $this;
     }
 
-    public function setStatus(string $status): void
+    public function setStatus(UserStatus $status): void
     {
         $this->status = $status;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): ?UserStatus
     {
         return $this->status;
     }
