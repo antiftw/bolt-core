@@ -7,6 +7,7 @@ namespace Bolt\Utils;
 use Bolt\Configuration\Config;
 use HTMLPurifier;
 use HTMLPurifier_HTML5Config;
+use Symfony\Contracts\Service\Attribute\Required;
 
 class Sanitiser
 {
@@ -16,9 +17,7 @@ class Sanitiser
     {
     }
 
-    /**
-     * @required
-     */
+    #[Required]
     public function init(Config $config): void
     {
     }
