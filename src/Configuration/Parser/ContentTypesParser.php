@@ -104,8 +104,8 @@ class ContentTypesParser extends BaseParser
         if (! isset($contentType['show_in_menu'])) {
             $contentType['show_in_menu'] = true;
         }
-        if (! isset($contentType['default_status']) || ! in_array($contentType['default_status'], Statuses::all(), true)) {
-            $contentType['default_status'] = Statuses::PUBLISHED;
+        if (! isset($contentType['default_status']) || ! in_array($contentType['default_status'], Statuses::cases(), true)) {
+            $contentType['default_status'] = Statuses::PUBLISHED->value;
         }
         if (! isset($contentType['viewless'])) {
             $contentType['viewless'] = false;

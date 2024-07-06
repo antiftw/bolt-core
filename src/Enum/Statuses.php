@@ -6,24 +6,21 @@ namespace Bolt\Enum;
 
 use Illuminate\Support\Collection;
 
-class Statuses
-{
-    public const string PUBLISHED = 'published';
-    public const string HELD = 'held';
-    public const string TIMED = 'timed';
-    public const string DRAFT = 'draft';
+enum Statuses: string {
+    case PUBLISHED = 'published';
+    case HELD = 'held';
+    case TIMED = 'timed';
+    case DRAFT = 'draft';
 
-    /**
-     * @return string[]
-     */
-    public static function all(): array
+    public static function fromString(string $status): self
     {
-        return [
-            static::PUBLISHED,
-            static::HELD,
-            static::TIMED,
-            static::DRAFT,
-        ];
+        return match ($status) {
+            'published' => self::PUBLISHED,
+            'held' => self::HELD,
+            'timed' => self::TIMED,
+            'draft' => self::DRAFT,
+            default => throw new \InvalidArgumentException("Invalid status: $status"),
+        };
     }
 
     public static function isValid(?string $status): bool
@@ -32,6 +29,6 @@ class Statuses
             return false;
         }
 
-        return (new Collection(static::all()))->containsStrict($status);
+        return (new Collection(self::cases()))->containsStrict($status);
     }
 }

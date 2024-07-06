@@ -6,21 +6,9 @@ namespace Bolt\Enum;
 
 use Illuminate\Support\Collection;
 
-class UserStatus
-{
-    public const string ENABLED = 'enabled';
-    public const string DISABLED = 'disabled';
-
-    /**
-     * @return string[]
-     */
-    public static function all(): array
-    {
-        return [
-            static::ENABLED,
-            static::DISABLED,
-        ];
-    }
+enum UserStatus : string {
+    case ENABLED = 'enabled';
+    case DISABLED = 'disabled';
 
     public static function isValid(?string $status): bool
     {
@@ -28,6 +16,6 @@ class UserStatus
             return false;
         }
 
-        return (new Collection(static::all()))->containsStrict($status);
+        return (new Collection(self::cases()))->containsStrict($status);
     }
 }

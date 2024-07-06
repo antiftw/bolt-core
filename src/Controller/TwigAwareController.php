@@ -90,7 +90,7 @@ class TwigAwareController extends AbstractController
         }
 
         // If the content is not 'published' we throw a 404, unless we've overridden it.
-        if (($record->getStatus() !== Statuses::PUBLISHED) && $requirePublished) {
+        if (($record->getStatus() !== Statuses::PUBLISHED->value) && $requirePublished) {
             throw new NotFoundHttpException('Content is not published');
         }
 

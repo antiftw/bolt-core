@@ -572,7 +572,7 @@ class ContentExtension extends AbstractExtension
     {
         $options = [];
 
-        foreach (Statuses::all() as $option) {
+        foreach (Statuses::cases() as $option) {
             $options[] = [
                 'key' => $option,
                 'value' => $this->translator->trans('status.' . $option),

@@ -77,9 +77,9 @@ class Content
     #[ORM\JoinColumn(nullable: true)]
     private ?User $author = null;
 
-    #[ORM\Column(length: 191)]
+    #[ORM\Column(length: 191, enumType: Statuses::class)]
     #[Groups(["get_content", "api_write"])]
-    private string $status = Statuses::DRAFT;
+    private Statuses $status = Statuses::DRAFT;
 
     #[ORM\Column(type: 'datetime')]
     #[Groups(["get_content", "api_write"])]
@@ -342,20 +342,14 @@ class Content
         $this->author = $author;
     }
 
-    public function getStatus(): ?string
+    public function getStatus(): Statuses
     {
-        if (Statuses::isValid($this->status) === false) {
-            $this->status = $this->getDefinition()->get('default_status');
-        }
-
         return $this->status;
     }
 
-    public function setStatus(string $status): self
+    public function setStatus(Statuses $status): self
     {
-        if (Statuses::isValid($status)) {
-            $this->status = $status;
-        }
+        $this->status = $status;
 
         if (! $this->getPublishedAt() && $status == Statuses::PUBLISHED) {
             $this->setPublishedAt(new \DateTime());
@@ -571,11 +565,6 @@ class Content
     public function getAuthorName(): ?string
     {
         return $this->getAuthor()?->getDisplayName();
-    }
-
-    public function getStatuses(): array
-    {
-        return Statuses::all();
     }
 
     public function hasTaxonomyDefined(string $taxonomyName): bool

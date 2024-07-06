@@ -57,7 +57,7 @@ class RelationRepository extends ServiceEntityRepository
         if ($publishedOnly === true) {
             $qb->andWhere('cto.status = :status')
                 ->andWhere('cfrom.status = :status')
-                ->setParameter('status', Statuses::PUBLISHED, \PDO::PARAM_STR);
+                ->setParameter('status', Statuses::PUBLISHED->value, \PDO::PARAM_STR);
         }
 
         if ($name === null) {

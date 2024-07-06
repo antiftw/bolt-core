@@ -45,7 +45,7 @@ readonly class ContentFillListener
                 $entity->setAuthor($this->guesstimateAuthor());
             }
 
-            if ($entity->getPublishedAt() === null && $entity->getStatus() === Statuses::PUBLISHED) {
+            if ($entity->getPublishedAt() === null && $entity->getStatus() === Statuses::PUBLISHED->value) {
                 $entity->setPublishedAt(new \DateTime());
             }
 

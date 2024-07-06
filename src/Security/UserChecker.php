@@ -19,7 +19,7 @@ class UserChecker implements UserCheckerInterface
             return;
         }
 
-        if ($user->getStatus() !== UserStatus::ENABLED) {
+        if ($user->getStatus() !== UserStatus::ENABLED->value) {
             throw new DisabledUserLoginAttemptException();
         }
     }

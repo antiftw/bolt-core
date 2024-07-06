@@ -55,7 +55,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
             $user->setRoles($userData['roles']);
             $user->setLocale('en');
             $user->setBackendTheme('default');
-            $user->setStatus($userData['status'] ?? UserStatus::DISABLED);
+            $user->setStatus($userData['status'] ?? UserStatus::DISABLED->value);
 
             $manager->persist($user);
             $this->addReference('user_' . $userData['username'], $user);
@@ -83,7 +83,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'password' => $this->append ? Str::generatePassword() : 'admin%1',
                 'email' => 'admin@example.org',
                 'roles' => ['ROLE_DEVELOPER', 'ROLE_WEBSERVICE'],
-                'status' => UserStatus::ENABLED,
+                'status' => UserStatus::ENABLED->value,
             ],
             [
                 'displayname' => 'Crazy Steve',
@@ -91,7 +91,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'password' => Str::generatePassword(),
                 'email' => 'henkie@example.org',
                 'roles' => ['ROLE_EDITOR', 'ROLE_EXTRA_1', 'ROLE_EXTRA_2', 'ROLE_USER_FRONTEND_GROUP1'],
-                'status' => UserStatus::DISABLED,
+                'status' => UserStatus::DISABLED->value,
             ],
             [
                 'displayname' => 'Jane Doe',
@@ -99,7 +99,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'password' => Str::generatePassword(),
                 'email' => 'jane_admin@example.org',
                 'roles' => ['ROLE_CHIEF_EDITOR'],
-                'status' => UserStatus::DISABLED,
+                'status' => UserStatus::DISABLED->value,
             ],
             [
                 'displayname' => 'Tom Doe',
@@ -107,7 +107,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'password' => Str::generatePassword(),
                 'email' => 'tom_admin@example.org',
                 'roles' => ['ROLE_ADMIN'],
-                'status' => UserStatus::DISABLED,
+                'status' => UserStatus::DISABLED->value,
             ],
             [
                 'displayname' => 'John Doe',
@@ -115,7 +115,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'password' => Str::generatePassword(),
                 'email' => 'john_user@example.org',
                 'roles' => ['ROLE_EDITOR'],
-                'status' => UserStatus::DISABLED,
+                'status' => UserStatus::DISABLED->value,
             ],
             [
                 'displayname' => 'Eddie Enduser',
@@ -123,7 +123,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'password' => Str::generatePassword(),
                 'email' => 'eddie@example.org',
                 'roles' => ['ROLE_USER'],
-                'status' => UserStatus::DISABLED,
+                'status' => UserStatus::DISABLED->value,
             ],
         ];
     }
