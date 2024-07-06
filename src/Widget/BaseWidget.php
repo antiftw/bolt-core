@@ -7,6 +7,7 @@ namespace Bolt\Widget;
 use Bolt\Extension\ExtensionInterface;
 use Bolt\Widget\Exception\WidgetException;
 use Cocur\Slugify\Slugify;
+use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Loader\ChainLoader;
 use Twig\Loader\FilesystemLoader;
@@ -45,6 +46,8 @@ abstract class BaseWidget implements WidgetInterface
 
     /** @var int duration (in seconds) to cache output */
     protected int $cacheDuration = 600;
+
+    public function __construct(private readonly Environment $twig) {}
 
     public function setName(string $name): WidgetInterface
     {
