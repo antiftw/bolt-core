@@ -17,8 +17,6 @@ use Doctrine\Persistence\Mapping\Driver\MappingDriver;
  */
 class FieldDiscriminatorListener
 {
-    private MappingDriver $mappingDriver;
-
     /**
      * The temporary map used for one run, when computing everything
      */
@@ -32,13 +30,12 @@ class FieldDiscriminatorListener
     /**
      * @throws \Exception
      */
-    public function __construct(EntityManagerInterface $em)
+    public function __construct(private readonly MappingDriver $mappingDriver, EntityManagerInterface $em)
     {
         $mappingDriver = $em->getConfiguration()->getMetadataDriverImpl();
         if ($mappingDriver === null) {
             throw new Exception('Could not load mapping driver');
         }
-        $this->mappingDriver = $mappingDriver;
     }
 
     public function loadClassMetadata(LoadClassMetadataEventArgs $event): void
