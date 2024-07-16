@@ -15,7 +15,7 @@ use Symfony\Component\HttpClient\HttpClient;
 
 class ImageFetchFixtures extends BaseFixture implements FixtureGroupInterface
 {
-    private const string URL = 'https://placeholder.boltcms.io/getfiles';
+    private const string URL = 'https://files.antiftw.nl/bolt-files';
     private const int MAX_AMOUNT = 50;
     private array $curlOptions;
 
