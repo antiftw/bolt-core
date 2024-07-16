@@ -140,7 +140,8 @@ services:
         public: true
 
     Doctrine\ORM\Query\Expr: ~
-
+    Doctrine\Persistence\Mapping\Driver\MappingDriver: '@doctrine.orm.default_attribute_metadata_driver'
+    
     monolog.processor.request:
         class: Bolt\Log\RequestProcessor
         tags:
