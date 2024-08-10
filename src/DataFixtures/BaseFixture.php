@@ -50,7 +50,7 @@ abstract class BaseFixture extends Fixture
 
         $randomReferenceKey = array_rand($this->referencesIndex[$entityName]);
 
-        return $this->getReference($randomReferenceKey, $this->referencesIndex[$entityName][$referenceName]);
+        return $this->getReference($randomReferenceKey, $this->referencesIndex[$entityName][$randomReferenceKey]);
     }
 
 
