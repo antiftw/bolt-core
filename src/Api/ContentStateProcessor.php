@@ -8,11 +8,12 @@ use Bolt\Configuration\Config;
 use Bolt\Configuration\Content\FieldType;
 use Bolt\Entity\Content;
 use Bolt\Repository\FieldRepository;
+use Symfony\Component\DependencyInjection\Attribute\Autowire;
 
 readonly class ContentStateProcessor implements ProcessorInterface
 {
     public function __construct(
-        private ProcessorInterface $decorated, // The previous decorator logic
+        #[Autowire(service: 'api_platform.doctrine.orm.state.persist_processor')] private ProcessorInterface $decorated, // The previous decorator logic
         private Config $config,                // Configuration object
     ) {}
 

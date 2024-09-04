@@ -177,7 +177,7 @@ services:
 
     Bolt\Api\ContentStateProcessor:
         arguments:
-            - '@api_platform.doctrine.orm.state.persist_processor'
-            - '@doctrine.orm.entity_manager'
-            - '@bolt.configuration.config' # Assuming this is a service in your app
+            $config: Bolt\Configuration\Config
         tags: [ 'api_platform.state_processor' ]
+    
+
