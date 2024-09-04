@@ -15,8 +15,13 @@ use Bolt\Enum\Statuses;
 use Bolt\Repository\FieldRepository;
 use Bolt\Repository\UserRepository;
 use Bolt\Twig\ContentExtension;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
+use Doctrine\ORM\Events;
 use Doctrine\Persistence\Event\LifecycleEventArgs as BaseLifecycleEventArgs;
 
+#[AsDoctrineListener(Events::preUpdate)]
+#[AsDoctrineListener(Events::prePersist)]
+#[AsDoctrineListener(Events::postLoad)]
 readonly class ContentFillListener
 {
     public function __construct(

@@ -56,7 +56,6 @@ class RelationsFixtures extends BaseFixture implements DependentFixtureInterface
     private function addRelation(string $contentTypeFrom, string $contentTypeTo, ObjectManager $manager): void
     {
         /** @var Content $contentFrom */
-
         $contentFrom = $this->getRandomReference('content_' . $contentTypeFrom);
 
         /** @var Content $contentTo */

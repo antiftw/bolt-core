@@ -6,8 +6,11 @@ namespace Bolt\Event\Listener;
 
 use Bolt\Configuration\Config;
 use Bolt\Entity\Taxonomy;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostLoadEventArgs;
+use Doctrine\ORM\Events;
 
+#[AsDoctrineListener(Events::postLoad)]
 readonly class TaxonomyFillListener
 {
     public function __construct(private Config $config) {}

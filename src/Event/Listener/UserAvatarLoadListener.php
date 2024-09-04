@@ -7,8 +7,11 @@ namespace Bolt\Event\Listener;
 use Bolt\Collection\DeepCollection;
 use Bolt\Configuration\Config;
 use Bolt\Entity\User;
+use Doctrine\Bundle\DoctrineBundle\Attribute\AsDoctrineListener;
 use Doctrine\ORM\Event\PostLoadEventArgs;
+use Doctrine\ORM\Events;
 
+#[AsDoctrineListener(Events::postLoad)]
 class UserAvatarLoadListener
 {
     private DeepCollection $avatarConfig;

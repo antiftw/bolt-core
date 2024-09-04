@@ -175,4 +175,9 @@ services:
         tags:
             - { name: twig.extension }
 
-
+    Bolt\Api\ContentStateProcessor:
+        arguments:
+            - '@api_platform.doctrine.orm.state.persist_processor'
+            - '@doctrine.orm.entity_manager'
+            - '@bolt.configuration.config' # Assuming this is a service in your app
+        tags: [ 'api_platform.state_processor' ]
