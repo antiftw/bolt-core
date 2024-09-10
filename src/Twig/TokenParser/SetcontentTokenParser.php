@@ -28,9 +28,6 @@ use Twig\TokenParser\AbstractTokenParser;
  */
 class SetcontentTokenParser extends AbstractTokenParser
 {
-    /**
-     * {@inheritdoc}
-     */
     public function __construct()
     {
     }

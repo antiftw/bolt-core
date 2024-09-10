@@ -18,7 +18,6 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ListingController extends TwigAwareController implements FrontendZoneInterface
 {
-
     public function __construct(private readonly Query $query) {}
 
     #[Route(

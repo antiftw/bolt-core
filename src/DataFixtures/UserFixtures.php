@@ -48,7 +48,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 }
             }
             $user = new User();
-            $user->setDisplayName($userData['displayname']);
+            $user->setDisplayName($userData['display-name']);
             $user->setUsername($userData['username']);
             $user->setPassword($this->passwordHasher->hashPassword($user, $userData['password']));
             $user->setEmail($userData['email']);
@@ -78,7 +78,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
     {
         return [
             [
-                'displayname' => 'Admin',
+                'display-name' => 'Admin',
                 'username' => 'admin',
                 'password' => $this->append ? Str::generatePassword() : 'admin%1',
                 'email' => 'admin@example.org',
@@ -86,7 +86,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'status' => UserStatus::ENABLED,
             ],
             [
-                'displayname' => 'Crazy Steve',
+                'display-name' => 'Crazy Steve',
                 'username' => 'steve',
                 'password' => Str::generatePassword(),
                 'email' => 'henkie@example.org',
@@ -94,7 +94,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'status' => UserStatus::DISABLED,
             ],
             [
-                'displayname' => 'Jane Doe',
+                'display-name' => 'Jane Doe',
                 'username' => 'jane_chief',
                 'password' => Str::generatePassword(),
                 'email' => 'jane_admin@example.org',
@@ -102,7 +102,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'status' => UserStatus::DISABLED,
             ],
             [
-                'displayname' => 'Tom Doe',
+                'display-name' => 'Tom Doe',
                 'username' => 'tom_admin',
                 'password' => Str::generatePassword(),
                 'email' => 'tom_admin@example.org',
@@ -110,7 +110,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'status' => UserStatus::DISABLED,
             ],
             [
-                'displayname' => 'John Doe',
+                'display-name' => 'John Doe',
                 'username' => 'john_editor',
                 'password' => Str::generatePassword(),
                 'email' => 'john_user@example.org',
@@ -118,7 +118,7 @@ class UserFixtures extends BaseFixture implements FixtureGroupInterface
                 'status' => UserStatus::DISABLED,
             ],
             [
-                'displayname' => 'Eddie Enduser',
+                'display-name' => 'Eddie EndUser',
                 'username' => 'eddie',
                 'password' => Str::generatePassword(),
                 'email' => 'eddie@example.org',

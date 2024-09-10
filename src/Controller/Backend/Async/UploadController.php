@@ -11,7 +11,6 @@ use Bolt\Factory\MediaFactory;
 use Bolt\Twig\TextExtension;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sirius\Upload\Handler;
 use Sirius\Upload\Result\Collection;
 use Sirius\Upload\Result\ResultInterface;
@@ -27,10 +26,11 @@ use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 use Throwable;
 
-#[Security('is_granted("upload")')]
+#[isGranted('upload')]
 class UploadController extends AbstractController implements AsyncZoneInterface
 {
     use CsrfTrait;
@@ -53,12 +53,8 @@ class UploadController extends AbstractController implements AsyncZoneInterface
     {
         try {
             $this->validateCsrf('upload');
-        } catch (InvalidCsrfTokenException $e) {
-            return new JsonResponse([
-                'error' => [
-                    'message' => 'Invalid CSRF token',
-                ],
-            ], Response::HTTP_FORBIDDEN);
+        } catch (InvalidCsrfTokenException) {
+            return $this->errorResponse('Invalid CSRF token', Response::HTTP_FORBIDDEN);
         }
 
         $url = $request->get('url', '');
@@ -75,11 +71,7 @@ class UploadController extends AbstractController implements AsyncZoneInterface
             // Create temporary file
             $this->filesystem->copy($url, $target);
         } catch (Throwable $e) {
-            return new JsonResponse([
-                'error' => [
-                    'message' => $e->getMessage(),
-                ],
-            ], Response::HTTP_BAD_REQUEST);
+            return $this->errorResponse($e->getMessage());
         }
 
         $file = new UploadedFile($target, $filename);
@@ -87,7 +79,11 @@ class UploadController extends AbstractController implements AsyncZoneInterface
         $bag->add([$file]);
         $request->files = $bag;
 
-        $response = $this->handleUpload($request);
+        try {
+            $response = $this->handleUpload($request);
+        } catch (Throwable $e) {
+            return $this->errorResponse($e->getMessage());
+        }
 
         // The file is automatically deleted. It may be that we don't need this.
         $this->filesystem->remove($target);
@@ -100,12 +96,8 @@ class UploadController extends AbstractController implements AsyncZoneInterface
     {
         try {
             $this->validateCsrf('upload');
-        } catch (InvalidCsrfTokenException $e) {
-            return new JsonResponse([
-                'error' => [
-                    'message' => 'Invalid CSRF token',
-                ],
-            ], Response::HTTP_FORBIDDEN);
+        } catch (InvalidCsrfTokenException) {
+            return $this->errorResponse('Invalid CSRF token', Response::HTTP_FORBIDDEN);
         }
 
         $locationName = $this->request->query->get('location', '');
@@ -116,11 +108,7 @@ class UploadController extends AbstractController implements AsyncZoneInterface
 
         // Make sure we don't move it out of the root.
         if (Str::startsWith(path::makeRelative($target, $basepath), '../')) {
-            return new JsonResponse([
-                'error' => [
-                    'message' => "You are not allowed to do that.",
-                ],
-            ], Response::HTTP_BAD_REQUEST);
+            return $this->errorResponse("You are not allowed to do that.");
         }
 
         $uploadHandler = new Handler($target, [
@@ -163,11 +151,9 @@ class UploadController extends AbstractController implements AsyncZoneInterface
             /** @var UploadedFile|File|ResultInterface|Collection $result */
             $result = $uploadHandler->process($request->files->all());
         } catch (Throwable $e) {
-            return new JsonResponse([
-                'error' => [
-                    'message' => $e->getMessage() . ' Ensure the upload does <em><u>not</u></em> exceed the maximum filesize of <b>' . $this->textExtension->formatBytes($maxSize) . '</b>, and that the destination folder (on the webserver) is writable.',
-                ],
-            ], Response::HTTP_BAD_REQUEST);
+            return $this->errorResponse(
+                $e->getMessage() . ' Ensure the upload does <em><u>not</u></em> exceed the maximum filesize of <b>' . $this->textExtension->formatBytes($maxSize) . '</b>, and that the destination folder (on the webserver) is writable.',
+            );
         }
 
         if ($result->isValid()) {
@@ -223,6 +209,15 @@ class UploadController extends AbstractController implements AsyncZoneInterface
         }
 
         return (mb_strpos(preg_replace('/\s+/', '', mb_strtolower($svgFile)), '<script') === false);
+    }
+
+    private function errorResponse(string $message = 'Something went wrong', int $status = Response::HTTP_BAD_REQUEST): JsonResponse
+    {
+        return new JsonResponse([
+            'error' => [
+                'message' => $message,
+            ]
+        ], $status);
     }
 }
 

@@ -402,10 +402,10 @@ class SelectQuery implements QueryInterface
 
     private function setTaxonomyFields(): void
     {
-        $taxos = $this->getConfig()->get('taxonomies');
+        $taxonomies = $this->getConfig()->get('taxonomies');
 
-        foreach ($taxos as $taxo) {
-            $this->taxonomyFields[] = $taxo->get('slug');
+        foreach ($taxonomies as $taxonomy) {
+            $this->taxonomyFields[] = $taxonomy->get('slug');
         }
     }
 
@@ -435,7 +435,7 @@ class SelectQuery implements QueryInterface
         // Get all fields from the current contentType
         $ctFields = $this->getConfig()->get('contenttypes/' . $this->getContentType())->get('fields');
 
-        // And return the keys of those that are `type: number`)
+        // And return the keys of those that are `type: number`
         return $ctFields->where('type', 'number')->keys()->all();
     }
 

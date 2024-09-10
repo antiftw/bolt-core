@@ -73,7 +73,7 @@ class ImageExtension extends AbstractExtension
 
         $class = $class ? ' class="{$class}"' : '';
 
-        return sprintf('<a href="%s" class="bolt-popup"><img src="%s" alt="%s"%s></a>', $link, $thumbnail, $alt, $class);
+        return sprintf('<a href="%s" class="bolt-popup"><img src="%s" alt="%s" %s></a>', $link, $thumbnail, $alt, $class);
     }
 
     public function showImage(ImageField|array|string $image, ?int $width = null, ?int $height = null, ?bool $lazy = null): string
@@ -140,8 +140,6 @@ class ImageExtension extends AbstractExtension
 
     private function getFilename(Content|ImageField|array|string $image, bool $relative = false): ?string
     {
-        $filename = null;
-
         if ($image instanceof Content) {
             $image = $this->contentExtension->getImage($image);
         }

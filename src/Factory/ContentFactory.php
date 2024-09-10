@@ -32,10 +32,10 @@ readonly class ContentFactory
         return $content;
     }
 
-    public function create(string $contentType): Content
+    public function create(string $contentTypeName): Content
     {
         /** @var ContentType $contentType */
-        $contentType = $this->config->getContentType($contentType);
+        $contentType = $this->config->getContentType($contentTypeName);
 
         $content = self::createStatic($contentType);
 

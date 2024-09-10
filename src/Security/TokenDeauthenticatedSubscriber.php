@@ -12,8 +12,8 @@ class TokenDeauthenticatedSubscriber implements EventSubscriberInterface
 
     public function onTokenDeauthenticated(TokenDeauthenticatedEvent $event): void
     {
-        $this->logger->notice('User \'{username}\' had their token deauthenticated. (ip: {ip}; user agent: {user_agent})', [
-            'username' => $event->getOriginalToken()->getUser()->getUserName(),
+        $this->logger->notice('User \'{username}\' had their token de-authenticated. (ip: {ip}; user agent: {user_agent})', [
+            'username' => $event->getOriginalToken()->getUser()->getUserIdentifier(),
             'user_agent' => $event->getRequest()->getClientIp(),
         ]);
     }

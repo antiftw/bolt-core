@@ -6,7 +6,6 @@ namespace Bolt\Event\Subscriber;
 
 use Bolt\Event\ContentEvent;
 use Bolt\Log\LoggerTrait;
-use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Contracts\Cache\TagAwareCacheInterface;
 

@@ -13,14 +13,14 @@ readonly class FieldQueryUtils
 {
     public function __construct(private EntityManagerInterface $em) {}
 
-    public function isFieldType(QueryInterface $query, string $fieldname, string $type): bool
+    public function isFieldType(QueryInterface $query, string $fieldName, string $type): bool
     {
-        if (in_array($fieldname, ['anyField', 'anything'], true)) {
+        if (in_array($fieldName, ['anyField', 'anything'], true)) {
             return false;
         }
 
         $contentType = $query->getConfig()->get('contenttypes/' . $query->getContentType());
-        $definitionType = $contentType->get('fields')->get($fieldname)->get('type', false);
+        $definitionType = $contentType->get('fields')->get($fieldName)->get('type', false);
 
         return $definitionType === $type;
     }
@@ -39,11 +39,11 @@ readonly class FieldQueryUtils
         return $doctrineVersion->hasJsonSearch();
     }
 
-    public function isLocalizedField(QueryInterface $query, $fieldname): bool
+    public function isLocalizedField(QueryInterface $query, $fieldName): bool
     {
         $contentType = $query->getConfig()->get('contenttypes/' . $query->getContentType());
 
-        return $contentType->get('fields')->get($fieldname)->get('localize', false);
+        return $contentType->get('fields')->get($fieldName)->get('localize', false);
     }
 
     public function getNumericCastExpression(string $left): string

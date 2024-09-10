@@ -7,12 +7,14 @@ namespace Bolt\Twig;
 use Bolt\Menu\FrontendMenuBuilderInterface;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
 class FrontendMenuExtension extends AbstractExtension
 {
-
     public function __construct(
         private readonly FrontendMenuBuilderInterface $menuBuilder,
         private readonly RequestStack $requestStack
@@ -39,6 +41,12 @@ class FrontendMenuExtension extends AbstractExtension
         return $this->menuBuilder->buildMenu($twig, $name);
     }
 
+
+    /**
+     * @throws SyntaxError,
+     * @throws RuntimeError
+     * @throws LoaderError
+     */
     public function renderMenu(Environment $twig, ?string $name = null, string $template = 'helpers/_menu.html.twig', string $class = '', bool $withsubmenus = true): string
     {
         $context = [

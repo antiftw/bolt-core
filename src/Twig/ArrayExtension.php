@@ -107,7 +107,7 @@ final class ArrayExtension extends AbstractExtension
 
                 return $this->orderHelper($a, $b, $orderOnSecondary, $orderAscendingSecondary, $locale);
             });
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             // If sorting failed, we don't sort.
         }
 

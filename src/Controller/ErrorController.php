@@ -57,7 +57,7 @@ class ErrorController extends SymfonyErrorController implements ErrorZoneInterfa
 
         try {
             $twig->addGlobal('exception', $exception);
-        } catch (\LogicException $e) {
+        } catch (\LogicException) {
             // Fine! We'll just _not_ add the exception to the global scope!
         }
 
@@ -165,7 +165,7 @@ class ErrorController extends SymfonyErrorController implements ErrorZoneInterfa
             // trigger a 404 within a 404 now, would we?
             try {
                 return $this->detailController->record($slug, $contentType, false, null);
-            } catch (NotFoundHttpException $e) {
+            } catch (NotFoundHttpException) {
                 // Just continue to the next one.
             }
         }
@@ -173,7 +173,7 @@ class ErrorController extends SymfonyErrorController implements ErrorZoneInterfa
         // Then, let's see if it's a template we can render.
         try {
             return $this->templateController->template($item);
-        } catch (LoaderError $e) {
+        } catch (LoaderError) {
             // Just continue to the next one.
         }
 

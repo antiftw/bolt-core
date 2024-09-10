@@ -8,33 +8,32 @@ use Bolt\Configuration\Config;
 use Twig\Environment;
 use Twig\Markup;
 
-class Notifications
+readonly class Notifications
 {
+    public function __construct(private Environment $environment, private Config $config) {}
 
-    public function __construct(private readonly Environment $environment, private readonly Config $config) {}
-
-    public function success(string $subject, string $body)
+    public function success(string $subject, string $body): null
     {
         $this->render('Success: ' . $subject, $body, 'success');
 
         return null;
     }
 
-    public function danger(string $subject, string $body)
+    public function danger(string $subject, string $body): null
     {
         $this->render('Danger: ' . $subject, $body, 'danger');
 
         return null;
     }
 
-    public function info(string $subject, string $body)
+    public function info(string $subject, string $body): null
     {
         $this->render('Info: ' . $subject, $body, 'info');
 
         return null;
     }
 
-    public function warning(string $subject, string $body)
+    public function warning(string $subject, string $body): null
     {
         $this->render('Warning: ' . $subject, $body, 'warning');
 

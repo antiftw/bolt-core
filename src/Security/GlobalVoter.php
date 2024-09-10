@@ -16,13 +16,9 @@ use Illuminate\Support\Collection;
 class GlobalVoter extends Voter
 {
     /** @var Security */
-    private $security;
-
-    /** @var Collection */
-    private $globalPermissions;
-
-    /** @var array */
-    private $supportedAttributes;
+    private Security $security;
+    private ?Collection $globalPermissions;
+    private array $supportedAttributes;
 
     public function __construct(Security $security, Config $config)
     {

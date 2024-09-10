@@ -11,11 +11,11 @@ class RelatedOptionsUtilityCacher extends RelatedOptionsUtility implements Cachi
 
     public const string CACHE_CONFIG_KEY = 'related_options';
 
-    public function fetchRelatedOptions(ContentType $fromContentType, string $contentTypeSlug, string $order, string $format, bool $required, ?bool $allowEmpty, int $maxAmount, bool $linkToRecord): array
+    public function fetchRelatedOptions(ContentType $fromContentType, string $toContentTypeSlug, string $order, string $format, bool $required, ?bool $allowEmpty, int $maxAmount, bool $linkToRecord): array
     {
-        $this->setCacheKey([$contentTypeSlug, $order, $format, (string) $required, $maxAmount]);
-        $this->setCacheTags($this->getTags($contentTypeSlug));
+        $this->setCacheKey([$toContentTypeSlug, $order, $format, (string) $required, $maxAmount]);
+        $this->setCacheTags($this->getTags($toContentTypeSlug));
 
-        return $this->execute([parent::class, __FUNCTION__], [$fromContentType, $contentTypeSlug, $order, $format, $required, $allowEmpty, $maxAmount, $linkToRecord]);
+        return $this->execute([parent::class, __FUNCTION__], [$fromContentType, $toContentTypeSlug, $order, $format, $required, $allowEmpty, $maxAmount, $linkToRecord]);
     }
 }

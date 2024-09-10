@@ -4,12 +4,13 @@ namespace Bolt\Cache;
 
 use Bolt\Entity\Field;
 use Bolt\Twig\FieldExtension;
+use Psr\Cache\InvalidArgumentException;
 
 class SelectOptionsCacher extends FieldExtension implements CachingInterface
 {
     use CachingTrait;
 
-    public const string CACHE_CONFIG_KEY = 'selectoptions';
+    public const string CACHE_CONFIG_KEY = 'select_options';
 
     public function selectOptionsHelper(string $contentTypeSlug, array $params, Field $field, string $format): array
     {

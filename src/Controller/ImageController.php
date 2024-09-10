@@ -80,7 +80,7 @@ class ImageController
             $filesystem->mkdir(dirname($filePath), $folderMode);
             $filesystem->dumpFile($filePath, $imageBlob);
             $filesystem->chmod($filePath, $fileMode);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             // Fail silently, output user-friendly exception elsewhere.
         }
     }
@@ -173,7 +173,7 @@ class ImageController
 
         $ext = mb_strtolower($pathinfo['extension']);
 
-        return array_key_exists('extension', $pathinfo) && in_array($ext, $imageExtensions, true);
+        return in_array($ext, $imageExtensions, true);
     }
 
     private function testFit(string $fit): bool

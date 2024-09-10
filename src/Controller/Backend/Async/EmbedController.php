@@ -7,15 +7,16 @@ namespace Bolt\Controller\Backend\Async;
 use Bolt\Controller\CsrfTrait;
 use Embed\Embed as EmbedFactory;
 use Embed\Exceptions\InvalidUrlException;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Embed\Providers\OEmbed;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\Security\Core\Exception\InvalidCsrfTokenException;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
-#[Security('is_granted("fetch_embed_data")')]
+#[isGranted('fetch_embed_data')]
 class EmbedController implements AsyncZoneInterface
 {
     use CsrfTrait;
@@ -31,7 +32,7 @@ class EmbedController implements AsyncZoneInterface
     {
         try {
             $this->validateCsrf('editrecord');
-        } catch (InvalidCsrfTokenException $e) {
+        } catch (InvalidCsrfTokenException) {
             return new JsonResponse([
                 'error' => [
                     'message' => 'Invalid CSRF token',
@@ -42,6 +43,7 @@ class EmbedController implements AsyncZoneInterface
         try {
             $url = $this->request->request->get('url');
             $info = EmbedFactory::create($url);
+            /** @var OEmbed $oembed */
             $oembed = $info->getProviders()['oembed'];
 
             $response = $oembed->getBag()->getAll();
@@ -55,7 +57,7 @@ class EmbedController implements AsyncZoneInterface
             }
 
             return new JsonResponse($response);
-        } catch (InvalidUrlException $e) {
+        } catch (\Throwable $e) {
             return new JsonResponse([
                 'error' => [
                     'message' => $e->getMessage(),

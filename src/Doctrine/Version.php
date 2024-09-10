@@ -49,7 +49,7 @@ class Version
 
             try {
                 $status = $wrapped->getAttribute(\PDO::ATTR_CONNECTION_STATUS);
-            } catch (\PDOException $e) {
+            } catch (\PDOException) {
                 $status = '';
             }
 
@@ -133,15 +133,15 @@ class Version
             // MySQL & SQLite
             $query
                 ->select('CAST(1.1 AS DECIMAL)');
-            $query->execute();
-        } catch (\Throwable $e) {
+            $query->executeQuery();
+        } catch (\Throwable) {
             try {
                 $query = $this->connection->createQueryBuilder();
                 // Postgree
                 $query
                     ->select('CAST(1.1 AS DOUBLE)');
-                $query->execute();
-            } catch (\Throwable $e) {
+                $query->executeQuery();
+            } catch (\Throwable) {
                 return false;
             }
         }
@@ -155,8 +155,8 @@ class Version
             $query = $this->connection->createQueryBuilder();
             $query
                 ->select('JSON_EXTRACT("{}", "one", "")');
-            $query->execute();
-        } catch (\Throwable $e) {
+            $query->executeQuery();
+        } catch (\Throwable) {
             return false;
         }
 
@@ -175,8 +175,8 @@ class Version
             $query = $this->connection->createQueryBuilder();
             $query
                 ->select('JSON_EXTRACT(\'{"jsonfunctionalitytest":["succes"]}\', \'$.jsonfunctionalitytest\') as value');
-            $query->execute();
-        } catch (\Throwable $e) {
+            $query->executeQuery();
+        } catch (\Throwable) {
             return false;
         }
 

@@ -8,6 +8,7 @@ use Bolt\Canonical;
 use Bolt\Common\Str;
 use Bolt\Utils\Html;
 use Bolt\Utils\Markdown;
+use Random\RandomException;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
 use Twig\TwigFunction;
@@ -94,6 +95,7 @@ class HtmlExtension extends AbstractExtension
         return Html::makeAbsoluteLink($link);
     }
 
+    /** @throws RandomException */
     public function placeholders(?string $string = null, array $replacements = []): string
     {
         $baseReplacements = [

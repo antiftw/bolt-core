@@ -326,7 +326,7 @@ class ContentExtension extends AbstractExtension
             $recordParams['contentTypeSlug'] === $routeParams['contentTypeSlug'];
     }
 
-    public function getLink(Taxonomy|Content $contentOrTaxonomy, bool $canonical = false, ?string $locale = null): ?string
+    public function getLink(mixed $contentOrTaxonomy, bool $canonical = false, ?string $locale = null): ?string
     {
         if ($contentOrTaxonomy instanceof Content) {
             if ($contentOrTaxonomy->getId() === null) {
@@ -413,7 +413,7 @@ class ContentExtension extends AbstractExtension
     {
         try {
             $link = $this->canonical->generateLink($route, $params, $canonical);
-        } catch (InvalidParameterException $e) {
+        } catch (InvalidParameterException) {
             $this->logger->notice('Could not create URL for route \'' . $route . '\'. Perhaps the ContentType was changed or removed. Try clearing the cache');
             $link = '';
         }
@@ -562,7 +562,7 @@ class ContentExtension extends AbstractExtension
             $content = iterator_to_array($pager->getCurrentPageResults())[0];
 
             return $record === $content;
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
         }
 
         return false;

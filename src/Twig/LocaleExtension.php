@@ -102,6 +102,7 @@ class LocaleExtension extends AbstractExtension
         );
     }
 
+    /** @throws \DateInvalidTimeZoneException */
     public function localdate($dateTime, ?string $format = null, ?string $locale = null, ?string $timezone = null): string
     {
         if ($dateTime instanceof \Datetime) {

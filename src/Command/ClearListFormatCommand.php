@@ -30,7 +30,7 @@ class ClearListFormatCommand extends Command
             ->setDescription('Clear Bolt\'s cached ListFormat data. ')
             ->setHelp(
                 <<<'HELP'
-The <info>%command.name%</info> command clears the `list_format` and `title` columns in the database. Be sure to run `bolt:update-list-format` afterwards.
+The <info>%command.name%</info> command clears the `list_format` and `title` columns in the database. Be sure to run `bolt:update-list-format` afterward.
 HELP
             );
     }

@@ -212,7 +212,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 $field->setValue($this->getValuesforFieldType($fieldType, $contentType['singleton'], $content));
             }
         }
-        $field->setSortorder($sortorder++ * 5);
+        $field->setSortorder($sortorder * 5);
 
         if ($addToContent) {
             $content->addField($field);
@@ -257,12 +257,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 '/{(\w+)}/i',
                 function ($match) {
                     $match = $match[1];
-
-                    try {
-                        return $this->faker->{$match};
-                    } finally {
-                    }
-                    return '(unknown)';
+                    return $this->faker->{$match};
                 },
                 $format
             ),
@@ -546,7 +541,7 @@ class ContentFixtures extends BaseFixture implements DependentFixtureInterface, 
                 try {
                     /** @var Content $randomReference */
                     $randomReference = $this->getRandomReference(\sprintf('content_%s', $contentType));
-                } catch (\Exception $exception) {
+                } catch (\Exception) {
                     continue;
                 }
 

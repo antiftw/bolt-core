@@ -7,6 +7,7 @@ namespace Bolt\Twig;
 use Bolt\Common\Json;
 use Bolt\Entity\Content;
 use Bolt\Entity\Field;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Serializer\Normalizer\NormalizerInterface;
 use Symfony\Component\Stopwatch\Stopwatch;
 use Twig\Extension\AbstractExtension;
@@ -46,6 +47,7 @@ class JsonExtension extends AbstractExtension
         ];
     }
 
+    /** @throws ExceptionInterface */
     public function jsonRecords($records, ?bool $includeDefinition = true, int $options = 0, string $locale = ''): string
     {
         $this->includeDefinition = $includeDefinition;
@@ -59,6 +61,7 @@ class JsonExtension extends AbstractExtension
         return $json;
     }
 
+    /** @throws ExceptionInterface */
     public function normalizeRecords(Content|iterable $records, string $locale = ''): array
     {
         if ($records instanceof Content) {
@@ -78,6 +81,7 @@ class JsonExtension extends AbstractExtension
 
     /**
      * Decorated by `Bolt\Utils\ContentToArrayCacher`
+     * @throws ExceptionInterface
      */
     protected function contentToArray(Content $content, string $locale = ''): array
     {

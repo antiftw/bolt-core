@@ -67,7 +67,7 @@ HELP
             $platform = $this->doctrineVersion->getPlatform();
             $tableExists = $this->doctrineVersion->tableContentExists() ? '' : ' - <error>Tables not initialised</error>';
             $withJson = $this->doctrineVersion->hasJson() ? 'with JSON' : 'without JSON';
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             $platform = [
                 'client_version' => '',
                 'driver_name' => '<error>Unknown - no database connection</error>',
@@ -100,7 +100,7 @@ HELP
     {
         try {
             Packages::get('bolt/core');
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             // bolt/core is not a dependency. Perhaps we're in bolt/core itself?
             return;
         }

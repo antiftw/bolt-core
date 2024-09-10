@@ -226,12 +226,12 @@ class Config
             return $this->get('taxonomies/' . $name);
         }
 
-        /** @var Collection $taxos */
-        $taxos = $this->get('taxonomies');
+        /** @var Collection $taxonomies */
+        $taxonomies = $this->get('taxonomies');
 
         foreach (['slug', 'singular_slug', 'name', 'singular_name'] as $key) {
-            if ($taxos->firstWhere($key, $name)) {
-                return $taxos->firstWhere($key, $name);
+            if ($taxonomies->firstWhere($key, $name)) {
+                return $taxonomies->firstWhere($key, $name);
             }
         }
 

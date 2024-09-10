@@ -398,7 +398,7 @@ final class BackendMenuBuilder implements BackendMenuBuilderInterface
                 }
 
                 $result[] = $additionalResult;
-            } catch (\RuntimeException $exception) {
+            } catch (\RuntimeException) {
                 // When a record is not initialised (yet), don't break, but fail gracefully.
             }
         }

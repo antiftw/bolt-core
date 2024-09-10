@@ -177,6 +177,7 @@ services:
 
     Bolt\Api\ContentStateProcessor:
         arguments:
+            $decorated: ApiPlatform\Doctrine\Common\State\PersistProcessor
             $config: Bolt\Configuration\Config
         tags: [ 'api_platform.state_processor' ]
     

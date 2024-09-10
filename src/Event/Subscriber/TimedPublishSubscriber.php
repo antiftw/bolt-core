@@ -34,7 +34,7 @@ class TimedPublishSubscriber implements EventSubscriberInterface
         $now = (new Carbon())->tz('UTC');
 
         // Publish timed Content records when 'publish_at' has passed and De-publish published Content
-        // records when 'depublish_at' has passed. Note: Placeholders in DBAL don't work for tablenames.
+        // records when 'depublished_at' has passed. Note: Placeholders in DBAL don't work for table names.
         $queryPublish = sprintf(
             'update %scontent SET status = \'published\', published_at = :now  WHERE status = \'timed\' AND published_at < :now',
             $this->tablePrefix
@@ -47,7 +47,7 @@ class TimedPublishSubscriber implements EventSubscriberInterface
         try {
             $conn->executeStatement($queryPublish, [':now' => $now]);
             $conn->executeStatement($queryDePublish, [':now' => $now]);
-        } catch (\Throwable $e) {
+        } catch (\Throwable) {
             // Fail silently, output user-friendly exception elsewhere.
         }
     }

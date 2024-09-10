@@ -77,7 +77,7 @@ class ZoneSubscriber implements EventSubscriberInterface
             } elseif ($reflection->implementsInterface(ErrorZoneInterface::class)) {
                 return RequestZone::ERROR;
             }
-        } catch (\ReflectionException $e) {
+        } catch (\ReflectionException) {
             // Alas…
         }
 

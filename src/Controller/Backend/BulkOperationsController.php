@@ -98,7 +98,7 @@ class BulkOperationsController extends AbstractController implements BackendZone
         foreach ($ids as $id) {
             try {
                 $records[] = $this->em()->find(Content::class, $id);
-            } catch (\Throwable $e) {
+            } catch (\Throwable) {
             }
         }
 

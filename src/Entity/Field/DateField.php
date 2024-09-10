@@ -18,7 +18,7 @@ class DateField extends Field implements FieldInterface, ScalarCastable
         $default = parent::getDefaultValue();
 
         if ($default !== null) {
-            // Flatpickr asks for milliseconds, strtotime returns unix timestmap in seconds
+            // Flatpickr asks for milliseconds, strtotime returns unix timestamp in seconds
             return strtotime($default) * 1000;
         }
 

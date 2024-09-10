@@ -100,7 +100,7 @@ class FileEditController extends TwigAwareController implements BackendZoneInter
         try {
             FileWriter::writeFile($filename, $contents);
             $this->addFlash('success', 'editfile.updated_successfully');
-        } catch (ExceptionInterface $e) {
+        } catch (ExceptionInterface) {
             $this->addFlash('warning', 'editfile.could_not_write');
         }
 
@@ -112,7 +112,7 @@ class FileEditController extends TwigAwareController implements BackendZoneInter
     {
         try {
             $this->validateCsrf('file-delete');
-        } catch (InvalidCsrfTokenException $e) {
+        } catch (InvalidCsrfTokenException) {
             return new JsonResponse([
                 'error' => [
                     'message' => 'Invalid CSRF token',
@@ -158,7 +158,7 @@ class FileEditController extends TwigAwareController implements BackendZoneInter
     {
         try {
             $this->validateCsrf('file-duplicate');
-        } catch (InvalidCsrfTokenException $e) {
+        } catch (InvalidCsrfTokenException) {
             return new JsonResponse([
                 'error' => [
                     'message' => 'Invalid CSRF token',

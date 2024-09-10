@@ -84,7 +84,7 @@ class FilemanagerController extends TwigAwareController implements BackendZoneIn
     {
         try {
             $this->validateCsrf('filemanager-delete');
-        } catch (InvalidCsrfTokenException $e) {
+        } catch (InvalidCsrfTokenException) {
             return new JsonResponse([
                 'error' => [
                     'message' => 'Invalid CSRF token',
@@ -107,7 +107,7 @@ class FilemanagerController extends TwigAwareController implements BackendZoneIn
             try {
                 $this->filesystem->remove($folder);
                 $this->addFlash('success', 'filemanager.delete_folder_successful');
-            } catch (IOException $e) {
+            } catch (IOException) {
                 $this->addFlash('danger', 'filemanager.delete_folder_error');
             }
         }
@@ -123,7 +123,7 @@ class FilemanagerController extends TwigAwareController implements BackendZoneIn
     {
         try {
             $this->validateCsrf('filemanager-create');
-        } catch (InvalidCsrfTokenException $e) {
+        } catch (InvalidCsrfTokenException) {
             return new JsonResponse([
                 'error' => [
                     'message' => 'Invalid CSRF token',
@@ -147,7 +147,7 @@ class FilemanagerController extends TwigAwareController implements BackendZoneIn
             try {
                 $this->filesystem->mkdir($folder);
                 $this->addFlash('success', 'filemanager.create_folder_success');
-            } catch (IOException $exception) {
+            } catch (IOException) {
                 $this->addFlash('danger', 'filemanager.create_folder_error');
             }
         }

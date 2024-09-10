@@ -111,7 +111,6 @@ class ContentVoter extends Voter
             }
         }
 
-        $contentTypeName = null;
         if ($subject instanceof Content) {
             $content = $subject;
             $contentTypeName = $content->getContentType();

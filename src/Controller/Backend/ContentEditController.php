@@ -164,7 +164,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         $this->em->flush();
 
         // Set the list_format of the Record in the bolt_content table. This has to be done in a 2nd iteration because
-        // $content does not have id set untill the Entity Manager is flushed.
+        // $content does not have id set until the EntityManager is flushed.
         $content->setListFormat();
         $this->em->persist($content);
         $this->em->flush();
@@ -180,7 +180,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
 
         $locale = $originalAuthor->getLocale();
 
-        // If we're "Saving Ajaxy"
+        // If we're saving using AJAX/XHR, return a JSON response
         if ($this->request->isXmlHttpRequest()) {
             $modified = sprintf(
                 '(%s: %s)',
@@ -224,14 +224,14 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         $event = new ContentEvent($content);
         $this->dispatcher->dispatch($event, ContentEvent::ON_DUPLICATE);
 
-        $twigvars = [
+        $twigVariables = [
             'record' => $content,
             'locales' => $content->getLocales(),
             'currentlocale' => $this->getEditLocale($content),
             'defaultlocale' => $this->defaultLocale,
         ];
 
-        return $this->render('@bolt/content/edit.html.twig', $twigvars);
+        return $this->render('@bolt/content/edit.html.twig', $twigVariables);
     }
 
     #[Route('/duplicate/{id}', name: 'bolt_content_duplicate_post', requirements: ['id' => '\d+'], methods: ['POST'])]
@@ -440,7 +440,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
             $content->removeField($field);
             try {
                 $this->em->remove($field);
-            } catch (ORMInvalidArgumentException $e) {
+            } catch (ORMInvalidArgumentException) {
                 // Suppress "Detached entity Array cannot be removed", because it'd break the Request
             }
             $this->em->flush();
@@ -469,7 +469,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
 
         if ($field instanceof SetField) {
             $children = [];
-            foreach ($value as $name => $svalue) {
+            foreach ($value as $name => $setValue) {
                 $child = $field->getValueForEditor()[$name] ?? null;
 
                 if (! $child) {
@@ -483,7 +483,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
                 }
 
                 $child->setDefinition($child->getName(), $field->getDefinition()->get('fields')->get($child->getName()));
-                $this->updateField($child, $svalue, $locale);
+                $this->updateField($child, $setValue, $locale);
                 $children[] = $child;
             }
             $field->setValue($children);
@@ -505,7 +505,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
     public function updateTaxonomy(Content $content, string $key, $postedTaxonomy, int $order): void
     {
         $postedTaxonomy = (new Collection(Json::findArray($postedTaxonomy)))->filter();
-        $contentTaxoSlugs = [];
+        $contentTaxonomySlugs = [];
 
         // Remove old ones, if they are not in the current ones
         foreach ($content->getTaxonomies($key) as $current) {
@@ -514,13 +514,13 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
                 $content->removeTaxonomy($current);
             }
 
-            $contentTaxoSlugs[] = $current->getSlug();
+            $contentTaxonomySlugs[] = $current->getSlug();
         }
 
         // Then (re-) add selected ones
         foreach ($postedTaxonomy as $slug) {
             // If we already have it, continue.
-            if (in_array($slug, $contentTaxoSlugs)) {
+            if (in_array($slug, $contentTaxonomySlugs)) {
                 continue;
             }
 
@@ -640,7 +640,7 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
 
     private function renderEditor(Content $content, $errors = null): Response
     {
-        $twigvars = [
+        $twigVariables = [
             'record' => $content,
             'locales' => $content->getLocales(),
             'defaultlocale' => $this->defaultLocale,
@@ -648,9 +648,9 @@ class ContentEditController extends TwigAwareController implements BackendZoneIn
         ];
 
         if ($errors) {
-            $twigvars['errors'] = $errors;
+            $twigVariables['errors'] = $errors;
         }
 
-        return $this->render('@bolt/content/edit.html.twig', $twigvars);
+        return $this->render('@bolt/content/edit.html.twig', $twigVariables);
     }
 }

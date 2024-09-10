@@ -53,7 +53,7 @@ class SetupCommand extends Command
 
         $command = $this->getApplication()->find('doctrine:migrations:sync-metadata-storage');
         $exitCode = $command->run(new ArrayInput([]), new NullOutput());
-        $this->processExitCode($exitCode, 'An error occurred when initialising the Doctrine Migrations metatada storage.');
+        $this->processExitCode($exitCode, 'An error occurred when initialising the Doctrine Migrations meta-dada storage.');
 
         $command = $this->getApplication()->find('doctrine:migrations:version');
         $commandInput = new ArrayInput([
@@ -62,7 +62,7 @@ class SetupCommand extends Command
         ]);
         $commandInput->setInteractive(false);
         $exitCode = $command->run($commandInput, new NullOutput());
-        $this->processExitCode($exitCode, 'An error occurred when initialising the Doctrine Migrations metatada storage.');
+        $this->processExitCode($exitCode, 'An error occurred when initialising the Doctrine Migrations meta-dada storage.');
 
         $command = $this->getApplication()->find('bolt:reset-secret');
         $exitCode = $command->run(new ArrayInput([]), new NullOutput());
