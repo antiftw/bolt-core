@@ -74,7 +74,7 @@ class Field implements FieldInterface, TranslatableInterface
     private int $sortorder = 0;
 
     #[ORM\Column(nullable: true)]
-    private int $version = 0;
+    private ?int $version = null;
 
     #[ORM\ManyToOne(targetEntity: Content::class, fetch: "EAGER", inversedBy: "fields")]
     #[ORM\JoinColumn(nullable: false)]

@@ -9,7 +9,7 @@
         "ext-mbstring": "*",
         "ext-pdo": "*",
         "composer-runtime-api": "^2",
-        "api-platform/core": "^v3.3",
+        "api-platform/core": "^3.3",
         "babdev/pagerfanta-bundle": "^4.4",
         "pagerfanta/doctrine-orm-adapter": "^4.6",
         "beberlei/doctrineextensions": "^1.3",
