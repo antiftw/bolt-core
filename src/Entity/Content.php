@@ -98,10 +98,10 @@ class Content
     private ?\DateTime $dePublishedAt = null;
 
     #[ORM\Column(length: 191, nullable: true)]
-    private string $title = '';
+    private ?string $title = null;
 
     #[ORM\Column(length: 191, nullable: true)]
-    private string $listFormat = '';
+    private ?string $listFormat = null;
 
     #[MaxDepth(1)]
     #[ORM\OneToMany(
